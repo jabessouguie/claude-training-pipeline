@@ -25,7 +25,7 @@ Produit, pour chaque module, **deux fichiers colocalisés** : `M<n>-slides-conte
 
 Avant de rédiger le bloc « Direction artistique » d'un module (étape 4 ci-dessous), établir la métaphore filée **globale** de la formation, dans cet ordre de priorité :
 
-1. **`livrables/00-fil-rouge.md`** — si `formation-material-builder` a produit un cas fil rouge pour cette formation (standard par défaut, voir US-12), le nom du produit/contexte fictif et son univers **sont** la métaphore filée globale. Ex. un cas fil rouge « StockPilot » (gestion de matériel de chantier) donne une métaphore filée d'atelier/chantier — pas besoin d'en inventer une autre.
+1. **`livrables/00-fil-rouge.md`** — si `formation-material-builder` a produit un cas fil rouge pour cette formation (standard par défaut, voir US-12), le nom du produit/contexte fictif et son univers **sont** la métaphore filée globale. Ex. un cas fil rouge « StockPilot » (gestion de petit matériel réutilisable en magasin) donne une métaphore filée de logistique/réassort — pas besoin d'en inventer une autre.
 2. **Métaphore explicite fournie par le consultant** — si le brief ou la conversation mentionne une métaphore filée (ex. « l'expédition », « le chantier »), la reprendre telle quelle.
 3. **Aucune des deux** — proposer une métaphore filée cohérente avec le domaine du client (2-3 phrases) et la faire valider avant de produire le premier bloc Direction artistique. Ne jamais improviser une métaphore différente à chaque module : elle se fixe une fois, globalement, puis se **décline** par module.
 
