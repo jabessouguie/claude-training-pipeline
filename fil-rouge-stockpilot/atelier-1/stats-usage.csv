@@ -1,0 +1,9 @@
+indicateur,valeur,commentaire
+Taille du parc petit matériel (2 entrepôts),210 équipements,"Transpalettes électriques légers, scanners d'inventaire, chariots de réassort, bacs de manutention roulants, lecteurs de code-barres, diables électriques"
+Taux d'utilisation moyen du parc,35%,Part du temps où un équipement est effectivement utilisé en magasin
+Équipements non localisés à l'inventaire trimestriel,14 / 210 (6.7%),Écart classeur entrepôt vs réalité constatée
+Demandes de matériel non satisfaites (déclaré entrepôts),23 / mois en moyenne,"Motif principal : ""équipement non disponible ou non localisé"""
+Dépenses de location externe (trimestre),38 700 €,Dont environ un tiers jugé « probablement évitable » par les responsables logistique
+Délai moyen de saisie d'un retour de matériel,3.2 jours,Cible théorique : jour même
+Pannes détectées à l'entrepôt (vs en magasin),71%,"La majorité des pannes est découverte au retour, pas à l'usage"
+Temps estimé de recherche de matériel (sondage interne),2h40 / semaine / responsable de magasin,"Auto-déclaré, 18 répondants"

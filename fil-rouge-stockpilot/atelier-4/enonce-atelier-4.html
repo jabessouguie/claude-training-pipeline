@@ -1,0 +1,372 @@
+<title>Atelier 4 — Lancement simulé : assets, marché synthétique, décision</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --ink: #1F1F1F;
+    --gray-dark: #4A4A4A;
+    --gray: #6B6B6B;
+    --white: #FFFFFF;
+    --bg-light: #F7F7F7;
+    --beige: #E8E2DA;
+    --bleu-marine: #2C5F8A;
+    --corail: #D97757;
+    --vert-sauge: #4A8B6F;
+  }
+
+  * { box-sizing: border-box; }
+
+  @page {
+    size: A4 portrait;
+    margin: 18mm;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.48;
+  }
+
+  .page {
+    max-width: 100%;
+  }
+
+  /* Bandeau d'en-tête */
+  .header-band {
+    background: var(--bleu-marine);
+    color: var(--white);
+    margin: -18mm -18mm 6mm -18mm;
+    padding: 14mm 18mm 10mm 18mm;
+  }
+
+  .header-band .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin: 0 0 4mm 0;
+  }
+
+  .header-band h1 {
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+    font-weight: 700;
+    font-size: 20pt;
+    line-height: 1.25;
+    margin: 0;
+    color: var(--white);
+  }
+
+  .header-band .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    margin-top: 3mm;
+    opacity: 0.95;
+  }
+
+  /* Métadonnées */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3mm;
+    margin: 0 0 7mm 0;
+  }
+
+  .meta-tile {
+    background: var(--beige);
+    border: 1px solid var(--beige);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+  }
+
+  .meta-tile .label {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bleu-marine);
+    margin: 0 0 1mm 0;
+  }
+
+  .meta-tile .value {
+    font-size: 9.5pt;
+    color: var(--ink);
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .meta-tile.full {
+    grid-column: 1 / -1;
+  }
+
+  /* Sections */
+  section {
+    margin: 0 0 6mm 0;
+  }
+
+  h2.section-title {
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 13pt;
+    color: var(--ink);
+    margin: 0 0 3mm 0;
+    padding-bottom: 1.5mm;
+    border-bottom: 2px solid var(--bleu-marine);
+    display: inline-block;
+  }
+
+  section p {
+    margin: 0 0 2.5mm 0;
+    color: var(--ink);
+  }
+
+  /* Consigne numérotée */
+  ol.consigne {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: consigne-counter;
+  }
+
+  ol.consigne li {
+    counter-increment: consigne-counter;
+    position: relative;
+    padding-left: 9mm;
+    margin: 0 0 3.5mm 0;
+    color: var(--ink);
+  }
+
+  ol.consigne li::before {
+    content: counter(consigne-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6.5mm;
+    height: 6.5mm;
+    border-radius: 50%;
+    background: var(--bleu-marine);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 9.5pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  ol.consigne li strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .timing-note {
+    background: var(--bg-light);
+    border-left: 3px solid var(--vert-sauge);
+    padding: 2.5mm 4mm;
+    margin-top: 3mm;
+    font-size: 9.5pt;
+    color: var(--gray-dark);
+  }
+
+  /* Critères de réussite */
+  ul.criteres {
+    margin: 0;
+    padding-left: 5mm;
+    list-style: none;
+  }
+
+  ul.criteres li {
+    position: relative;
+    margin: 0 0 2.5mm 0;
+    padding-left: 5mm;
+    color: var(--ink);
+  }
+
+  ul.criteres li::before {
+    content: "✓";
+    position: absolute;
+    left: -1mm;
+    color: var(--bleu-marine);
+    font-weight: 700;
+  }
+
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* Encadré discret Indices */
+  .indices-box {
+    background: var(--bg-light);
+    border: 1px dashed var(--gray);
+    border-radius: 4px;
+    padding: 5mm;
+    margin: 8mm 0 5mm 0;
+  }
+
+  .indices-box .indices-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 10.5pt;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 3mm 0;
+  }
+
+  .indices-box .indices-note {
+    font-size: 8.5pt;
+    font-style: italic;
+    color: var(--gray);
+    margin: 0 0 3mm 0;
+  }
+
+  .indices-box ol {
+    margin: 0;
+    padding-left: 5mm;
+    color: var(--gray-dark);
+    font-size: 9.5pt;
+  }
+
+  .indices-box ol li {
+    margin-bottom: 2mm;
+  }
+
+  /* Encadré Bonus */
+  .bonus-box {
+    border-left: 4px solid var(--bleu-marine);
+    background: var(--beige);
+    padding: 4mm 5mm;
+    margin: 0 0 5mm 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .bonus-box .bonus-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 10.5pt;
+    color: var(--bleu-marine);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 2mm 0;
+  }
+
+  .bonus-box p {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  code {
+    font-family: 'Menlo', 'Consolas', monospace;
+    background: var(--bg-light);
+    border: 1px solid var(--beige);
+    border-radius: 3px;
+    padding: 0.5px 3px;
+    font-size: 9pt;
+    color: var(--corail);
+  }
+
+  /* Pied de page */
+  .footer {
+    margin-top: 10mm;
+    padding-top: 3mm;
+    border-top: 1px solid var(--beige);
+    font-size: 8pt;
+    color: var(--gray);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media print {
+    body { background: var(--white); }
+  }
+</style>
+
+<div class="page">
+
+  <div class="header-band">
+    <p class="eyebrow">Product Management augmenté — Module M2 : Construire et Lancer</p>
+    <h1>Atelier 4 — Lancement simulé : assets, marché synthétique, décision</h1>
+    <p class="subtitle">Fil rouge StockPilot — Module M2 : Construire et Lancer</p>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-tile">
+      <p class="label">Durée</p>
+      <p class="value">45 minutes (35 min travail + 10 min débrief collectif)</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Niveau</p>
+      <p class="value">Intermédiaire</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Format</p>
+      <p class="value">Binôme (mêmes binômes)</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Prérequis</p>
+      <p class="value">Exercices 1-3 (personas, non-objectifs, prototype) · slides 20 à 29 du M2</p>
+    </div>
+    <div class="meta-tile full">
+      <p class="label">Matériel</p>
+      <p class="value">Copilot · <code>metriques-j30-stockpilot.md</code> · grille Pivot or Persevere (livret, annexe E)</p>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="section-title">Contexte</h2>
+    <p>StockPilot V1 est déployée depuis 30 jours sur 3 magasins pilotes et 2 entrepôts. La direction Logistique attend votre recommandation : on généralise, on corrige le tir, ou on pivote ? Vous disposez des métriques d'usage à J+30 — et de la possibilité de faire réagir des utilisateurs simulés avant de trancher.</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Objectif</h2>
+    <p>Boucler la boucle build-measure-learn : produire des assets de lancement cohérents, utiliser la simulation d'utilisateurs en connaissant sa limite structurelle (la sycophancie), lire des métriques ambivalentes avec l'aide de l'IA, et prendre une décision Pivot or Persevere argumentée sur données — pas sur intuition ni sur l'avis de l'IA.</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Consigne</h2>
+    <ol class="consigne">
+      <li><strong>Assets de lancement</strong> : générez (a) l'annonce interne de généralisation — 200 mots, ton adapté au terrain, sans jargon IT ; (b) une FAQ de 5 questions pour le support. Contrôle : aucune promesse hors périmètre V1 (relisez vos non-objectifs de l'exercice 2).</li>
+      <li><strong>Marché synthétique</strong> : faites réagir successivement 3 personas à votre annonce (et au prototype si le temps le permet) — dont <strong>au moins un franchement réfractaire</strong> (« Tu es directeur régional depuis 20 ans, les apps précédentes t'ont toutes déçu, tu n'as pas de temps à perdre »). Pour chacun : « qu'est-ce qui ferait que tu n'utilises JAMAIS cet outil ? ». Collectez les objections.</li>
+      <li><strong>Lecture des métriques</strong> : copiez le fichier métriques J+30 + vos objections simulées dans l'IA. Demandez : synthèse sentiment × thème, les 3 signaux les plus préoccupants, les 3 plus encourageants — chaque signal relié à une donnée précise du fichier.</li>
+      <li><strong>Décision</strong> : demandez le <strong>steelman des deux options</strong> (le meilleur argumentaire pour Persevere, PUIS le meilleur pour Pivot). Tranchez vous-mêmes : décision + 5 lignes de justification citant au moins 3 données. Préparez-vous à la défendre en débrief.</li>
+    </ol>
+    <div class="timing-note">
+      ⏱ En retard à la minute 20 ? FAQ ramenée à 3 questions et 2 personas au lieu de 3 — l'étape 4 (la décision) est non négociable.
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Critères de réussite</h2>
+    <ul class="criteres">
+      <li>Votre annonce et votre FAQ sont cohérentes entre elles et avec votre périmètre V1.</li>
+      <li>Vous avez obtenu au moins 5 objections distinctes de vos personas — dont au moins 2 que vous n'aviez pas anticipées.</li>
+      <li>Vos signaux (préoccupants et encourageants) citent des chiffres exacts du fichier métriques — vérifiés.</li>
+      <li>Votre décision finale est la vôtre (pas celle de l'IA), tient en 5 lignes, et cite au moins 3 données.</li>
+    </ul>
+  </section>
+
+  <div class="indices-box">
+    <p class="indices-title">Indices — à consulter seulement si vous êtes bloqués</p>
+    <ol>
+      <li>Vos personas simulés adorent tout ? C'est la sycophancie. Durcissez le rôle (âge, vécu d'échecs, contraintes de temps) et posez des questions fermées orientées friction : « qu'est-ce qui t'agace dans cette annonce ? », « à quel moment tu décroches ? ».</li>
+      <li>La synthèse des métriques reste vague ? Exigez le format : « tableau signal | donnée source citée | pourquoi c'est préoccupant/encourageant | hypothèse d'explication ». Et vérifiez 2 chiffres dans le fichier — réflexe du matin.</li>
+      <li>Vous n'arrivez pas à trancher ? Regardez QUI utilise et QUI abandonne (par profil), pas la moyenne globale : une adoption moyenne correcte peut cacher un segment clé en échec — et c'est précisément le cas dans ce fichier.</li>
+    </ol>
+  </div>
+
+  <div class="bonus-box">
+    <p class="bonus-title">Bonus (binômes rapides)</p>
+    <p>Rédigez le message de 10 lignes au sponsor fictif de la direction Logistique annonçant votre décision : contexte, décision, 3 données clés, prochaine étape datée. Puis demandez à l'IA de jouer le sponsor qui répond avec 2 questions difficiles — et répondez-y.</p>
+  </div>
+
+  <div class="footer">
+    <span>Product Management augmenté</span>
+    <span>Atelier 4 / Module M2</span>
+  </div>
+
+</div>

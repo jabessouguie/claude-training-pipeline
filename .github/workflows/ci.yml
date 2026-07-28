@@ -1,0 +1,37 @@
+# CI ciblée sur le contenu réel de ce dépôt : des specs Markdown (les SKILL.md
+# des skills) + un script Python qui génère la grille de cadrage .xlsx.
+# Il n'y a rien à builder, containeriser ni déployer.
+# Deux garde-fous seulement : compilation du script Python, et détection de secrets.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # 1. Vérifie que le script de génération de la grille Excel compile et que sa
+  #    dépendance (openpyxl) s'importe — filet minimal contre un script cassé poussé par erreur.
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet openpyxl
+      - run: python -m py_compile cadrage-formation/scripts/generate_cadrage_xlsx.py
+      - run: python -c "import openpyxl"
+
+  # 2. Détection de secrets — seul contrôle de sécurité pertinent pour un dépôt
+  #    qui ne contient que du texte (éviter qu'un token, une clé ou une URL interne
+  #    sensible soit poussé par inadvertance dans un SKILL.md, un README ou la CI).
+  secret-detection:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockPilot — Prototype (formation)</title>
+<style>
+  :root { --bleu: #2C5F8A; --vert: #4A8B6F; --orange: #e08a00; --rouge: #c0392b; --gris: #f4f5f7; }
+  * { box-sizing: border-box; margin: 0; font-family: "Segoe UI", Arial, sans-serif; }
+  body { background: var(--gris); color: #222; max-width: 480px; margin: 0 auto; min-height: 100vh; }
+  header { background: var(--bleu); color: #fff; padding: 14px 16px; position: sticky; top: 0; z-index: 5; }
+  header h1 { font-size: 1.1rem; }
+  header p { font-size: .75rem; opacity: .85; }
+  .screen { display: none; padding: 16px; }
+  .screen.active { display: block; }
+  .card { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.08); cursor: pointer; }
+  .card h3 { font-size: 1rem; margin-bottom: 4px; }
+  .card small { color: #666; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; color: #fff; font-size: .72rem; font-weight: 600; float: right; }
+  .dispo { background: var(--vert); } .reserve { background: var(--orange); } .panne { background: var(--rouge); }
+  input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: .95rem; }
+  button { width: 100%; padding: 12px; border: 0; border-radius: 8px; background: var(--bleu); color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
+  button.secondaire { background: #fff; color: var(--bleu); border: 2px solid var(--bleu); }
+  .retour { background: none; border: none; color: #fff; font-size: .85rem; cursor: pointer; padding: 0; width: auto; margin: 6px 0 0; text-decoration: underline; }
+  .fiche-bloc { background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+  .fiche-bloc h4 { font-size: .8rem; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+  .histo li { list-style: none; padding: 6px 0; border-bottom: 1px solid #eee; font-size: .85rem; }
+  .confirm { text-align: center; padding: 40px 16px; }
+  .confirm .rond { width: 64px; height: 64px; border-radius: 50%; background: var(--vert); color: #fff; font-size: 2rem; line-height: 64px; margin: 0 auto 16px; }
+  .note-proto { font-size: .7rem; color: #999; text-align: center; padding: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📦 StockPilot</h1>
+  <p>Le petit matériel de vos magasins, localisé et réservable</p>
+  <button class="retour" id="btn-retour" style="display:none" onclick="go('recherche')">← Retour à la recherche</button>
+</header>
+
+<!-- ÉCRAN 1 : RECHERCHE -->
+<section id="recherche" class="screen active">
+  <input type="text" id="filtre" placeholder="🔍 Chercher un matériel (ex. transpalette)" oninput="renderListe()">
+  <select id="type" onchange="renderListe()">
+    <option value="">Tous les types</option>
+    <option>Transpalette électrique</option><option>Scanner d'inventaire</option>
+    <option>Chariot de réassort</option><option>Bac de manutention roulant</option><option>Lecteur code-barres</option>
+  </select>
+  <select id="distance" onchange="renderListe()">
+    <option value="99">Rayon : indifférent</option>
+    <option value="10">Moins de 10 min</option>
+    <option value="30">Moins de 30 min</option>
+  </select>
+  <div id="liste"></div>
+</section>
+
+<!-- ÉCRAN 2 : FICHE -->
+<section id="fiche" class="screen">
+  <div class="fiche-bloc" id="fiche-detail"></div>
+  <div class="fiche-bloc">
+    <h4>Historique récent</h4>
+    <ul class="histo" id="fiche-histo"></ul>
+  </div>
+  <button id="btn-reserver">Réserver ce matériel</button>
+  <button class="secondaire" onclick="alert('Signalement enregistré (simulation).\nLa maintenance et le responsable logistique sont notifiés.')">⚠️ Signaler une panne (photo)</button>
+</section>
+
+<!-- ÉCRAN 3 : RÉSERVATION -->
+<section id="reservation" class="screen">
+  <div class="fiche-bloc">
+    <h4>Réservation</h4>
+    <p id="resa-titre" style="margin-bottom:10px;font-weight:600"></p>
+    <label>Du</label><input type="date" id="resa-debut">
+    <label>Au</label><input type="date" id="resa-fin">
+    <label>Magasin de destination</label>
+    <select><option>Magasin Rennes-Centre</option><option>Magasin Nantes-Sud</option><option>Magasin Quimper</option><option>Magasin Vannes</option></select>
+  </div>
+  <button onclick="confirmer()">Confirmer la réservation</button>
+</section>
+
+<!-- ÉCRAN 3bis : CONFIRMATION -->
+<section id="confirmation" class="screen">
+  <div class="confirm">
+    <div class="rond">✓</div>
+    <h2>Réservation confirmée</h2>
+    <p id="confirm-txt" style="margin:10px 0 20px;color:#555"></p>
+    <button onclick="go('recherche')">Nouvelle recherche</button>
+  </div>
+</section>
+
+<p class="note-proto">Prototype de formation — données fictives — ne pas utiliser en production</p>
+
+<script>
+const MATERIEL = [
+  { id: 1, nom: "Transpalette électrique TE-240", type: "Transpalette électrique", lieu: "Entrepôt Nord", min: 10, statut: "dispo",
+    histo: ["12/06 — Magasin Rennes-Centre (8 j)", "28/05 — Magasin Vannes (5 j)", "10/05 — Entrepôt (maintenance)"] },
+  { id: 2, nom: "Transpalette électrique TE-241", type: "Transpalette électrique", lieu: "Magasin Quimper", min: 25, statut: "reserve",
+    histo: ["Réservé jusqu'au 12/07 — Magasin Quimper", "02/06 — Entrepôt Sud", "18/05 — Magasin Nantes-Sud (10 j)"] },
+  { id: 3, nom: "Scanner d'inventaire SI-88", type: "Scanner d'inventaire", lieu: "Entrepôt Sud", min: 35, statut: "dispo",
+    histo: ["05/06 — Magasin Vannes (12 j)", "20/05 — Entrepôt (révision)", "02/05 — Magasin Nantes-Sud (6 j)"] },
+  { id: 4, nom: "Chariot de réassort CR-12", type: "Chariot de réassort", lieu: "Magasin Rennes-Centre", min: 8, statut: "dispo",
+    histo: ["Depuis le 25/06 — Magasin Rennes-Centre", "10/06 — Entrepôt Nord", "22/05 — Magasin Vannes (14 j)"] },
+  { id: 5, nom: "Bac de manutention roulant BR-30", type: "Bac de manutention roulant", lieu: "Entrepôt Nord", min: 10, statut: "panne",
+    histo: ["⚠️ Signalé en panne le 30/06 (roue bloquée)", "15/06 — Magasin Quimper (10 j)", "01/06 — Entrepôt Nord"] },
+  { id: 6, nom: "Bac de manutention roulant BR-31", type: "Bac de manutention roulant", lieu: "Magasin Vannes", min: 20, statut: "dispo",
+    histo: ["Depuis le 20/06 — Magasin Vannes", "05/06 — Entrepôt Sud", "12/05 — Magasin Rennes-Centre (18 j)"] },
+  { id: 7, nom: "Lecteur code-barres LC-07", type: "Lecteur code-barres", lieu: "Entrepôt Sud", min: 35, statut: "dispo",
+    histo: ["18/06 — Magasin Nantes-Sud (4 j)", "01/06 — Entrepôt (maintenance)", "12/05 — Magasin Vannes (9 j)"] }
+];
+const LIBELLE = { dispo: "Disponible", reserve: "Réservé", panne: "En panne" };
+let selection = null;
+
+function go(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.getElementById("btn-retour").style.display = id === "recherche" ? "none" : "inline";
+  window.scrollTo(0, 0);
+}
+function renderListe() {
+  const q = document.getElementById("filtre").value.toLowerCase();
+  const t = document.getElementById("type").value;
+  const d = parseInt(document.getElementById("distance").value, 10);
+  const zone = document.getElementById("liste");
+  const items = MATERIEL.filter(m =>
+    (!q || (m.nom + " " + m.type + " " + m.lieu).toLowerCase().includes(q)) &&
+    (!t || m.type === t) && m.min <= d);
+  zone.innerHTML = items.length ? items.map(m =>
+    `<div class="card" onclick="ouvrirFiche(${m.id})">
+       <span class="badge ${m.statut}">${LIBELLE[m.statut]}</span>
+       <h3>${m.nom}</h3>
+       <small>📍 ${m.lieu} · ~${m.min} min</small>
+     </div>`).join("")
+    : `<div class="card" style="cursor:default"><h3>Aucun matériel dans ce rayon</h3>
+       <small>Prochains retours prévus : TE-241 le 12/07 · BR-30 après réparation.<br>
+       <a href="#" onclick="alert('Alerte créée (simulation) : vous serez notifié dès qu\\'une unité se libère.');return false;">🔔 Créer une alerte de disponibilité</a></small></div>`;
+}
+function ouvrirFiche(id) {
+  selection = MATERIEL.find(m => m.id === id);
+  document.getElementById("fiche-detail").innerHTML =
+    `<h4>Fiche équipement</h4>
+     <span class="badge ${selection.statut}">${LIBELLE[selection.statut]}</span>
+     <h3 style="margin:4px 0">${selection.nom}</h3>
+     <p style="color:#555;font-size:.9rem">📍 Localisation actuelle : <strong>${selection.lieu}</strong> (~${selection.min} min)</p>
+     <p style="color:#999;font-size:2.4rem;text-align:center;margin:10px 0">🖼️</p>`;
+  document.getElementById("fiche-histo").innerHTML = selection.histo.map(h => `<li>${h}</li>`).join("");
+  const btn = document.getElementById("btn-reserver");
+  if (selection.statut === "dispo") { btn.disabled = false; btn.textContent = "Réserver ce matériel"; btn.onclick = () => ouvrirResa(); }
+  else { btn.disabled = true; btn.textContent = selection.statut === "reserve" ? "Déjà réservé — créer une alerte via la recherche" : "En panne — réservation impossible"; }
+  go("fiche");
+}
+function ouvrirResa() {
+  document.getElementById("resa-titre").textContent = selection.nom + " — " + selection.lieu;
+  go("reservation");
+}
+function confirmer() {
+  const d1 = document.getElementById("resa-debut").value, d2 = document.getElementById("resa-fin").value;
+  if (!d1 || !d2) { alert("Merci de renseigner les dates de début et de fin."); return; }
+  if (d2 < d1) { alert("La date de fin doit être postérieure à la date de début."); return; }
+  document.getElementById("confirm-txt").textContent =
+    `${selection.nom} réservé du ${d1} au ${d2}. Le responsable logistique est notifié (simulation).`;
+  go("confirmation");
+}
+renderListe();
+</script>
+</body>
+</html>

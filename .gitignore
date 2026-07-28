@@ -1,0 +1,39 @@
+# Ce dépôt versionne des SPECS (SKILL.md, références, README) + un script Python.
+# Les livrables de formation (slides, docs, tableurs) sont générés par le pipeline
+# dans les dossiers de travail des consultants et n'ont pas vocation à être versionnés ici.
+
+# Métadonnées OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Fichiers d'éditeur / IDE
+*.code-workspace
+.vscode/
+.idea/
+*.swp
+
+# Artefacts Python (script de génération de la grille de cadrage)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Livrables de formation générés par le pipeline (binaires Office).
+*.pptx
+*.docx
+*.xlsx
+
+# EXCEPTION — le cas de référence fil-rouge-equiptrack/ contient volontairement des
+# binaires d'exemple (.docx d'énoncé/solutions, .pdf) qui DOIVENT rester versionnés :
+# c'est le gabarit canonique désigné par US-12 (BACKLOG #22). Sans cette ré-inclusion,
+# un `git add fil-rouge-equiptrack/` omettrait silencieusement ses .docx.
+!fil-rouge-equiptrack/**
+# ...mais la ré-inclusion large ci-dessus ne doit pas rattraper les métadonnées OS :
+# les .DS_Store de ce dossier restent exclus (règle placée APRÈS pour l'emporter).
+fil-rouge-equiptrack/**/.DS_Store
+fil-rouge-equiptrack/.DS_Store
+
+# Workspaces de formation, s'ils sont produits à l'intérieur du dépôt par erreur
+formations/
