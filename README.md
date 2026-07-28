@@ -1,10 +1,10 @@
 # Skills — Pipeline de création de formation
 
-Les quatre skills Claude Code utilisées pour préparer et produire le dossier complet d'une formation « Product Management augmenté », utilisables sur n'importe quelle formation.
+Les skills Claude Code utilisées pour préparer et produire le dossier complet d'une formation « Product Management augmenté », utilisables sur n'importe quelle formation.
 
 ## En deux mots
 
-Ce dépôt fournit **quatre « skills »** — des modes d'emploi que Claude Code (l'assistant IA) suit automatiquement pour t'aider, étape par étape, à produire une formation client complète : de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz. Tu dialogues avec l'assistant **en français**, il fait le gros du travail.
+Ce dépôt fournit **quatre « skills »** — des modes d'emploi que Claude Code (l'assistant IA) suit automatiquement pour t'aider, étape par étape, à produire une formation client complète : de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz. Tu dialogues avec l'assistant **en français**, il fait le gros du travail. Une **cinquième skill, `formation-pipeline`**, orchestre les quatre premières à la suite si tu préfères ne pas les relancer une par une (voir « Mode bout-en-bout » plus bas) — mais l'usage skill-par-skill décrit ci-dessous reste toujours possible et n'est jamais remplacé.
 
 - **Une fois installé** (voir « Mise en place technique » plus bas — c'est une étape technique ponctuelle, déléguable à un collègue), l'usage quotidien ne demande **aucune manipulation technique** : tu décris ta formation, l'assistant enchaîne les étapes et te demande de valider aux moments-clés.
 - **Où commencer** : par la skill `cadrage-formation` (étape 0 ci-dessous), qui prépare les questions à poser au client. Chaque skill propose ensuite d'elle-même l'étape suivante.
@@ -48,9 +48,10 @@ Sortie : le `.xlsx` de questions priorisées (indispensables vs optionnelles) qu
 
 ### 1. `formation-material-builder` — produire tout le matériel pédagogique
 
-Entrées : un brief, une recherche, un plan de formation (idéalement issus de `formation-plan-builder`, sinon fournis directement).
+Entrées : la grille de cadrage remplie par le client (`.xlsx` produit par `cadrage-formation`), ou directement un contexte + un plan de formation en mode standalone. Il n'y a pas de skill intermédiaire entre le cadrage et cette skill : elle dérive elle-même, en Phase 0, un brief (`00-brief.md`) et un plan de formation (`00-plan.md`) à partir du xlsx rempli, fait valider les deux, puis poursuit.
 Sorties, par phases avec points de validation :
-- **Phase 0-1** : discovery des inputs + conception d'un **cas fil rouge** unique (`livrables/00-fil-rouge.md`, standard par défaut — façon `StockPilot`) + roadmap de production (`06-material-roadmap.md`), les deux à valider
+- **Phase 0** : ingestion du cadrage + brief et plan dérivés (`00-brief.md`, `00-plan.md`), à valider
+- **Phase 1** : conception d'un **cas fil rouge** unique (`livrables/00-fil-rouge.md`, standard par défaut — façon `StockPilot`) + roadmap de production (`06-material-roadmap.md`), les deux à valider
 - **Phase 2** : contenu markdown module par module — `slides.md`, `notes-formateur.md` — et, par atelier, `livrables/atelier-N/enonce-atelier-N.md` (+ corpus dédié si besoin) et `livrables/solutions/solution-atelier-N.md` (le 1er module validé sert de gabarit aux suivants)
 - **Phase 3** : compilation — `M<n>-slides.pptx` (**brouillon du déroulé** ; le rendu visuel final des slides se fait à l'étape 2 ci-dessous via Claude Design), `enonce-atelier-N.html`/`.pdf` (charte par défaut, un dossier par atelier), `livret-stagiaire.docx` (sans solutions), `guide-formateur.docx` (avec solutions et timing minute par minute)
 - **Phase 4** : `quiz-kahoot.md` (format Kahoot : une fiche par question avec type, réponses, bonne réponse, temps imparti, points, limite de réponse) + `prerequis-setup.md`
@@ -79,6 +80,20 @@ Deux modes : **loop** (corrections appliquées en place) ou **annotations** (lis
 
 ---
 
+## Mode bout-en-bout (`formation-pipeline`)
+
+Si tu préfères ne pas relancer chaque skill toi-même à chaque étape, la skill `formation-pipeline` enchaîne les 4 skills ci-dessus à la suite (cadrage → matériel → slides → qualité), en respectant les mêmes points de validation. C'est un mode d'usage **additionnel** : les 4 skills restent invocables indépendamment, comme décrit ci-dessus.
+
+Avant de démarrer, elle te demande explicitement (jamais deviné) :
+1. **Mode de validation** : elle s'arrête à chaque point déjà prévu par chaque skill (`step-by-step`, par défaut), ou elle enchaîne sans interruption sauf blocage réellement impossible à lever seul (`non-stop` — ex. réponses client indispensables manquantes, validation du plan/fil rouge, correction bloquante en comité qualité : ces arrêts-là, l'orchestrateur ne peut jamais les lever lui-même).
+2. **Génération des illustrations** : automatique via l'API Gemini (`auto` — nécessite une clé API), ou manuelle comme aujourd'hui (`manuel` — tu copies-colles toi-même vers Gemini et Claude Design).
+
+**Ce qui reste toujours manuel, quel que soit le mode choisi** : la composition finale dans **Claude Design**. Claude Design n'expose aujourd'hui aucune API programmatique (vérifié le 28/07/2026) — même en mode "auto", tu arrives dans Claude Design avec les images déjà générées et rangées par slide, mais c'est toi qui composes la slide.
+
+Le format exact de chaque fichier échangé entre les skills (celles orchestrées par `formation-pipeline` comme celles utilisées seules) est documenté dans [`PIPELINE_CONTRACTS.md`](PIPELINE_CONTRACTS.md) — utile si tu veux comprendre précisément ce que produit une étape avant de la passer à la suivante.
+
+---
+
 # Mise en place technique (une seule fois)
 
 > **Cette partie est technique et ponctuelle.** Elle suppose que Claude Code est installé sur ton poste. **Si ce n'est pas le cas, ou si les termes ci-dessous (terminal, dépôt, extension, palette de commandes…) ne te parlent pas, fais-toi accompagner par un collègue technique pour cette étape unique.** Une fois en place, l'usage quotidien décrit plus haut se fait en français, sans manipulation technique.
@@ -104,12 +119,15 @@ Copier chaque dossier dans `~/.claude/skills/` :
 │   ├── SKILL.md
 │   └── references/          (7 fichiers de référence)
 ├── slide-content-claude-design/
+│   ├── SKILL.md
+│   └── scripts/             (génération auto des illustrations, optionnel)
+├── comite-qualite/
 │   └── SKILL.md
-└── comite-qualite/
+└── formation-pipeline/      (optionnel — orchestrateur du pipeline complet)
     └── SKILL.md
 ```
 
-**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les 4 skills doivent apparaître dans la liste.
+**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
 
 **Procédure de repli si une skill n'est pas détectée** (à utiliser en dernier recours, pas par défaut) :
 - Ouvrir un nouveau chat plutôt que de réutiliser une session existante.
@@ -152,7 +170,8 @@ Cowork tourne dans l'application Claude. **Ce qui suit est une supposition raiso
 
 ## Notes diverses
 
-- Ces quatre skills fonctionnent aussi indépendamment les unes des autres.
+- Ces quatre skills fonctionnent aussi indépendamment les unes des autres. `formation-pipeline` (mode bout-en-bout) est additionnelle et optionnelle.
 - `cadrage-formation` : le script `scripts/generate_cadrage_xlsx.py` nécessite Python avec `openpyxl` (génération du fichier Excel).
+- `slide-content-claude-design` : le script optionnel `scripts/generate_illustrations.py` (mode génération automatique des illustrations) nécessite Python avec `google-genai` et une clé d'API Gemini valide dans la variable d'environnement `GEMINI_API_KEY`.
 
 Pour l'historique daté des évolutions du pipeline, voir [`CHANGELOG.md`](CHANGELOG.md).

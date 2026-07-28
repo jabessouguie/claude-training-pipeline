@@ -34,6 +34,59 @@ Conséquence directe sur le workflow :
 
 Consultez le `README.md` racine pour la description fonctionnelle à jour des 4 skills et de leur enchaînement avant de modifier quoi que ce soit — il fait foi sur le comportement *actuel* du pipeline et doit rester en synchronisation stricte avec les `SKILL.md`.
 
+## Workflow Git : branches et pull requests
+
+Ce dépôt reste simple à dessein (3 contributeurs à temps partiel, voir `GOVERNANCE.md`) — ce workflow n'est pas du process pour le process, il existe pour que la revue croisée déjà exigée par la DoD (`BACKLOG.md`) ait un support concret, et que `main` reste toujours dans un état que n'importe qui peut installer et faire tourner. Ce dépôt est hébergé sur **GitHub** (pas GitLab) : on y ouvre des **pull requests (PR)**, jamais des "merge requests" — c'est le terme GitLab, il ne correspond à aucun bouton de l'interface GitHub réellement utilisée ici.
+
+### Prérequis : la mécanique Git de base
+
+Si les commandes ci-dessous ne te sont pas familières, demande-toi d'abord si tu es la bonne personne pour ce changement (voir README.md § « Mise en place technique » — certaines contributions gagnent à être accompagnées par un collègue technique) ou fais-toi montrer ces quelques commandes une fois par un autre contributeur ; elles ne changent jamais d'un projet à l'autre.
+
+```bash
+git checkout main && git pull                     # partir d'un main à jour
+git checkout -b feat/us-15-formation-pipeline      # créer la branche (convention ci-dessous)
+# ... modifier le(s) fichier(s), git add, git commit ...
+git push -u origin feat/us-15-formation-pipeline   # pousser la branche vers GitHub
+```
+
+Une fois la branche poussée, GitHub affiche un bandeau "Compare & pull request" sur la page du dépôt — cliquer dessus (ou, depuis l'onglet **Pull requests**, bouton **New pull request**) ouvre l'écran de création de la PR, où on renseigne le titre/la description (voir « Ouvrir une pull request » ci-dessous).
+
+### `main` est toujours livrable
+
+- `main` reflète l'état actuellement recommandé du pipeline : quelqu'un qui clone le dépôt à cet instant doit pouvoir installer les skills et les utiliser sans tomber sur une spec à moitié écrite.
+- **On ne pousse jamais directement sur `main`.** Même une correction d'une ligne dans un `SKILL.md` passe par une branche + une pull request (PR) — la revue croisée porte autant sur la spec elle-même (non ambiguë ? vérifiable ?) que sur le comportement obtenu, et sauter cette étape revient à sauter la DoD.
+- **Cette règle doit être appliquée techniquement, pas seulement suivie par discipline** : configurer une *branch protection rule* sur `main` (Settings → Branches → Branch protection rules sur GitHub) qui exige au moins une PR avant merge — sans ça, rien n'empêche techniquement un `git push origin main` direct, y compris par erreur. À vérifier/mettre en place si ce n'est pas déjà fait.
+- **Une seule exception** : un correctif de pure forme sans changement de comportement (faute de frappe, lien cassé, formatage) peut être poussé directement, **et uniquement par le Product Owner** (voir `GOVERNANCE.md` pour qui occupe ce rôle) s'il n'y a personne d'autre disponible pour relire dans un délai raisonnable — cette dérogation n'est pas ouverte aux autres contributeurs, documentée comme exception, pas comme un mode par défaut.
+
+### Nommer une branche
+
+Une branche = une story ou un item de backlog, jamais un fourre-tout de plusieurs sujets sans rapport. Convention :
+
+```
+<type>/<référence-story-ou-item>-<slug-court>
+```
+
+- `<type>` : `feat` (nouvelle capacité d'une skill), `fix` (comportement qui ne correspond pas à sa spec), `docs` (README/wiki/gouvernance sans changement de comportement), `chore` (outillage : CI, scripts — inclut les fichiers de config comme `.gitignore`).
+- `<référence>` : l'identifiant de `BACKLOG.md` concerné (ex. `us-13`, `item-25`) — permet de retrouver le constat et les critères d'acceptation sans les rechercher.
+- `<slug-court>` : 2-4 mots, kebab-case.
+
+Exemples : `feat/us-15-formation-pipeline`, `fix/item-6-perimetre-audit`, `docs/gouvernance-contributing`.
+
+### Ouvrir une pull request
+
+1. **La PR référence l'item/story de `BACKLOG.md`** dans son titre ou sa description (ex. `US-13 — combler le chaînon cadrage → material-builder`) — jamais une PR sans rattachement à un item existant (cf. « Avant de contribuer » ci-dessus : pas d'idée abstraite non passée par le backlog, sauf correctif de pure forme).
+2. **La description de la PR remplit trois blancs** : quel `SKILL.md` (ou fichier de gouvernance) change et pourquoi ; comment le changement a été vérifié (quel cas concret rejoué, cf. DoD) ; ce qui reste à vérifier si tout ne peut pas l'être avant merge (ex. un appel API réel non testé faute de clé disponible).
+3. **La CI doit être verte** avant toute demande de revue — `lint-python` et `secret-detection` (`.github/workflows/ci.yml`) tournent automatiquement dès l'ouverture de la PR (déclenchement `on: pull_request`) et leur statut s'affiche directement en bas de la page de la PR, dans l'onglet **Checks** ; ne pas demander une relecture sur une CI encore rouge, ça fait perdre du temps au relecteur sur un problème que l'outillage aurait signalé seul.
+4. **Une seule approbation suffit** (équipe de 3 — voir `GOVERNANCE.md`), mais elle doit venir d'un contributeur qui n'a pas écrit le changement, conformément à la DoD ("pas de merge solo sur ce pipeline restreint"). **Appliquer ça techniquement** : cocher "Require pull request reviews before merging" (avec 1 review requise) dans la branch protection rule de `main` — sinon rien n'empêche l'auteur de merger sa propre PR sans review.
+   - **Si les deux autres contributeurs sont indisponibles** (mission client, congés — cf. `GOVERNANCE.md`, l'équipe travaille ce pipeline en parallèle de son activité principale) au-delà d'un délai raisonnable, ne pas rester bloqué indéfiniment : le Product Owner peut approuver lui-même à titre exceptionnel si le changement est mineur (même logique que l'exception de poussée directe ci-dessus), ou la PR attend le retour d'un des deux — documenter ce choix dans un commentaire de la PR plutôt que de le laisser implicite.
+5. **Le relecteur vérifie deux choses**, pas seulement la lisibilité du diff : la spec est-elle non ambiguë et vérifiable (cf. « Écrire ou modifier une spec » ci-dessous) ; et le comportement a-t-il été rejoué sur un cas concret comme l'exige la DoD — une PR "ça a l'air bien" sans cas de test rejoué n'est pas approuvable en l'état.
+6. **Merge par "squash and merge"** de préférence, pour garder un historique de `main` lisible par story — sauf si la branche contient plusieurs commits atomiques qu'il est utile de garder séparés (rare sur ce dépôt, à motiver si c'est le cas). Pour que ce ne soit pas qu'une convention orale, restreindre les méthodes de merge autorisées dans Settings → General → Pull Requests (décocher "Allow merge commits", garder "Allow squash merging").
+7. **Supprimer la branche après merge** — une branche qui traîne après fusion n'apporte rien et brouille la liste des branches actives pour les 2 autres contributeurs. Activer "Automatically delete head branches" (Settings → General) pour ne pas dépendre d'un geste manuel à chaque PR.
+
+### Cas particulier : changement qui touche plusieurs skills
+
+Si une story touche plusieurs `SKILL.md` à la fois (ex. l'ajout de `PIPELINE_CONTRACTS.md` avec ses renvois dans plusieurs skills), une seule branche/PR reste préférable à une PR par skill — le principe "une story = une ou plusieurs skills nommément identifiées" (voir plus bas) s'applique au contenu de la story, pas au découpage Git. Découper en plusieurs petites PR une story cohérente complique la revue (le relecteur doit reconstituer le puzzle) sans bénéfice réel pour une équipe de 3.
+
 ## Écrire ou modifier une spec (`SKILL.md`)
 
 1. **Une story = une ou plusieurs skills nommément identifiées.** N'écrivez jamais une modification qui touche "toutes les skills" sans lister explicitement lesquelles et pourquoi chacune est concernée.
@@ -50,15 +103,17 @@ Ce pipeline n'a pas de suite de tests automatisés : chaque critère d'acceptati
 1. **Rejouez chaque critère d'acceptation comme un cas de test exécutable**, sur un cas concret déjà connu de l'équipe pour pouvoir comparer avant/après. Consignez pour chacun : entrée utilisée, comportement attendu (tel qu'écrit dans le `SKILL.md` modifié), comportement observé.
 2. **Traitez tout écart entre le `SKILL.md` et le comportement observé comme bloquant**, jamais comme un détail — c'est la définition même d'une spec qui ne gouverne pas réellement le comportement. Ne clôturez pas la story tant que spec et comportement ne coïncident pas sur les critères d'acceptation testés.
 3. **Faites relire votre changement de spec par un des deux autres contributeurs avant de le considérer terminé** — la relecture porte sur la spec elle-même (est-elle non ambiguë ? vérifiable ?) autant que sur le comportement obtenu. Pas de merge solo sur ce pipeline restreint (cf. DoD dans `BACKLOG.md`).
-4. **Lancez un test de fumée du pipeline complet** (les 4 skills à la suite sur un cas déjà connu) pour vérifier qu'aucune spec non modifiée n'a vu son comportement dériver — une modification de `SKILL.md` peut changer le comportement d'une autre skill si elle consomme ses livrables.
+4. **Lancez un test de fumée du pipeline complet** (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite` à la suite sur un cas déjà connu — via `formation-pipeline` ou skill par skill) pour vérifier qu'aucune spec non modifiée n'a vu son comportement dériver — une modification de `SKILL.md` peut changer le comportement d'une autre skill si elle consomme ses livrables.
 5. **Capitalisez les cas de test rejoués.** Si un cas concret a servi à vérifier un comportement de façon répétée, signalez-le dans le `SKILL.md` ou le `README.md` comme cas de référence — cela permet au prochain contributeur de rejouer le même scénario plutôt que d'en inventer un nouveau à chaque fois.
 6. **Sécurité** : la CI (`.github/workflows/ci.yml`) exécute une détection de secrets sur chaque push — vérifiez qu'aucun contenu sensible (client, token, accès à un espace de stockage) n'est commité par erreur, notamment dans des fichiers d'exemple ou de cas de test.
 
 ## Commit et livraison
 
+Voir « Workflow Git : branches et pull requests » ci-dessus pour la mécanique (branche, PR, revue, merge). Ici, ce que le contenu du commit et de la PR doivent respecter :
+
 - Le message de commit référence l'identifiant de la story (ex. `US-3 — cadrage-formation propose une formation antérieure similaire`) et précise que c'est un changement de spec (`SKILL.md`) suivi de sa vérification comportementale.
 - Une fois la story vérifiée selon la DoD, mettez à jour `BACKLOG.md` : marquez la story comme faite avec sa date de complétion.
-- Si la modification change le comportement décrit dans le `README.md` racine (section "Les 4 skills et leur enchaînement" ou "Notes de version"), mettez-le à jour dans le même commit — c'est la référence que les utilisateurs consultent en premier, elle ne doit jamais retarder derrière la spec réelle.
+- Si la modification change le comportement décrit dans le `README.md` racine (section décrivant les skills et leur enchaînement, ou tout autre comportement documenté) ou dans `PIPELINE_CONTRACTS.md` (format d'un fichier échangé entre deux skills), mettez-le à jour dans le même commit/la même MR — ce sont les références que les utilisateurs et les autres contributeurs consultent en premier, elles ne doivent jamais retarder derrière la spec réelle.
 
 ## Remonter un nouveau besoin sans contribuer de spec
 

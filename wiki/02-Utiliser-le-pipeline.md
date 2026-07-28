@@ -53,4 +53,16 @@ Peut auditer n'importe quel livrable — pas seulement une formation.
 
 ---
 
+## Mode bout-en-bout (`formation-pipeline`)
+
+Une cinquième skill, `formation-pipeline`, enchaîne les 4 skills ci-dessus à la suite si tu ne veux pas les relancer une par une — c'est un mode additionnel, l'usage skill-par-skill décrit ci-dessus reste toujours possible.
+
+Avant de démarrer, elle demande explicitement deux paramètres (jamais devinés) : le **mode de validation** (elle s'arrête à chaque point déjà prévu par chaque skill, par défaut ; ou elle enchaîne sans interruption sauf blocage réellement impossible à lever seul) et le **mode d'illustration** (génération automatique via l'API Gemini, ou manuel comme aujourd'hui).
+
+**La composition finale dans Claude Design reste toujours manuelle**, quel que soit le mode choisi — Claude Design n'expose aucune API programmatique à ce jour. En mode automatique, tu arrives simplement dans Claude Design avec les images déjà générées et rangées par slide.
+
+Le format exact des fichiers échangés entre les skills est documenté dans `PIPELINE_CONTRACTS.md` à la racine du dépôt.
+
+---
+
 Pour l'installation, voir [Installation](01-Installation/00-Sommaire). Pour un souci ou une question fréquente, voir [FAQ et dépannage](03-FAQ-et-depannage).

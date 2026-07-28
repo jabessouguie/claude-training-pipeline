@@ -72,11 +72,34 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 **Contenu** :
 - #7 — Harmoniser les environnements Claude Code utilisés en interne *(préalable : retour d'un contributeur sur son usage terrain)*
-- #9 — Génération d'illustrations moins manuelle *(préalable : spike comparatif Claude natif / Gemini / autre outil de génération)*
 - #11 — Export/import direct des quiz vers Kahoot *(préalable : vérifier si Kahoot expose un format d'import)*
 - #13 — Mode par défaut Loop vs Annotations pour `comite-qualite` *(préalable : un cas d'usage réel en collaboratif)*
 
-**Condition de passage en roadmap engagée** : dès qu'un préalable est levé, l'item correspondant est reformulé en user story (DoR/DoD) et entre dans l'horizon 2 ou 3 selon sa dépendance réelle — pas automatiquement en fin de liste.
+*(#9 — génération d'illustrations moins manuelle — est sorti de cet horizon le 28/07/2026 : le préalable a été levé directement par une demande explicite de l'utilisateur, sans passer par un spike comparatif formel. Voir Horizon 5.)*
+
+**Condition de passage en roadmap engagée** : dès qu'un préalable est levé, l'item correspondant est reformulé en user story (DoR/DoD) et entre dans l'horizon 2, 3 ou 5 selon sa dépendance réelle — pas automatiquement en fin de liste.
+
+---
+
+## Horizon 5 — Automatisation bout-en-bout (spec-driven + orchestration) 🟡 Spec livrée (vérification en usage réel en attente)
+
+**Objectif** : un utilisateur disposant d'un accès Claude Code ou Cowork (et, s'il choisit le mode d'illustration automatique, d'une clé API Gemini distincte — voir note ci-dessous) peut produire une formation complète — du cadrage jusqu'à la composition finale des slides — sans relancer chaque skill à la main ni deviner l'étape suivante, tout en gardant intact l'usage skill-par-skill existant.
+
+**Note sur les accès nécessaires** (précision post-audit comité qualité, 28/07/2026) : "muni d'une clé API" est ambigu et mérite d'être détaillé pour éviter toute confusion coûteuse. Claude Code/Cowork s'utilisent généralement via un abonnement Claude (Pro/Max/Team/Enterprise), pas une clé API développeur au sens strict. Le mode d'illustration **automatique**, lui, nécessite une **clé API Gemini distincte** (`GEMINI_API_KEY`, compte Google AI Studio séparé, quota et facturation propres à Google) — ce n'est pas la même clé, ni le même fournisseur, que l'accès à Claude Code/Cowork. Un utilisateur qui veut uniquement le mode manuel (composition et illustrations à la main, comme aujourd'hui) n'a besoin d'aucune clé API Gemini.
+
+**Contenu** (backlog associé) :
+- US-13 — Combler le chaînon `cadrage-formation` → `formation-material-builder` (#25)
+- US-14 — Contrats d'interface explicites entre les skills (`PIPELINE_CONTRACTS.md`, #26)
+- US-15 — Skill orchestratrice `formation-pipeline` (#27)
+- US-16 — Génération automatique des illustrations via l'API Gemini (#28, réponse à #9, sorti de l'Horizon 4 le 28/07/2026)
+
+**Condition de sortie** : une formation complète produite via `formation-pipeline`, mode illustrations "auto", jusqu'à la composition manuelle dans Claude Design puis convergence via `comite-qualite`, validée sur un cas réel (smoke test du pipeline complet prescrit par `CONTRIBUTING.md`).
+
+**Pourquoi après les horizons 1-3** : cet horizon suppose un socle fiable (Horizon 1 : le dépôt lui-même comme source de vérité installable) et un parcours déjà guidé (Horizon 2 : proposition systématique de l'étape suivante, que l'orchestrateur relaie plutôt que redéfinit) — automatiser un enchaînement dont chaque maillon serait encore instable ou mal documenté aurait juste industrialisé la friction existante.
+
+**Ce que cet horizon n'a pas tenté de résoudre** : la composition finale dans Claude Design reste manuelle — recherche menée le 28/07/2026 confirmant que Claude Design n'expose aucune API programmatique (le pont `/design-sync` avec Claude Code est un aller-retour interactif piloté par un humain, pas un point d'intégration scriptable). Seule la génération d'image (API Gemini) a été automatisée. Si Claude Design expose un jour une intégration programmatique, réévaluer #27/#28 à cette aune plutôt que de forcer une automatisation qui n'existe pas encore côté outil.
+
+**Dépendance** : suppose Horizon 1 et Horizon 2 substantiellement en place (le pipeline doit être installable et déjà guidé pour qu'orchestrer ses étapes ait du sens).
 
 ---
 

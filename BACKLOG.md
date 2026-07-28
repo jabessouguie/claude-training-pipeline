@@ -4,6 +4,7 @@ Sources :
 - Sessions de démo internes du pipeline `cadrage-formation` → `formation-material-builder` → `slide-content-claude-design` → `comite-qualite`, retours d'usage recueillis auprès des contributeurs et utilisateurs du pipeline.
 - Interviews de spécification menées avec le porteur du pipeline pour cadrer les stories US-10 à US-12 (séparation contenu Claude Design / prompts Gemini, direction artistique des illustrations, cas fil rouge et ateliers structurés) et audits comité qualité associés.
 - Demande explicite du porteur du pipeline du 28/07/2026 (gouvernance du dépôt : licence, changelog, wiki ; documentation d'installation multi-surface).
+- Demande explicite du porteur du pipeline du 28/07/2026 (développement spec-driven : combler le chaînon manquant `formation-plan-builder`, contrats d'interface explicites, orchestration bout-en-bout, automatisation de la génération d'illustrations).
 
 Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption, `P1` = valeur claire à court terme, `P2` = amélioration UX/confort, `P3` = exploratoire/à cadrer. Chaque item porte une estimation d'effort (S/M/L) et ses dépendances.
 
@@ -122,12 +123,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Effort** : S.
 **Dépend de** : #7 dans une certaine mesure (si l'outillage cible change, ce guide change aussi).
 
-### 9. Explorer une génération d'illustrations moins manuelle
+### 9. Explorer une génération d'illustrations moins manuelle ✅ Levé le 28/07/2026
 **Constat** : point de friction répété — la génération d'images reste la partie la plus chronophage et manuelle du pipeline. Le porteur du pipeline exporte vers Gemini avec un prompt fixe ("illustration éditoriale moderne et épurée"), jugé plus joli que les images générées nativement par Claude. Un autre outil de génération d'images est évoqué comme alternative pour générer un lot d'images cohérentes en une fois.
 **Valeur** : gain de temps potentiel significatif sur le poste le plus manuel du pipeline actuel — mais reconnu comme nécessitant un vrai arbitrage qualité (le style "sketch/architecture" est valorisé).
-**Action** : cadrer un petit spike de comparaison (Claude natif / Gemini / autre outil) sur un même jeu de slides, avec le prompt déjà capitalisé ("illustration éditoriale moderne et épurée" / "sketch, esquisse type Excalidraw" pour les schémas), avant de décider d'un outil par défaut.
-**Effort** : M — nécessite un spike comparatif, pas juste une modif de skill.
-**Dépend de** : rien, mais impacte potentiellement `slide-content-claude-design`.
+**Action (résolution)** : demande explicite de l'utilisateur du 28/07/2026 tranchant le spike — automatiser uniquement l'appel à l'API Gemini (modèle `gemini-2.5-flash-image`, nom de code "Nano Banana" ; Imagen classique écarté, fin de vie 17/08/2026), en gardant le prompt déjà capitalisé ("illustration éditoriale moderne et épurée"). Recherche complémentaire menée : Claude Design n'expose aucune API programmatique (le pont `/design-sync` avec Claude Code, annoncé juin 2026, est un aller-retour interactif piloté par un humain) — la composition finale reste donc manuelle dans tous les cas, seule la génération d'image est automatisable aujourd'hui.
+**Implémentation** : voir #28 ci-dessous — mode « génération automatique des illustrations » ajouté à `slide-content-claude-design/SKILL.md`, script `scripts/generate_illustrations.py`.
+**Effort** : M — réalisé sans spike comparatif préalable formel (Gemini déjà capitalisé comme fournisseur de référence dans le mode manuel existant, choix tranché directement par l'utilisateur).
+**Dépend de** : rien. A débloqué #28.
 
 ### 10. Fiabiliser l'ouverture de fichiers Excel en environnement de développement
 **Constat** : friction mineure observée en usage réel — un utilisateur doit s'y reprendre pour ouvrir le `.xlsx` généré par `cadrage-formation` (extension dédiée aux fichiers Excel suggérée pour l'environnement de développement utilisé).
@@ -171,6 +173,34 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Action** : README restructuré en 3 sous-sections d'installation (Claude Code / application Claude / Cowork), avec la procédure de zip pour les deux dernières et le rappel explicite de non-synchronisation en tête de section.
 **Effort** : S — documentation uniquement, aucun changement de comportement des skills elles-mêmes.
 **Dépend de** : rien.
+
+### 25. Combler le chaînon manquant `cadrage-formation` → `formation-material-builder` ✅ Fait le 28/07/2026 (spec)
+**Constat** (demande utilisateur du 28/07/2026, développement spec-driven) : `formation-material-builder/SKILL.md` référençait partout une skill amont `formation-plan-builder` (censée produire `00-brief.md`, `01-research.md`, `04-plan.md`) qui n'existait nulle part dans le dépôt — confirmé par grep exhaustif (seuls `README.md` et `formation-material-builder/SKILL.md` la mentionnaient) et par lecture complète des 7 fichiers `references/` (aucun ne spécifiait le format de ces 3 fichiers). Violait directement le principe spec-driven de `CONTRIBUTING.md` ("la spec n'est jamais implicite").
+**Valeur** : élimine un input fantôme du pipeline documenté ; rend `formation-material-builder` réellement exécutable depuis la sortie effective de `cadrage-formation` (un `.xlsx`), sans étape manquante.
+**Action** : suppression de toute référence à `formation-plan-builder` ; réécriture de la Phase 0 de `formation-material-builder/SKILL.md` en deux sous-étapes — 0.1 ingestion du xlsx de cadrage rempli (avec blocage explicite si des questions INDISPENSABLE restent sans réponse), 0.2 construction et validation d'un plan de formation — produisant elle-même `00-brief.md` et `00-plan.md` comme livrables internes. Formats documentés dans `formation-material-builder/references/module_structure.md` et dans le Contrat 2 de `PIPELINE_CONTRACTS.md` (#26).
+**Effort** : M — réécriture d'une phase complète d'une skill existante, sans nouvelle skill.
+**Dépend de** : rien. Débloque #27 (l'orchestrateur ne peut enchaîner sur un chaînon documenté qui n'existe pas).
+
+### 26. Documenter les contrats d'interface entre les skills du pipeline (`PIPELINE_CONTRACTS.md`) ✅ Fait le 28/07/2026
+**Constat** (demande utilisateur du 28/07/2026) : le format exact de chaque fichier échangé entre deux skills du pipeline n'était documenté que de façon éparpillée dans chaque `SKILL.md`, sans vue d'ensemble ni garantie de non-divergence entre deux specs qui décrivent le même fichier.
+**Valeur** : une source de vérité unique par contrat (même logique déjà appliquée à la palette de couleurs Encre & Sauge, centralisée dans `slide-content-claude-design/SKILL.md`) ; prérequis documentaire clair avant d'orchestrer les skills entre elles (#27).
+**Action** : nouveau fichier racine `PIPELINE_CONTRACTS.md` — 5 contrats (cadrage→matériel, Phase 0 interne, matériel→slides, slides→illustrations, tout livrable→qualité), vue d'ensemble ASCII du flux, journal de version par contrat. Chaque `SKILL.md` concerné renvoie désormais vers ce fichier au lieu de dupliquer le format.
+**Effort** : S — consolidation de formats déjà en vigueur + le nouveau Contrat 2 issu de #25.
+**Dépend de** : #25 (le Contrat 2 documente le résultat de cette réécriture).
+
+### 27. Créer la skill orchestratrice `formation-pipeline` ✅ Fait le 28/07/2026 (spec)
+**Constat** (demande explicite de l'utilisateur du 28/07/2026 : "qu'avec une clé API et Claude Code ou Cowork, on puisse générer toute une formation sans avoir à faire des allers-retours manuels entre les outils") : le pipeline existant s'enchaîne uniquement si l'utilisateur relance manuellement chaque skill à la suite et déduit lui-même l'étape suivante — rien n'orchestre les 4 skills entre elles.
+**Valeur** : un utilisateur peut demander "génère toute la formation" et voir les 4 skills s'enchaîner, en respectant les points de validation déjà écrits dans chacune, sans devoir connaître ni relancer chaque étape à la main.
+**Action** : nouvelle skill `formation-pipeline/SKILL.md` (pas de `scripts/`/`references/` propres — elle orchestre, ne réimplémente rien) : détection d'état du workspace (étend la table déjà présente dans `formation-material-builder/SKILL.md`), deux paramètres établis en étape 0 (mode de validation step-by-step/non-stop, génération d'illustrations auto/manuel — jamais devinés), garde-fous explicites que l'orchestrateur ne peut jamais lever seul (réponses INDISPENSABLE manquantes, validations de plan/fil rouge/roadmap, 🔴 bloquant comité qualité). Rétrocompatibilité stricte : les 4 skills existantes restent invocables seules.
+**Effort** : L — nouvelle skill transverse aux 4 existantes.
+**Dépend de** : #25 (chaînon fonctionnel), #26 (contrats stabilisés à orchestrer).
+
+### 28. Mode génération automatique des illustrations via l'API Gemini ✅ Fait le 28/07/2026 (spec) — réponse à #9
+**Constat** : voir #9 ci-dessus (levé). Recherche complémentaire menée le 28/07/2026 : Claude Design n'expose aucune API programmatique (pont `/design-sync` avec Claude Code interactif, pas scriptable) — seule la génération d'image (API Gemini, modèle `gemini-2.5-flash-image`) est automatisable aujourd'hui, pas la composition finale.
+**Valeur** : élimine le copier-coller manuel des prompts vers Gemini, image par image — le consultant arrive dans Claude Design avec les images déjà générées, nommées et rangées par numéro de slide ; il ne fait plus que composer.
+**Action** : mode optionnel ajouté à `slide-content-claude-design/SKILL.md` (pas une nouvelle skill séparée — elle produit déjà `M<n>-prompts.md`, format non dupliqué) + script mécanique `slide-content-claude-design/scripts/generate_illustrations.py` (parsing du fichier prompts, appel API, écriture des fichiers ; clé lue depuis `GEMINI_API_KEY`, jamais en dur ; échec sur une slide ne bloque jamais les autres).
+**Effort** : L — nouveau script + section de spec, dépend d'un choix de fournisseur d'image déjà tranché par l'utilisateur (pas de spike comparatif préalable, décision directe).
+**Dépend de** : #9 (levé), consomme le Contrat 4 de #26 sans le modifier de format.
 
 ---
 
@@ -233,8 +263,9 @@ Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou d
 
 ## User stories
 
-Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2, US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22. Items sans story, avec leur raison :
-- **#7, #9, #11, #13** — dépendants d'un spike ou d'un retour d'usage préalable (Horizon 4) ; les storifier avant ce préalable serait prématuré.
+Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2, US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28. Items sans story, avec leur raison :
+- **#7, #11, #13** — dépendants d'un spike ou d'un retour d'usage préalable (Horizon 4) ; les storifier avant ce préalable serait prématuré.
+- **#9** — levé le 28/07/2026 (voir son Statut), directement absorbé par US-16 plutôt que storifié séparément.
 - **#14** — story à rédiger lorsque US-1/US-2 seront closes (son livrable, un support d'onboarding, dépend d'un pipeline effectivement installable).
 - **#15** — traité directement dans `GOVERNANCE.md` (clarification organisationnelle, pas un développement).
 - **#16** — spécifié et clôturé directement au niveau item (voir son Statut) ; exception au circuit item→story assumée pour un changement de spec très localisé.
@@ -366,6 +397,82 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] *(Extension 28/07/2026)* Chaque élément du corpus vit dans un fichier distinct, au **format réel du métier client** (pas un format uniformisé par défaut) — méthode de production markdown source → conversion binaire, documentée dans `fil_rouge_design.md` et répercutée dans `formation-material-builder/SKILL.md` (nouvelle sous-phase 3.1ter) et `exercise_design.md`.
 
 **Statut** : spec écrite dans `formation-material-builder/SKILL.md` + références mises à jour, y compris l'extension du 28/07/2026 sur le format réaliste du corpus. Reste à vérifier sur un cas réel (production complète d'une formation avec cas fil rouge, conversion HTML effective, et corpus en formats réalistes).
+
+---
+
+### US-13 — Combler le chaînon `cadrage-formation` → `formation-material-builder` ✅ Faite le 28/07/2026 (spec)
+*Rattaché à #25*
+
+**En tant que** consultant qui enchaîne le cadrage et la production de matériel,
+**je veux** que `formation-material-builder` consomme directement le xlsx de cadrage rempli, sans skill intermédiaire non implémentée,
+**afin de** ne jamais buter sur un input attendu qui n'existe nulle part dans le pipeline.
+
+**Critères d'acceptation :**
+- [x] Toute mention de `formation-plan-builder` est retirée de `formation-material-builder/SKILL.md` et de `README.md`.
+- [x] `formation-material-builder/SKILL.md` § « Inputs attendus » et Phase 0 décrivent l'ingestion directe de `cadrage_<client>.xlsx` rempli.
+- [x] La Phase 0 vérifie explicitement que les questions INDISPENSABLE ont Statut = "Répondu", et bloque (jamais silencieusement) si ce n'est pas le cas.
+- [x] La Phase 0 produit et fait valider explicitement `00-brief.md` et `00-plan.md` avant de poursuivre en Phase 1.
+- [x] Le mode standalone (sans workspace `cadrage-formation`) reste possible, en écrivant directement `00-brief.md`/`00-plan.md` depuis ce que fournit le consultant.
+- [x] `references/module_structure.md` référence le format de ces deux fichiers (sans le dupliquer — renvoi vers `SKILL.md` et `PIPELINE_CONTRACTS.md`).
+
+**Statut** : spec écrite dans `formation-material-builder/SKILL.md` et `references/module_structure.md`. Reste à vérifier sur un cas réel (rejouer cadrage → material-builder sur un cas connu, conformément au smoke test prescrit par `CONTRIBUTING.md`).
+
+---
+
+### US-14 — Contrats d'interface explicites entre les skills du pipeline ✅ Faite le 28/07/2026
+*Rattaché à #26*
+
+**En tant que** contributeur qui modifie une skill du pipeline,
+**je veux** trouver dans un seul fichier le format exact de chaque fichier échangé entre deux skills,
+**afin de** ne jamais faire diverger silencieusement deux specs qui décrivent le même contrat.
+
+**Critères d'acceptation :**
+- [x] `PIPELINE_CONTRACTS.md` existe à la racine du dépôt et documente les 5 contrats du pipeline (cadrage→matériel, Phase 0 interne, matériel→slides, slides→illustrations, tout livrable→qualité).
+- [x] Chaque contrat précise : fichier(s) concerné(s), structure/format, règles de validation le cas échéant, version.
+- [x] Une vue d'ensemble ASCII du flux complet (avec la bifurcation mode manuel / mode auto illustrations) est incluse.
+- [x] Chaque `SKILL.md` concerné (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`) renvoie vers `PIPELINE_CONTRACTS.md` par un lien court, sans dupliquer le format.
+- [x] Un journal de version par contrat est tenu (au moins la version initiale et sa date).
+
+**Statut** : spec écrite (`PIPELINE_CONTRACTS.md` créé, renvois ajoutés dans les 4 SKILL.md existants). Documentaire, sans changement de comportement — pas de vérification comportementale requise au-delà d'une relecture croisée.
+
+---
+
+### US-15 — Skill orchestratrice `formation-pipeline` pour le pipeline complet ✅ Faite le 28/07/2026 (spec)
+*Rattaché à #27*
+
+**En tant qu'** utilisateur disposant d'un accès Claude Code ou Cowork (et, en mode d'illustration automatique, d'une clé API Gemini distincte — voir précision post-audit ci-dessous),
+**je veux** pouvoir demander de générer toute une formation et voir les 4 skills s'enchaîner automatiquement,
+**afin de** ne plus avoir à relancer chaque skill à la main ni à deviner l'étape suivante.
+
+**Précision post-audit comité qualité (28/07/2026)** : la formulation initiale ("utilisateur muni d'une clé API") laissait croire qu'une seule clé suffisait à tout le mode bout-en-bout. Ce n'est pas le cas : Claude Code/Cowork s'utilisent via un abonnement Claude, sans clé API développeur à proprement parler pour un usage courant ; le mode illustrations "auto" nécessite en plus une clé API Gemini distincte (`GEMINI_API_KEY`, compte Google séparé, quota/facturation propres) — voir `ROADMAP.md` Horizon 5 pour le détail. Le mode manuel ne nécessite aucune clé Gemini.
+
+**Critères d'acceptation :**
+- [x] `formation-pipeline/SKILL.md` existe et décrit une skill qui détecte l'état du workspace et suit, à tour de rôle, les instructions des 4 `SKILL.md` existants — sans dupliquer leur logique.
+- [x] Trois paramètres sont établis explicitement en étape 0, jamais devinés : mode de validation (step-by-step par défaut | non-stop), génération des illustrations (auto | manuel), et point de départ (cadrage | reprise | standalone).
+- [x] En mode non-stop, l'orchestrateur ne peut jamais lever les garde-fous posés par les sous-skills (réponses INDISPENSABLE manquantes, validations de plan/fil rouge/roadmap, 🔴 bloquant comité qualité) — ces blocages restent respectés tels quels.
+- [x] Les 4 skills existantes restent invocables indépendamment ; aucune n'est modifiée pour référencer `formation-pipeline` comme passage obligé.
+- [x] La table de détection d'état couvre l'ensemble du pipeline, y compris le point d'arrêt obligatoire avant la composition Claude Design (non automatisable).
+
+**Statut** : spec écrite dans `formation-pipeline/SKILL.md`. Dépend de US-13 (chaînon fonctionnel) et US-14 (contrats stabilisés). Reste à vérifier par un smoke test réel du pipeline complet via l'orchestrateur.
+
+---
+
+### US-16 — Génération automatique des illustrations via l'API Gemini ✅ Faite le 28/07/2026 (spec) — réponse à #9
+*Rattaché à #28*
+
+**En tant que** consultant qui prépare les illustrations d'un module,
+**je veux** pouvoir générer automatiquement les images via l'API Gemini plutôt que de coller chaque prompt à la main,
+**afin de** gagner du temps sur l'étape la plus manuelle du pipeline, sans perdre la main sur la composition finale dans Claude Design.
+
+**Critères d'acceptation :**
+- [x] `slide-content-claude-design/SKILL.md` documente un mode optionnel « génération automatique des illustrations », déclenché explicitement (jamais deviné).
+- [x] Ce mode consomme exactement le même `M<n>-prompts.md` que le mode manuel (Contrat 4), sans variante de format.
+- [x] Le script `slide-content-claude-design/scripts/generate_illustrations.py` lit le fichier prompts, appelle l'API Gemini (modèle `gemini-2.5-flash-image`, jamais l'ancien nom Imagen déprécié), et écrit les images dans `livrables/assets/M<n>/slide-N.png`.
+- [x] La clé API est lue depuis une variable d'environnement (`GEMINI_API_KEY`), jamais en dur ni committée.
+- [x] Un échec de génération sur une slide n'interrompt jamais la génération des autres slides du module.
+- [x] La spec précise explicitement que la composition dans Claude Design reste manuelle dans ce mode — ce n'est pas un mode "tout automatique".
+
+**Statut** : spec écrite, script créé et vérifié syntaxiquement (`py_compile`) ainsi que sur le parsing (bloc Direction artistique + prompts par slide + exclusion des slides en fallback vectoriel, testé sur un exemple fidèle au format). Reste à vérifier avec un vrai appel API (clé Gemini valide) sur un cas réel.
 
 ---
 

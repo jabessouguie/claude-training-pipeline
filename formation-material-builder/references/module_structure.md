@@ -1,5 +1,11 @@
 # Structure d'un module
 
+## Format du brief et du plan dérivés
+
+`00-brief.md` et `00-plan.md` sont produits par la skill elle-même en Phase 0 (sous-étapes 0.1 et 0.2), à partir du xlsx de cadrage rempli par `cadrage-formation` — ce ne sont jamais des inputs attendus d'une skill tierce. Le format exact de ces deux fichiers (structure des sections, exemple rempli) est spécifié dans `formation-material-builder/SKILL.md` § « Phase 0 — Discovery », qui fait foi ; voir aussi le Contrat 2 de `PIPELINE_CONTRACTS.md` pour la vue d'ensemble des contrats inter-skills. Ne pas dupliquer ce format ici — s'y référer.
+
+## Structure d'un module
+
 Un module = un dossier dans `modules/`. Convention de nommage : `M<numéro>-<slug-kebab-case>`.
 
 Exemples : `M1-introduction-ia-generative`, `M3-fine-tuning-llm`, `M5-evaluation-modeles`.

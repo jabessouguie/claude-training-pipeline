@@ -21,6 +21,8 @@ Produit, pour chaque module, **deux fichiers colocalisés** : `M<n>-slides-conte
 | Métaphore filée / fil rouge | recommandé | renforce l'arc narratif — voir « Où trouver la métaphore filée » ci-dessous |
 | Plage de numérotation des slides | optionnel | utile pour aligner avec un script ou un découpage multi-blocs |
 
+Contrat 3 (entrée, format `slides.md`/`00-fil-rouge.md`) et Contrat 4 (sortie, format des deux fichiers produits ci-dessous) — voir [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md).
+
 ### Où trouver la métaphore filée
 
 Avant de rédiger le bloc « Direction artistique » d'un module (étape 4 ci-dessous), établir la métaphore filée **globale** de la formation, dans cet ordre de priorité :
@@ -180,6 +182,45 @@ Si aucun design system n'est fourni, utiliser « Encre & Sauge ». Les tokens es
 - **Coller AUSSI le bloc « Direction artistique » avant chaque prompt de slide** (ou le fusionner dedans) : Gemini ne reçoit que le texte collé, jamais le reste du fichier — la ligne « voir bloc Direction artistique en tête de ce fichier » ne se résout pas toute seule une fois isolée du document.
 - **Générer les illustrations par lots, pas slide par slide** : ouvrir UNE session Gemini pour le module, y coller le bloc « Direction artistique » **une seule fois** en tête, puis enchaîner les prompts `## Slide N` à la suite pour produire toutes les images du module d'affilée. On collecte le lot d'illustrations en une passe, au lieu de rouvrir Gemini à chaque slide.
 
+## Mode génération automatique des illustrations (optionnel)
+
+Mode alternatif au copier-coller manuel vers Gemini décrit ci-dessus — pas un livrable différent : les deux modes consomment **exactement** le même `M<n>-prompts.md` (Contrat 4 de `PIPELINE_CONTRACTS.md`), sans variante de format. Ce mode répond au spike exploratoire du `BACKLOG.md` item #9 (voir aussi `CHANGELOG.md`).
+
+**Ce qui change** : au lieu que le consultant colle chaque prompt dans Gemini à la main, le script `scripts/generate_illustrations.py` lit `M<n>-prompts.md`, appelle l'API Gemini pour chaque slide illustrée, et range les images déjà nommées par numéro de slide.
+
+**Ce qui ne change pas** : **Claude Design reste manuel dans les deux modes.** À la date de rédaction (28/07/2026), Claude Design n'expose aucune API programmatique — le pont `/design-sync` avec Claude Code est un aller-retour interactif piloté par un humain, pas un point d'intégration scriptable (vérifié explicitement, pas une supposition). Ce mode ne fait donc que préparer les images à l'avance ; composer la slide (coller la fiche, glisser l'image déjà prête dans le placeholder gris) reste une action humaine dans Claude Design, comme aujourd'hui.
+
+### Déclenchement
+
+Sur demande explicite de l'utilisateur ("génère les illustrations automatiquement", "utilise l'API Gemini pour les images"), ou transmis par `formation-pipeline` si le paramètre "génération des illustrations = auto" a été établi à son étape 0. Ne jamais basculer sur ce mode sans que l'utilisateur l'ait choisi (une clé API absente ou invalide bascule silencieusement le résultat en échec, voir plus bas — mais ne doit jamais être devinée comme "l'utilisateur veut sûrement ça").
+
+### Méthode
+
+1. `M<n>-prompts.md` doit déjà exister (ce mode s'exécute après l'étape 4 de la Méthode ci-dessus, jamais à la place).
+2. Exécuter, par module :
+   ```bash
+   python scripts/generate_illustrations.py livrables/M<n>-prompts.md livrables/assets/M<n>/
+   ```
+3. Le script traite chaque section `## Slide N — Illustration` (jamais les slides marquées `## Slide N — pas d'illustration : composant vectoriel`, voir § Fallback ci-dessus) : il concatène le bloc « Direction artistique » en tête de fichier avec le prompt de la slide, appelle l'API Gemini, et écrit l'image.
+4. Présenter à l'utilisateur le récapitulatif produit par le script (nombre d'images générées, nombre d'échecs éventuels) avant de proposer la suite.
+
+### Modèle et clé API
+
+- **Modèle** : `gemini-2.5-flash-image` (nom de code "Nano Banana"). Ne jamais cibler l'ancien nom Imagen — déprécié, fin de vie annoncée le 17/08/2026. **Nom vérifié au 28/07/2026** — les identifiants de modèles Gemini évoluent plus vite que le reste de ce dépôt : si un appel échoue avec une erreur de modèle inconnu/déprécié, consulter la liste des modèles Gemini d'image disponibles côté Google avant de committer un nouveau nom en dur dans le script (ne pas basculer vers une résolution dynamique du "modèle le plus récent" — un nom figé avec échec explicite reste plus prévisible qu'un changement silencieux de style visuel).
+- **Clé API** : lue depuis la variable d'environnement `GEMINI_API_KEY`. Jamais en dur dans un fichier du dépôt, jamais collée dans le chat pour être écrite quelque part — cohérent avec la détection de secrets déjà active en CI sur ce dépôt (voir `CONTRIBUTING.md`). Cette clé est distincte de l'accès à Claude Code/Cowork — voir `README.md` § « Mode bout-en-bout » pour la clarification.
+- **Coût et quota** : l'API Gemini est un service facturé à l'usage (au-delà d'un quota gratuit limité, variable selon le compte), distinct des quotas Claude Code — générer les illustrations de plusieurs modules d'une formation complète peut représenter un volume d'appels non négligeable. Vérifier son quota/sa facturation Google AI Studio avant de lancer ce mode sur une formation volumineuse, plutôt que de découvrir un dépassement en cours de génération.
+- Si la clé est absente ou invalide, le script échoue explicitement avec un message clair (`GEMINI_API_KEY absente ou invalide`) — ne jamais retomber silencieusement sur un mode dégradé sans le signaler.
+- **Vérifier chaque image avant de la déposer dans Claude Design** : malgré la consigne "aucun texte dans l'image" du prompt, les modèles de génération d'image multimodaux peuvent occasionnellement halluciner du texte dans l'image elle-même — ce mode automatique ne le détecte pas. Un contrôle visuel rapide des images générées reste nécessaire avant composition, au même titre que l'audit UX/UI déjà recommandé avant la génération visuelle.
+
+### Sortie
+
+- `livrables/assets/M<n>/slide-N.png` — une image par slide illustrée, nommée strictement par numéro de slide pour un report immédiat et sans ambiguïté dans le placeholder correspondant lors de la composition Claude Design.
+- Un court résumé texte des slides pour lesquelles la génération a échoué (quota dépassé, contenu refusé par l'API) — ces slides gardent leur placeholder vide et se génèrent alors à la main comme en mode manuel ; **un échec sur une slide ne bloque jamais les autres**.
+
+### Ce que ce mode ne fait pas
+
+Il ne compose aucune slide, ne produit aucun `.pptx`/`.html` final, et ne remplace pas `M<n>-slides-content.md` : la composition visuelle finale dans Claude Design reste entièrement manuelle. Voir aussi `formation-pipeline/SKILL.md` pour la place de ce mode dans le pipeline complet.
+
 ## Ordre de travail recommandé — par lots (par défaut)
 
 Le rendu final combine trois manipulations manuelles (fiche → Claude Design, prompt → Gemini, image → placeholder). Les enchaîner **slide par slide** multiplie les changements de contexte entre les deux outils autant de fois qu'il y a de slides. Les deux fichiers sont déjà structurés pour un traitement par lots (bloc « Direction artistique » unique, dimensions de placeholder reprises à l'identique côté fiche et côté prompt) — donc **travailler par phases, pas par slide** :
@@ -187,7 +228,7 @@ Le rendu final combine trois manipulations manuelles (fiche → Claude Design, p
 - **Phase A — toutes les illustrations d'abord (Gemini).** Générer en une session Gemini l'ensemble des images du module (voir « Conseils d'usage avec Gemini » ci-dessus), et les nommer par numéro de slide pour les retrouver.
 - **Phase B — une seule passe dans Claude Design.** Coller les fiches `M<n>-slides-content.md` et déposer, dans chaque placeholder gris, l'image déjà prête de la Phase A.
 
-Ce mode réduit les allers-retours sans changer d'outil ni attendre l'automatisation de la génération d'illustrations (piste de fond au backlog, item #9). Le collage **slide par slide** reste un repli légitime quand on veut valider visuellement chaque slide avant de passer à la suivante.
+Ce mode réduit les allers-retours sans changer d'outil. Le collage **slide par slide** reste un repli légitime quand on veut valider visuellement chaque slide avant de passer à la suivante. Pour éliminer entièrement la Phase A manuelle, voir « Mode génération automatique des illustrations » ci-dessous (réponse au backlog #9) — la Phase B (composition Claude Design) reste manuelle dans tous les cas.
 
 ## Extensions optionnelles
 - **Script formateur** : produire en parallèle un script slide par slide (verbatim « À dire / À faire / Transition »), idéalement avec une **métaphore filée**.
@@ -202,11 +243,11 @@ Une fois les deux fichiers (`M<n>-slides-content.md` et `M<n>-prompts.md`) livr�
 > 
 > **Avant de générer visuellement dans Claude Design**, je recommande de passer `M<n>-slides-content.md` par un **audit UX/UI rapide** (respect de la hiérarchie visuelle, densité de contenu par slide, dimensions/positions des placeholders, cohérence entre slides) pour s'assurer que le contenu textuel est bien structuré.
 > 
-> **Ensuite, travaille par lots (recommandé — évite les allers-retours entre outils) :**
-> 1. **Phase A — Gemini d'abord** : dans une seule session Gemini, colle le bloc « Direction artistique » une fois, puis enchaîne les prompts `## Slide N` de `M<n>-prompts.md` pour générer toutes les illustrations du module d'affilée. Nomme chaque image par son numéro de slide.
-> 2. **Phase B — Claude Design ensuite** : en une passe, colle les fiches de `M<n>-slides-content.md` (avec la palette par défaut) et dépose chaque illustration de la Phase A dans son placeholder gris.
+> **Pour les illustrations, deux options :**
+> - **Génération automatique** (`python scripts/generate_illustrations.py livrables/M<n>-prompts.md livrables/assets/M<n>/`) : les images sont générées et rangées par numéro de slide sans que tu aies à repasser par Gemini toi-même.
+> - **Manuel, par lots (recommandé si tu préfères garder la main)** : dans une seule session Gemini, colle le bloc « Direction artistique » une fois, puis enchaîne les prompts `## Slide N` de `M<n>-prompts.md`. Nomme chaque image par son numéro de slide. (Slide par slide reste possible aussi, mais plus lent.)
 > 
-> (Pour un contrôle fin, tu peux aussi faire slide par slide — fiche → Gemini → image — mais c'est plus lent.)
+> **Dans les deux cas, la composition dans Claude Design reste manuelle** : en une passe, colle les fiches de `M<n>-slides-content.md` (avec la palette par défaut) et dépose chaque illustration déjà prête dans son placeholder gris.
 > 
 > Une fois le rendu visuel complet dans Claude Design (le deck final ; le `M<n>-slides.pptx` de `formation-material-builder` n'était qu'un brouillon et n'est plus maintenu), je recommande de passer l'ensemble par `comite-qualite` pour vérifier la cohérence visuelle et le respect de la charte.
 > 

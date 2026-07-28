@@ -115,6 +115,8 @@ Puis générer le fichier Excel :
 3. Présenter le fichier à l'utilisateur avec `present_files`, accompagné
    d'une courte synthèse des points de vigilance majeurs (3-5 lignes max).
 
+Ce fichier respecte le Contrat 1 de [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md) — c'est l'input que `formation-material-builder` attend en Phase 0.
+
 #### Format du JSON d'entrée
 
 ```json

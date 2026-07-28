@@ -7,6 +7,8 @@ description: Lance un audit multi-relecteurs sur n'importe quel type de livrable
 
 Compose une équipe de relecteurs sur mesure à partir du livrable et du contexte, puis audite sans complaisance jusqu'à convergence sincère.
 
+Contrat 5 de [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md) : aucun format d'entrée n'est imposé — cette skill s'adapte au livrable qu'on lui soumet (voir Phase 0.1 ci-dessous).
+
 ---
 
 ## Phase 0 — Analyse du livrable et constitution de l'équipe
