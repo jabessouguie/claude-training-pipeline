@@ -2,6 +2,15 @@
 
 Historique des évolutions du pipeline de skills, du plus récent au plus ancien. Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/) ; les dates correspondent aux jalons de livraison de spec dans ce dépôt, pas nécessairement à une vérification en usage réel (voir `BACKLOG.md` pour le statut de vérification de chaque item).
 
+## 29/07/2026
+
+**Ajouté**
+- README.md § « Modèle et niveau d'effort recommandés » (demande explicite de l'utilisateur) : recommandation Sonnet 5 / effort `high` (montée à `xhigh` sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours ; escalade conditionnelle vers Opus sur les décisions les plus coûteuses à défaire) pour l'ensemble des 5 skills du pipeline, avec justification explicite de pourquoi Haiku/Opus/Fable et pourquoi pas `low`/`medium`/`max`/Ultracode par défaut, une distinction mécanique/jugement à l'intérieur de chaque skill, et une section sur les limites de cette analyse (pas de benchmark A/B réel) — basée sur le profil de difficulté réel des skills (texte long contraint par une spec, contrats de fichier stricts, garde-fous imbriqués, jugement pédagogique) plutôt que sur une préférence générique.
+
+**Corrigé**
+- Audit comité qualité du dossier complet (7 relecteurs, 2 itérations, périmètre markdown/spec + script Python) : contradiction interne corrigée dans `formation-pipeline/SKILL.md` (le mode non-stop autorisait à tort une relance implicite de l'utilisateur à valoir validation du plan/brief, alors que ce même garde-fou était par ailleurs qualifié de "jamais contournable" par l'orchestrateur) ; ajout du mode standalone à sa table de détection ; `formation-material-builder/SKILL.md` enrichi d'une logique de progression inter-modules et d'une structuration de l'Audience dans `00-brief.md`/`00-plan.md` ; clarification de la double clé API (Claude vs Gemini) dans `ROADMAP.md`/`BACKLOG.md` ; `CONTRIBUTING.md` corrigé pour utiliser la terminologie GitHub réelle (pull request, pas merge request) et documenter les étapes mécaniques Git manquantes ; `GOVERNANCE.md` mis à jour pour couvrir `formation-pipeline` dans son périmètre ; gestion d'erreur affinée dans `generate_illustrations.py` (erreurs API distinguées des erreurs d'écriture disque).
+- Audit comité qualité ciblé de la section README.md § « Modèle et niveau d'effort recommandés » (4 relecteurs, 1 itération de correction) : ajout d'une phrase d'ouverture actionnable indiquant concrètement où régler le modèle/l'effort (au lieu d'une recommandation abstraite non reliée à un geste concret), correction d'une contradiction interne sur le positionnement d'Opus vs Fable (« plafond de raisonnement le plus élevé » attribué à tort à Opus alors que Fable est décrit juste après comme le modèle le plus capable), harmonisation des renvois vers `CHANGELOG.md` (liens markdown plutôt que texte brut), et clarification de la distinction entre la recommandation modèle/effort de `comite-qualite` et le point de vigilance encore ouvert dans `BACKLOG.md` #13 sur son critère de convergence.
+
 ## 28/07/2026
 
 **Ajouté**
