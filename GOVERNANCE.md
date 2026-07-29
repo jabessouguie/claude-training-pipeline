@@ -6,7 +6,7 @@ Ce document définit qui décide quoi sur ce dépôt, et comment, pour une équi
 
 ### Product Owner (rôle, pas nécessairement titre)
 Porte la priorisation du [BACKLOG.md](BACKLOG.md) et la cohérence de la [ROADMAP.md](ROADMAP.md). Tranche en cas de désaccord sur ce qui doit être fait en premier.
-- **Actuellement** : la personne à l'origine des 4 skills, qui anime le pipeline.
+- **Actuellement** : la personne à l'origine des 4 skills historiques (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`), qui anime le pipeline — ce périmètre inclut aussi `formation-pipeline`, la skill orchestratrice additionnelle qui les enchaîne.
 - Ce rôle est explicitement révisable — voir "Évolution de la gouvernance" ci-dessous.
 
 ### Contributeurs

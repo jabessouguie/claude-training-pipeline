@@ -1,29 +1,24 @@
 ---
 name: formation-material-builder
-description: Produit l'ensemble du matériel pédagogique d'une formation — slides .pptx, livret stagiaire .docx, guide formateur .docx, énoncés et solutions d'exercices, quiz d'évaluation, prérequis & setup — à partir d'un brief, d'un rapport de recherche, d'un plan de formation et (optionnellement) des réponses du client. Déclenche cette skill dès qu'un utilisateur mentionne la création du matériel de formation, des supports de formation, des slides de formation, des exercices d'une formation, un livret stagiaire, un guide formateur, le matériel pédagogique, le contenu d'une formation, un quiz d'évaluation, ou tout livrable post-plan-de-formation. Elle chaîne naturellement après formation-plan-builder, mais peut fonctionner en standalone si on lui fournit les inputs directement. Workflow itératif module par module pour rester gérable sur des formations multi-jours et donner au consultant des points de validation réguliers.
+description: Produit l'ensemble du matériel pédagogique d'une formation — slides .pptx, livret stagiaire .docx, guide formateur .docx, énoncés et solutions d'exercices, quiz d'évaluation, prérequis & setup — à partir de la grille de cadrage remplie par le client et (optionnellement) des réponses/notes additionnelles. Déclenche cette skill dès qu'un utilisateur mentionne la création du matériel de formation, des supports de formation, des slides de formation, des exercices d'une formation, un livret stagiaire, un guide formateur, le matériel pédagogique, le contenu d'une formation, un quiz d'évaluation, ou tout livrable post-cadrage. Elle chaîne naturellement après `cadrage-formation`, mais peut fonctionner en standalone si on lui fournit directement un contexte et un plan de formation. Workflow itératif module par module pour rester gérable sur des formations multi-jours et donner au consultant des points de validation réguliers.
 ---
 
 # Formation Material Builder
 
-Construit l'ensemble du matériel pédagogique d'une formation à partir des inputs validés : brief, recherche, plan, et optionnellement réponses client.
+Construit l'ensemble du matériel pédagogique d'une formation à partir du cadrage client validé : la grille de cadrage remplie (`.xlsx`), à partir de laquelle cette skill dérive elle-même, en Phase 0, un brief et un plan de formation.
 
 ## Inputs attendus
 
 | Fichier | Statut | Origine |
 |---|---|---|
-| `00-brief.md` | Obligatoire | Phase 0 de `formation-plan-builder` |
-| `01-research.md` | Obligatoire | Phase 1 de `formation-plan-builder` |
-| `04-plan.md` ou `05-plan.docx` | Obligatoire | Phase 3-4 de `formation-plan-builder` |
-| `03-answers.md` | Optionnel mais fortement recommandé | Réponses du client |
+| `cadrage_<client>.xlsx` rempli (colonne "Réponse client" renseignée) | Obligatoire | `cadrage-formation` — voir Contrat 1 de [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md) |
+| Notes additionnelles de cadrage (texte libre, e-mails, compte rendu complémentaire) | Optionnel mais recommandé | collées/uploadées par le consultant |
 
-Si ces fichiers sont déjà dans `/home/claude/projets/<slug-client>/` (workflow `formation-plan-builder`), utiliser le workspace directement.
+Il n'y a pas de skill intermédiaire entre `cadrage-formation` et celle-ci : c'est cette skill, en Phase 0, qui lit le xlsx rempli et en dérive elle-même `00-brief.md` et `00-plan.md` (voir Phase 0 ci-dessous). Ces deux fichiers ne sont donc jamais un input attendu de l'extérieur — ce sont des livrables internes que la Phase 0 produit et fait valider.
 
-Si un dossier `formations/<client>-<theme>/<AAAA-MM>/` existe (créé par `cadrage-formation`, voir sa convention de rangement), l'utiliser comme workspace en priorité — y chercher le brief, les réponses client et le plan avant de considérer qu'aucun input n'est disponible.
+Si un dossier `formations/<client>-<theme>/<AAAA-MM>/` existe (créé par `cadrage-formation`, voir sa convention de rangement), l'utiliser comme workspace en priorité — y chercher le xlsx rempli avant de considérer qu'aucun input n'est disponible.
 
-Si pas de workspace existant, demander au consultant de :
-- soit uploader les fichiers,
-- soit coller le contenu dans le chat,
-puis créer le workspace avec les bons noms de fichiers, en réutilisant le slug `<client>-<theme>` de `cadrage-formation` (même convention de nommage) si le client et le thème sont identifiables.
+**Mode standalone** (pas de workspace `cadrage-formation` existant) : demander au consultant de fournir directement (a) le contexte client et (b) un plan de formation déjà arrêté par ailleurs (ex. négocié en avant-vente hors pipeline). Dans ce cas, `00-brief.md` et `00-plan.md` sont écrits directement à partir de ce que fournit le consultant, sans ingestion de xlsx (voir Phase 0). Créer alors le workspace avec les bons noms de fichiers, en réutilisant le slug `<client>-<theme>` de `cadrage-formation` (même convention de nommage) si le client et le thème sont identifiables.
 
 ## Livrables produits
 
@@ -55,11 +50,13 @@ puis créer le workspace avec les bons noms de fichiers, en réutilisant le slug
 
 ## Structure du workspace
 
-Structure interne, quel que soit le workspace racine retenu en Phase 0 (`formations/<client>-<theme>/<AAAA-MM>/` ou `/home/claude/projets/<slug-client>/`) :
+Structure interne, quel que soit le workspace racine retenu en Phase 0 (`formations/<client>-<theme>/<AAAA-MM>/` ou `/home/claude/projets/<slug-client>/` en mode standalone) :
 
 ```
 <workspace-racine>/
-├── 00-brief.md, 01-research.md, ..., 05-plan.docx   # inputs (formation-plan-builder)
+├── cadrage_<client>.xlsx                             # input (cadrage-formation), absent en mode standalone
+├── 00-brief.md                                        # dérivé en Phase 0 (Contrat 2, voir PIPELINE_CONTRACTS.md)
+├── 00-plan.md                                         # dérivé en Phase 0 (Contrat 2, voir PIPELINE_CONTRACTS.md)
 ├── 06-material-roadmap.md                            # roadmap de production validée
 ├── modules/
 │   ├── M1-<slug>/
@@ -94,36 +91,90 @@ Structure interne, quel que soit le workspace racine retenu en Phase 0 (`formati
 
 ## Workflow par phases
 
-### Phase 0 — Discovery
+### Phase 0 — Discovery : ingestion du cadrage, brief et plan
 
 1. **Localiser le workspace** :
    ```bash
    ls formations/ 2>/dev/null
    ls /home/claude/projets/ 2>/dev/null
    ```
-   Chercher en priorité dans `formations/<client>-<theme>/<AAAA-MM>/` (convention de `cadrage-formation`), puis dans `/home/claude/projets/<slug-client>/` (workflow `formation-plan-builder`). Si plusieurs workspaces, demander lequel utiliser. Si aucun, basculer en mode standalone (cf. plus bas).
+   Chercher en priorité un dossier `formations/<client>-<theme>/<AAAA-MM>/` (convention de `cadrage-formation`) contenant un `cadrage_<client>.xlsx`. Si plusieurs workspaces, demander lequel utiliser. Si aucun xlsx trouvé, basculer en mode standalone (cf. plus bas).
 
-2. **Lire tous les inputs disponibles** :
-   - `00-brief.md`
-   - `01-research.md`
-   - `04-plan.md` (sinon extraire texte de `05-plan.docx` via `extract-text` du skill docx)
-   - `03-answers.md` si présent
+#### 0.1 — Ingestion du xlsx de cadrage (Contrat 1, voir `PIPELINE_CONTRACTS.md`)
 
-3. **Extraire la liste des modules** depuis le plan. Un module = unité pédagogique avec :
-   - Un titre
-   - Une durée (en heures ou demi-journée)
-   - Des objectifs pédagogiques
-   - Du contenu théorique + au moins un atelier
+1. Lire `cadrage_<client>.xlsx` : onglet **Questions de cadrage** (colonnes Thème/Question/Priorité/Réponse client/Statut), onglet **Participants** si présent, onglet **Contexte** si présent.
+2. **Vérifier la complétude** : toutes les questions de priorité `INDISPENSABLE` doivent avoir Statut = "Répondu". Si ce n'est pas le cas, **ne jamais avancer silencieusement** : lister les questions INDISPENSABLE non répondues et demander explicitement au consultant de les compléter, ou de confirmer qu'on avance malgré tout (dans ce cas, le signaler dans `00-brief.md` comme un point de vigilance ouvert). **Une réponse non actionnable** (ex. "peu importe", "comme vous voulez" à une question sur les objectifs métier) a le même effet délétère qu'une absence de réponse pour calibrer la formation — la traiter de la même façon : signaler ce point de vigilance au consultant plutôt que de l'accepter silencieusement comme une réponse exploitable.
+3. Lire les notes additionnelles de cadrage si le consultant en fournit (texte libre, e-mails, compte rendu complémentaire).
+4. Produire `00-brief.md` (format ci-dessous, Contrat 2) — une synthèse structurée dérivée du xlsx et des notes additionnelles. Ce fichier est un livrable **interne** à cette skill : il n'est jamais attendu comme input externe.
 
-4. **Présenter au consultant un résumé court** (~15 lignes max) :
+#### 0.2 — Construction du plan de formation (Contrat 2)
+
+1. À partir de `00-brief.md`, proposer une **structure de modules** : titre, durée, niveau (100/200/300), objectifs pédagogiques, pour chacun — **en calibrant chaque niveau selon `references/pedagogical_principles.md` § 3 « La pyramide de Bloom »** (100 → Se souvenir/Comprendre/Appliquer, 200 → Analyser/Évaluer, 300 → Créer ; ne pas assigner un objectif de niveau supérieur à un module marqué d'un niveau inférieur) et en explicitant les **prérequis entre modules** (quel module suppose acquis le contenu d'un module précédent) — lire cette référence avant de proposer le plan, pas seulement en Phase 2.
+2. **Présenter au consultant un résumé court** (~15 lignes max) avant de continuer :
    - Client + sujet
    - Niveau de la formation (100/200/300)
    - Durée totale + format (présentiel/distanciel/hybride)
-   - **Liste numérotée des modules détectés** avec durée de chacun
-   - Inputs disponibles vs manquants
-   - Demander confirmation avant Phase 1
+   - **Liste numérotée des modules proposés** avec durée de chacun
+   - Points de vigilance issus du cadrage (dont, le cas échéant, les questions INDISPENSABLE restées sans réponse)
+3. **Attendre la validation explicite du consultant avant de continuer** — c'est le même principe que la validation du fil rouge/roadmap en Phase 1 : un plan mal calibré coûte cher à corriger une fois le contenu produit.
+4. Une fois validé, écrire `00-plan.md` (format ci-dessous, Contrat 2).
 
-**Mode standalone** (pas de workspace existant) : créer `/home/claude/projets/<slug>/` où `<slug>` suit la même convention que `cadrage-formation` (`<client>-<theme>` en kebab-case, ex. `alpha-po-augmente`) à partir du nom client et du sujet extraits du brief — jamais un slug ad hoc, pour rester alignable avec un éventuel dossier `formations/<client>-<theme>/` existant ou futur. Copier les inputs fournis avec les bons noms de fichiers, puis poursuivre normalement.
+**Mode standalone** (pas de workspace `cadrage-formation` existant) : demander au consultant de fournir directement (a) le contexte client et (b) un plan de formation déjà arrêté par ailleurs (ex. négocié en avant-vente hors pipeline). Créer alors `/home/claude/projets/<slug>/` où `<slug>` suit la même convention que `cadrage-formation` (`<client>-<theme>` en kebab-case, ex. `alpha-po-augmente`) à partir du nom client et du sujet fournis — jamais un slug ad hoc, pour rester alignable avec un éventuel dossier `formations/<client>-<theme>/` existant ou futur. Écrire directement `00-brief.md` et `00-plan.md` à partir de ce que fournit le consultant (sans étape 0.1 d'ingestion xlsx), puis les faire valider comme au point 0.2.3 avant de poursuivre.
+
+#### Format de `00-brief.md`
+
+```markdown
+# Brief — <Client> · <Thème formation>
+
+## Contexte
+<synthèse du contexte client + onglet Contexte du xlsx, ou notes fournies en mode standalone>
+
+## Objectifs (réponses client)
+- <Question INDISPENSABLE> → <Réponse client>
+- ...
+
+## Audience
+- **Mode d'analyse** : nominatif (recherche individuelle) | par profil type (au-delà du seuil de 20 participants, cf. `cadrage-formation` Étape 3) — préciser le nombre de participants
+- **Hétérogénéité technique/fonctionnel** : <ratio ou description — repris de l'analyse de `cadrage-formation`, jamais reformulé en une phrase générique type "public hétérogène">
+- **Séniorité** : <répartition décideurs/managers/praticiens, si disponible>
+- **Profils "à confirmer"** : <repris tels quels du xlsx, ne pas les faire disparaître dans la synthèse>
+
+## Contraintes
+<outillage, budget, format, logistique — depuis les réponses>
+
+## Points de vigilance
+<repris du xlsx + tout ajout du consultant, y compris les questions INDISPENSABLE restées sans réponse ou non actionnables si l'utilisateur a choisi d'avancer malgré tout>
+```
+
+Le § Audience reprend explicitement les axes déjà produits par `cadrage-formation` (Étape 3 : seuil de 20 participants, hétérogénéité technique/fonctionnel, séniorité) — ne jamais les aplatir en une phrase de synthèse libre, c'est la seule passerelle entre l'analyse d'audience du cadrage et la calibration pédagogique du plan (0.2) et du contenu (Phase 2).
+
+#### Format de `00-plan.md`
+
+```markdown
+# Plan de formation — <Client> · <Thème>
+
+**Niveau global** : 100 | 200 | 300
+**Durée totale** : <ex. 2 jours>
+**Format** : présentiel | distanciel | hybride
+
+## Logique de progression
+<2-4 phrases : comment le niveau/les objectifs montent en compétence d'un module à l'autre
+(ex. "M1-M2 posent les bases niveau 100 (Comprendre/Appliquer), M3-M4 montent en Analyser/Évaluer
+niveau 200") — jamais une simple liste de modules sans lien explicite entre eux>
+
+## Modules
+### M1 — <titre>
+- Durée : <ex. 2h>
+- Niveau : 100 | 200 | 300
+- Prérequis : <module(s) dont celui-ci suppose le contenu acquis, ou "aucun" si c'est un point d'entrée>
+- Objectifs pédagogiques : <liste>
+
+### M2 — ...
+```
+
+Le § « Logique de progression » et le champ « Prérequis » par module ne sont pas optionnels : un plan qui traite chaque module comme une fiche isolée, sans lien de progression explicite, produit l'anti-pattern documenté dans `references/pedagogical_principles.md` § 8 « Cohérence du fil narratif » (le stagiaire qui "a vu beaucoup de choses mais ne voit pas comment ça s'articule").
+
+Voir aussi `references/module_structure.md` § « Format du brief et du plan dérivés » et le Contrat 2 de [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md) pour le détail et les règles de rédaction de ces deux fichiers.
 
 ### Phase 1 — Roadmap de production et cas fil rouge
 
@@ -323,8 +374,9 @@ Au démarrage, regarder ce qui existe déjà dans le workspace :
 
 | État du workspace | Phase actuelle | Action |
 |---|---|---|
-| Pas de workspace, ou inputs absents | Phase 0 | Récupérer les inputs |
-| Inputs présents, pas de `06-material-roadmap.md` | Phase 1 | Produire le cas fil rouge (`livrables/00-fil-rouge.md`) et la roadmap |
+| Pas de workspace, ou xlsx/contexte absent | Phase 0.1 | Localiser le workspace, ingérer le xlsx (ou récupérer le contexte en mode standalone) |
+| xlsx ingéré (ou contexte fourni), pas de `00-brief.md`/`00-plan.md` | Phase 0.2 | Produire et faire valider le brief et le plan |
+| `00-brief.md`/`00-plan.md` validés, pas de `06-material-roadmap.md` | Phase 1 | Produire le cas fil rouge (`livrables/00-fil-rouge.md`) et la roadmap |
 | Fil rouge et roadmap présents, pas de `modules/` ou modules vides | Phase 2 | Produire le contenu pédagogique et les ateliers |
 | Tous les modules/ateliers en markdown, pas de `livrables/M<n>-slides.pptx` | Phase 3 | Compiler en .pptx/.html/.pdf/.docx |
 | Slides + énoncés HTML + livret + guide présents, pas de quiz | Phase 4 | Produire quiz, prérequis, biblio |
