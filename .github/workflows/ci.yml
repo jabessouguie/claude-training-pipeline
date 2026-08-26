@@ -10,8 +10,11 @@ on:
   pull_request:
 
 jobs:
-  # 1. Vérifie que le script de génération de la grille Excel compile et que sa
-  #    dépendance (openpyxl) s'importe — filet minimal contre un script cassé poussé par erreur.
+  # 1. Vérifie que TOUS les scripts des skills compilent et que leur dépendance
+  #    (openpyxl) s'importe — filet minimal contre un script cassé poussé par erreur.
+  #    Le glob est délibéré : n'énumérer qu'un script laissait les deux autres
+  #    (generate_illustrations.py, generate_exigences_xlsx.py) sans aucune
+  #    vérification, alors que la CI verte est un prérequis de revue (CONTRIBUTING.md).
   lint-python:
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +23,17 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install --quiet openpyxl
-      - run: python -m py_compile cadrage-formation/scripts/generate_cadrage_xlsx.py
+      - name: Compiler tous les scripts de skills
+        run: |
+          shopt -s nullglob
+          scripts=(*/scripts/*.py)
+          if [ ${#scripts[@]} -eq 0 ]; then
+            echo "Aucun script trouvé — le glob */scripts/*.py ne correspond plus à l'arborescence." >&2
+            exit 1
+          fi
+          printf 'Scripts compilés :\n'; printf '  %s\n' "${scripts[@]}"
+          python -m py_compile "${scripts[@]}"
+        shell: bash
       - run: python -c "import openpyxl"
 
   # 2. Détection de secrets — seul contrôle de sécurité pertinent pour un dépôt

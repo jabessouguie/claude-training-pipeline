@@ -1,6 +1,6 @@
-# Contributing — Pipeline de skills de formation
+# Contributing — Pipelines de skills (formation et réponse à appel d'offres)
 
-Ce dépôt contient 4 skills Claude Code (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`) formant un pipeline de production de formations. Ce document explique comment y contribuer. Pour comprendre qui décide quoi, voir [GOVERNANCE.md](GOVERNANCE.md) ; pour savoir quoi faire en premier, voir [BACKLOG.md](BACKLOG.md) et [ROADMAP.md](ROADMAP.md).
+Ce dépôt contient les skills Claude Code de **deux pipelines** : la production de formation (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`, plus l'orchestrateur optionnel `formation-pipeline`) et la réponse à appel d'offres (`reponse-appel-offres`). Ce document explique comment y contribuer, et s'applique à l'identique aux deux — ainsi qu'à toute skill transverse qui les sert. Pour comprendre qui décide quoi, voir [GOVERNANCE.md](GOVERNANCE.md) ; pour savoir quoi faire en premier, voir [BACKLOG.md](BACKLOG.md) et [ROADMAP.md](ROADMAP.md).
 
 ## Principe directeur : spec-driven
 
@@ -32,7 +32,7 @@ Conséquence directe sur le workflow :
 - **`scripts/` est descriptif de la mécanique, pas du jugement** : un script gère une tâche déterministe (générer un `.xlsx`, un `.pptx`) que le `SKILL.md` délègue explicitement. Si un script encode une règle métier qui n'est écrite nulle part dans `SKILL.md`, c'est une spec cachée — remontez-la dans `SKILL.md`.
 - **`references/` documente des connaissances stables** (structure pédagogique, principes de design) que la spec cite ; ce n'est jamais l'endroit où décrire un comportement attendu de l'agent — ce comportement va dans `SKILL.md`.
 
-Consultez le `README.md` racine pour la description fonctionnelle à jour des 4 skills et de leur enchaînement avant de modifier quoi que ce soit — il fait foi sur le comportement *actuel* du pipeline et doit rester en synchronisation stricte avec les `SKILL.md`.
+Consultez le `README.md` racine pour la description fonctionnelle à jour des skills et de leur enchaînement avant de modifier quoi que ce soit — il fait foi sur le comportement *actuel* des pipelines et doit rester en synchronisation stricte avec les `SKILL.md`. La même exigence de synchronisation vaut pour le `wiki/` (même contenu, formulé pour un utilisateur non contributeur) : une modification de comportement qui laisse le wiki en arrière crée exactement la divergence que ce principe interdit.
 
 ## Workflow Git : branches et pull requests
 
@@ -103,7 +103,11 @@ Ce pipeline n'a pas de suite de tests automatisés : chaque critère d'acceptati
 1. **Rejouez chaque critère d'acceptation comme un cas de test exécutable**, sur un cas concret déjà connu de l'équipe pour pouvoir comparer avant/après. Consignez pour chacun : entrée utilisée, comportement attendu (tel qu'écrit dans le `SKILL.md` modifié), comportement observé.
 2. **Traitez tout écart entre le `SKILL.md` et le comportement observé comme bloquant**, jamais comme un détail — c'est la définition même d'une spec qui ne gouverne pas réellement le comportement. Ne clôturez pas la story tant que spec et comportement ne coïncident pas sur les critères d'acceptation testés.
 3. **Faites relire votre changement de spec par un des deux autres contributeurs avant de le considérer terminé** — la relecture porte sur la spec elle-même (est-elle non ambiguë ? vérifiable ?) autant que sur le comportement obtenu. Pas de merge solo sur ce pipeline restreint (cf. DoD dans `BACKLOG.md`).
-4. **Lancez un test de fumée du pipeline complet** (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite` à la suite sur un cas déjà connu — via `formation-pipeline` ou skill par skill) pour vérifier qu'aucune spec non modifiée n'a vu son comportement dériver — une modification de `SKILL.md` peut changer le comportement d'une autre skill si elle consomme ses livrables.
+4. **Lancez un test de fumée du pipeline concerné par votre changement**, de bout en bout sur un cas déjà connu, pour vérifier qu'aucune spec non modifiée n'a vu son comportement dériver — une modification de `SKILL.md` peut changer le comportement d'une autre skill si elle consomme ses livrables.
+   - **Pipeline formation** : `cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite` à la suite (via `formation-pipeline` ou skill par skill).
+   - **Pipeline réponse à AO** : `reponse-appel-offres` sur ses 8 étapes, puis l'enchaînement proposé vers `comite-qualite`.
+   - **Skill transverse** (ex. extraction de design system) : les deux pipelines qu'elle alimente, puisqu'une régression s'y propage aux deux.
+   - Si le changement touche `comite-qualite` ou `PIPELINE_CONTRACTS.md`, les deux pipelines sont concernés — ces deux fichiers leur sont communs.
 5. **Capitalisez les cas de test rejoués.** Si un cas concret a servi à vérifier un comportement de façon répétée, signalez-le dans le `SKILL.md` ou le `README.md` comme cas de référence — cela permet au prochain contributeur de rejouer le même scénario plutôt que d'en inventer un nouveau à chaque fois.
 6. **Sécurité** : la CI (`.github/workflows/ci.yml`) exécute une détection de secrets sur chaque push — vérifiez qu'aucun contenu sensible (client, token, accès à un espace de stockage) n'est commité par erreur, notamment dans des fichiers d'exemple ou de cas de test.
 
