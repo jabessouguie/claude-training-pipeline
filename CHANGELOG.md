@@ -6,6 +6,10 @@ Historique des évolutions du pipeline de skills, du plus récent au plus ancien
 
 **Corrigé**
 - CI (`.github/workflows/ci.yml`) : le job `secret-detection` échouait sur tout événement `pull_request` (`gitleaks-action@v2` a besoin de la permission `pull-requests: read` sur le `GITHUB_TOKEN` pour lister les commits de la PR, non accordée par défaut) — ajout explicite de `permissions: contents: read, pull-requests: read` sur ce job ([#30](BACKLOG.md)).
+- Audit systématique du `BACKLOG.md` : 11 items (#1, #3, #4, #5, #6, #8, #10, #15, #19, #21, #22) avaient une story déjà marquée faite sans que l'item parent en porte le marqueur — corrigé, sans changement de comportement de skill.
+
+**Retiré**
+- **Item [#2](BACKLOG.md)** — Réparer/vérifier l'accès aux ressources sur le dépôt partagé (et sa story `US-2`) : déplacé en section « Non retenu », l'incident qui l'avait motivé ne s'étant pas reproduit. Les dépendances qu'il portait (#3, #14, #20, `ROADMAP.md` Horizons 1 et 3) sont mises à jour en conséquence — le besoin concret sous-jacent (stockage stable des formations passées) reste néanmoins ouvert, sans item de backlog dédié pour l'instant.
 
 ## 29/07/2026
 
