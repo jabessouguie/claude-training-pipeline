@@ -4,7 +4,11 @@ Historique des évolutions du pipeline de skills, du plus récent au plus ancien
 
 ## 26/08/2026
 
+**Ajouté**
+- **`ONBOARDING.md`** ([#14](BACKLOG.md)) : une page (schéma Mermaid + tableau entrées/sorties/points de validation par skill, pour chacun des deux pipelines) destinée à être montrée en 5 minutes à un nouvel arrivant avant qu'il n'installe quoi que ce soit — synthétisée du `README.md`, référencée depuis celui-ci et depuis `wiki/00-Accueil.md`.
+
 **Corrigé**
+- README.md : retrait de la mention obsolète « en cours de construction » pour `reponse-appel-offres`, livrée depuis le 18/08/2026 (US-18).
 - CI (`.github/workflows/ci.yml`) : le job `secret-detection` échouait sur tout événement `pull_request` (`gitleaks-action@v2` a besoin de la permission `pull-requests: read` sur le `GITHUB_TOKEN` pour lister les commits de la PR, non accordée par défaut) — ajout explicite de `permissions: contents: read, pull-requests: read` sur ce job ([#30](BACKLOG.md)).
 - Audit systématique du `BACKLOG.md` : 11 items (#1, #3, #4, #5, #6, #8, #10, #15, #19, #21, #22) avaient une story déjà marquée faite sans que l'item parent en porte le marqueur — corrigé, sans changement de comportement de skill.
 - Le wiki (`wiki/`) n'avait jamais été mis à jour depuis l'ajout du pipeline `reponse-appel-offres` (US-18, 18/08/2026) — divergeait silencieusement du `README.md`. Ajout d'une présentation du second pipeline dans `00-Accueil.md` et `02-Utiliser-le-pipeline.md`, complément de l'arborescence de skills et de la liste d'invocation dans `01-Installation/01-Claude-Code.md` (qui omettait aussi `formation-pipeline`), et généralisation des mentions figées « 4 skills » dans `01-Installation/02-Application-Claude.md`, `03-FAQ-et-depannage.md` et le `README.md` lui-même (section installation, désormais commune aux deux pipelines).
