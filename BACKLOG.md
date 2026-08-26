@@ -12,17 +12,19 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 
 ## P0 — Bloquants adoption
 
-### 1. Fiabiliser l'enregistrement des skills en session Claude Code
+### 1. Fiabiliser l'enregistrement des skills en session Claude Code ✅ Fait le 24/07/2026 (spec)
 **Constat** : un utilisateur ne parvient pas à faire persister les skills entre sessions — nécessite de recréer un nouveau chat pour que les skills soient détectées après chaque redémarrage.
 **Valeur** : sans ça, chaque nouvel utilisateur bute sur l'onboarding avant même de commencer.
 **Action** : documenter (ou automatiser) la procédure d'enregistrement des skills — `~/.claude/skills/` en mode "auto" — et vérifier qu'un restart de session suffit sans recréer un chat.
 **Effort** : S — c'est en grande partie déjà écrit dans le `README.md` (section Installation) ; il manque un test de non-régression + un mot sur le mode "auto".
+**Statut** : story `US-1` déjà marquée faite (spec écrite dans `README.md` § "Enregistrement fiable entre sessions") — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Le test manuel de non-régression (restart de session sans recréer de chat) reste à rejouer en session réelle, non vérifiable depuis ce dépôt.
 
-### 2. Réparer/vérifier l'accès aux ressources sur le dépôt partagé
+### 2. Réparer/vérifier l'accès aux ressources sur le dépôt partagé 🟡 Partiellement fait le 24/07/2026
 **Constat** : un livrable de formation censé être disponible sur le dépôt partagé s'est avéré absent malgré un lien envoyé à plusieurs reprises par un autre canal — un contributeur confirme un accès au dépôt mais sans fichier visible initialement.
 **Valeur** : bloque tout collaborateur qui n'a pas reçu le livrable par un canal parallèle — le dépôt doit être la source de vérité.
 **Action** : pousser systématiquement les livrables de formation sur le dépôt partagé dès leur production ; vérifier ensuite l'accès depuis un compte tiers (pas seulement celui qui a poussé le fichier).
 **Effort** : S.
+**Statut** : story `US-2` partiellement faite — le volet documentaire (`README.md` § "Source de vérité") est fait, mais les deux critères d'action humaine (livrable effectivement poussé, accès confirmé depuis un compte tiers) restent ouverts et hors du périmètre de ce dépôt. Ne pas marquer ✅ tant qu'ils ne sont pas cochés dans `US-2` — bloque encore #3 et #20.
 
 ---
 
@@ -43,7 +45,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Dépend de** : rien (amélioration de workflow transverse à Horizon 1/2).
 **Statut** : story `US-10` déjà marquée faite (spec écrite dans `slide-content-claude-design/SKILL.md`, revue par le comité qualité) — cet item n'avait pas reçu le marqueur ✅ correspondant, corrigé ici pour que le suivi reflète l'état réel de la spec. Comme pour `US-10`, l'exécution sur un cas réel (création effective des deux fichiers et audit UX/UI en amont de Claude Design) reste à vérifier.
 
-### 3. `cadrage-formation` — détecter et proposer les formations antérieures similaires
+### 3. `cadrage-formation` — détecter et proposer les formations antérieures similaires ✅ Fait le 24/07/2026 (spec)
 **Constat** : retour d'usage récurrent — un contributeur suggère d'intégrer une vérification automatique des formations existantes au sein du skill de cadrage. Objectif : que l'agent demande "as-tu une formation déjà faite qui est proche ?", puis, si on lui donne accès à un répertoire de formations passées, qu'il propose lui-même la plus pertinente — **à valider par l'utilisateur, jamais appliquée automatiquement** (risque de réutiliser un gabarit inadapté sans validation).
 **Valeur** : accélère le cadrage de nouvelles sessions d'une formation récurrente (ex. une deuxième session du même client quelques mois plus tard) en réutilisant un gabarit existant au lieu de repartir from scratch, tout en évitant la dérive déjà constatée quand un profil non pertinent avait été réutilisé par erreur (ex. profils BA/UX proposés alors que l'audience réelle était BO).
 **Enrichissement** : illustre l'enjeu plus large d'un cadrage mal validé, indépendamment de la réutilisation d'une formation passée — sur une formation réelle, un mismatch initial sur l'objectif pédagogique (compréhension confuse entre "apprendre à gérer des projets d'IA" et "apprendre à utiliser l'IA pour être plus efficace dans son rôle") a fait dériver tout le plan de formation, avec des reliquats de contenu mal orienté qui ont dû être corrigés après coup. Ceci renforce la nécessité, déjà actée dans `cadrage-formation`, de ne jamais présenter une hypothèse comme un fait et de faire valider explicitement le plan de formation par le client avant de lancer la production détaillée (comportement déjà en place selon les démos internes, à vérifier qu'il est bien systématique).
@@ -53,20 +55,23 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - L'utilisateur valide avant que l'agent ne s'en serve de base.
 **Effort** : M — nécessite d'ajouter une étape de discovery + un prompt de scan de répertoire dans `cadrage-formation/SKILL.md`.
 **Dépend de** : #2 (les formations passées doivent être accessibles quelque part de stable, pas juste dans des envois ponctuels).
+**Statut** : story `US-3` déjà marquée faite (spec écrite dans `cadrage-formation/SKILL.md`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Dépend en pratique de #2 (encore partiel) pour qu'un répertoire de formations passées soit effectivement accessible ; reste à vérifier sur un cas réel une fois ce préalable levé.
 
-### 4. Proposer systématiquement les prochaines étapes après génération de contenu
+### 4. Proposer systématiquement les prochaines étapes après génération de contenu ✅ Fait le 24/07/2026 (spec)
 **Constat** : retour d'usage récurrent — plusieurs utilisateurs demandent que l'agent propose systématiquement les prochaines étapes de création après la génération du contenu. Observé concrètement : certains environnements le font spontanément (proposer un choix explicite entre plusieurs livrables possibles à produire ensuite) alors que d'autres ne le proposent pas nativement (comportement qui dépend du modèle et de l'environnement utilisés).
 **Valeur** : réduit la charge cognitive de l'utilisateur (perte de repère sur la prochaine action quand plusieurs sessions tournent en parallèle) et rend le pipeline plus guidé pour un nouvel utilisateur — cœur du besoin d'onboarding exprimé par les utilisateurs.
 **Action** : ajouter en fin de chaque skill du pipeline (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`) un bloc explicite proposant l'étape suivante (avec les options possibles), indépendamment du modèle utilisé.
 **Effort** : M — un ajout de type "next steps" en fin de chaque `SKILL.md`, mais à répercuter sur 4 skills.
 **Dépend de** : rien, mais complète naturellement #3.
+**Statut** : story `US-4` déjà marquée faite (spec écrite dans les 4 `SKILL.md` et synchronisée dans `README.md`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier par exécution réelle sous différents modèles/environnements, conformément à la DoD.
 
-### 5. Uniformiser le rangement des livrables par formation
+### 5. Uniformiser le rangement des livrables par formation ✅ Fait le 24/07/2026
 **Constat** : rangement actuel non structuré — chaque formation est rangée manuellement dossier par dossier, sans convention partagée, notamment pour distinguer plusieurs sessions de la même formation dans le temps (ex. une même formation redonnée à quelques mois d'écart pour le même client).
 **Valeur** : évite la perte de contexte en collaboratif (accès et versions dupliquées) et facilite la réutilisation par #3.
 **Action** : définir une convention de nommage/arborescence (ex. `formations/<client>-<thème>/<AAAA-MM>/`) et l'intégrer comme étape de `cadrage-formation` (création du dossier dès le cadrage) plutôt qu'en fin de pipeline.
 **Effort** : S/M — convention à documenter + petit ajustement du prompt de création de dossier dans la skill.
 **Dépend de** : aucune, mais facilite #3 et #2.
+**Statut** : story `US-5` déjà marquée faite (convention documentée, `cadrage-formation` crée le dossier dès l'Étape 0) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier par un premier usage réel.
 
 ### 14. Packager le workflow complet comme asset transmissible (skills + enchaînement + mode d'emploi)
 **Constat** : retour d'usage — besoin exprimé d'un support récapitulatif du déroulé du pipeline (skill par skill, avec les points de validation) présentable en début de démo pour un nouvel arrivant, allant au-delà de la simple formation produite : le pipeline lui-même (les skills, leur combinaison, le processus) devient un actif à part entière. Le `README.md` actuel du dépôt couvre déjà une bonne partie de ce besoin (description des 4 skills et de leur enchaînement) mais n'est pas pensé comme un support de présentation/onboarding en tant que tel.
@@ -100,12 +105,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Dépend de** : qualité et disponibilité des notes d'entretien produites par `cadrage-formation`.
 **Statut** : rôle "Voix du client" ajouté dans `comite-qualite/SKILL.md` (table des rôles conditionnels + garde-fou explicite anti-hallucination : ne s'active que si des notes d'entretien réelles existent). Reste à vérifier sur un cas réel avec notes de cadrage disponibles.
 
-### 6. Clarifier la source d'audit du `comite-qualite` avant lancement
+### 6. Clarifier la source d'audit du `comite-qualite` avant lancement ✅ Fait le 24/07/2026
 **Constat** : question récurrente restée sans réponse ferme — "le quality check, il est basé sur quoi ? Les slides.md ou la présentation elle-même ?". Le porteur du pipeline confirme qu'aujourd'hui l'audit porte sur les `*.md` (slides, exercices, notes formateur) et non sur le rendu final en Claude Design.
 **Valeur** : évite un audit "aveugle" au rendu visuel final (mise en page, respect charte) alors que le contenu textuel est déjà validé — actuellement une zone grise pour un nouvel utilisateur.
 **Action** : ajouter en tête de `comite-qualite/SKILL.md` une question explicite : "Quel périmètre dois-je auditer : le contenu markdown, la présentation générée, ou les deux ?"
 **Effort** : S.
 **Dépend de** : rien.
+**Statut** : story `US-6` déjà marquée faite (question de périmètre ajoutée en section 0.0 de `comite-qualite/SKILL.md`, rappelée dans le rapport final) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier par un premier audit réel.
 
 ---
 
@@ -117,12 +123,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Action** : évaluer les options (formation croisée, guide de choix par profil "dev vs non-dev", ou convergence vers un seul outil) — à formaliser suite à un retour d'usage terrain.
 **Effort** : L — dépend de la décision d'outillage, hors du seul périmètre des skills.
 
-### 8. Documenter le paramétrage de l'extension Claude Code dans un IDE
+### 8. Documenter le paramétrage de l'extension Claude Code dans un IDE ✅ Fait le 24/07/2026 (documentation)
 **Constat** : un utilisateur a perdu un temps significatif en démo pour connecter son compte pro à l'extension Claude Code dans son IDE (icône à utiliser, lien d'authentification, gestion des quotas) — souci récurrent de blocage sur les quotas côté comptes pro.
 **Valeur** : cet irritant, non lié aux skills elles-mêmes, ralentit tout nouvel arrivant qui suit la démo comme onboarding — objectif explicite de l'enregistrement de cette session.
 **Action** : ajouter un mini-guide (setup extension, compte pro vs perso, gestion des quotas) en complément du `README.md` du pipeline, ou en pré-requis du premier skill.
 **Effort** : S.
 **Dépend de** : #7 dans une certaine mesure (si l'outillage cible change, ce guide change aussi).
+**Statut** : story `US-7` déjà marquée faite (mini-guide dans `README.md` § "Pré-requis : paramétrer l'extension Claude Code") — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à faire valider par une personne n'ayant jamais paramétré l'extension.
 
 ### 9. Explorer une génération d'illustrations moins manuelle ✅ Levé le 28/07/2026
 **Constat** : point de friction répété — la génération d'images reste la partie la plus chronophage et manuelle du pipeline. Le porteur du pipeline exporte vers Gemini avec un prompt fixe ("illustration éditoriale moderne et épurée"), jugé plus joli que les images générées nativement par Claude. Un autre outil de génération d'images est évoqué comme alternative pour générer un lot d'images cohérentes en une fois.
@@ -132,14 +139,15 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Effort** : M — réalisé sans spike comparatif préalable formel (Gemini déjà capitalisé comme fournisseur de référence dans le mode manuel existant, choix tranché directement par l'utilisateur).
 **Dépend de** : rien. A débloqué #28.
 
-### 10. Fiabiliser l'ouverture de fichiers Excel en environnement de développement
+### 10. Fiabiliser l'ouverture de fichiers Excel en environnement de développement ✅ Fait le 24/07/2026 (documentation)
 **Constat** : friction mineure observée en usage réel — un utilisateur doit s'y reprendre pour ouvrir le `.xlsx` généré par `cadrage-formation` (extension dédiée aux fichiers Excel suggérée pour l'environnement de développement utilisé).
 **Valeur** : petit irritant UX répété à chaque exécution de `cadrage-formation`, qui produit justement un livrable `.xlsx`.
 **Action** : documenter dans le `README.md` ou le `SKILL.md` de `cadrage-formation` l'extension recommandée pour visualiser un `.xlsx` sans sortir de l'environnement de travail.
 **Effort** : S.
 **Dépend de** : rien.
+**Statut** : story `US-8` déjà marquée faite (`README.md` § "Ouvrir les fichiers `.xlsx` générés") — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à faire tester par un utilisateur sans cette extension déjà installée.
 
-### 21. `slide-content-claude-design` — direction artistique cohérente et professionnelle des illustrations
+### 21. `slide-content-claude-design` — direction artistique cohérente et professionnelle des illustrations ✅ Fait le 24/07/2026 (spec)
 **Constat** (interview de spécification US-11) : les illustrations générées via Gemini manquent aujourd'hui de deux choses à la fois — (1) une cohérence de style d'une slide à l'autre (chaque prompt est pensé isolément, sans référence à un standard visuel partagé), et (2) un ancrage systématique dans la métaphore filée de la formation quand elle existe. Résultat : des illustrations qui ont l'air de sorties indépendantes d'un générateur plutôt que d'un jeu cohérent conçu par un même directeur artistique.
 **Valeur** : des slides visuellement plus professionnelles et mémorables, où l'illustration renforce l'arc narratif de la formation au lieu d'être un décor interchangeable — bénéfice direct sur la perception qualité par le client, sans coût de production supplémentaire (un seul bloc de contexte en plus par module).
 **Action** :
@@ -148,8 +156,9 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - Le bloc peut varier légèrement d'un module à l'autre (ex. un sous-thème visuel propre au module) mais reste ancré dans la même métaphore filée globale de la formation.
 **Effort** : M — ajout d'une section de gabarit + adaptation du template de prompt existant pour qu'il s'y réfère.
 **Dépend de** : US-10 (#19), dont ce backlog item prolonge directement le format `M<n>-prompts.md`.
+**Statut** : story `US-11` déjà marquée faite (bloc « Direction artistique » documenté dans `slide-content-claude-design/SKILL.md`, référencé par chaque prompt de slide) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel (cohérence visuelle perceptible en conditions réelles).
 
-### 22. `formation-material-builder` — cas fil rouge unique et exercices structurés façon StockPilot
+### 22. `formation-material-builder` — cas fil rouge unique et exercices structurés façon StockPilot ✅ Fait le 24/07/2026 (spec)
 **Constat** (interview de spécification US-12, à partir du cas de référence `fil-rouge-stockpilot/`) : les exercices produits aujourd'hui par `formation-material-builder` (un `exercices.md` par module, sans fil narratif commun) fonctionnent mais perdent l'opportunité pédagogique d'un cas fictif filé sur toute la formation — un même produit/contexte qui se développe atelier après atelier, où chaque exercice s'appuie sur l'état du cas laissé par le précédent. Le cas `fil-rouge-stockpilot` (structure `atelier-N/` avec corpus dédié + `solutions/` séparé, non distribué en amont) illustre ce que ce standard doit généraliser.
 **Valeur** : des exercices plus immersifs et cohérents entre eux (le stagiaire connaît déjà le contexte, l'énergie va dans l'exercice pas dans la compréhension du décor), un debrief facilité par la continuité narrative, et une distribution disciplinée des corrigés qui ne vide jamais un exercice de sa valeur avant l'heure.
 **Action** :
@@ -160,6 +169,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - **Extension du 28/07/2026** : chaque élément du corpus d'atelier vit dans son propre fichier (pas un fichier fourre-tout par atelier), et le **format de ce fichier est celui que le stagiaire trouverait réellement dans son métier** (un e-mail en `.md` structuré comme un e-mail, un export tabulaire en `.xlsx` si le vrai outil du client exporte du tableur plutôt qu'en CSV générique, une capture d'écran en `.png`, etc.) plutôt qu'un format uniformisé pour la facilité de traitement. Méthode de production : markdown source d'abord (contenu revu facilement), puis conversion vers le binaire réel si la cible n'est pas du texte brut — même logique que la conversion HTML des énoncés.
 **Effort** : L — refonte de la structure de sortie des exercices (Phase 1 + Phase 2 de `formation-material-builder`), nouveau template HTML/charte, mise à jour de `exercise_design.md` et `module_structure.md` ; extension du 28/07/2026 : ajout d'une sous-phase de conversion des éléments de corpus (3.1ter), sans nouvelle dépendance.
 **Dépend de** : rien (améliore un livrable existant sans dépendance externe).
+**Statut** : story `US-12` déjà marquée faite (cas fil rouge en Phase 1, dossiers `atelier-N/`/`solutions/` séparés, conversion HTML, extension corpus au format réaliste — le tout dans `formation-material-builder/SKILL.md` et ses `references/`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel (production complète d'une formation avec ce standard).
 
 ### 20. Ajouter la référence complète du design system au dépôt
 **Constat** (audit comité qualité) : `slide-content-claude-design/SKILL.md` renvoie à la référence complète du design system, mais ces fichiers résident hors dépôt (dossier local). Un contributeur qui clone le dépôt — déclaré source de vérité unique — ne trouve pas la référence citée. L'impact est atténué par le fait que les tokens essentiels sont inlinés dans la spec.
