@@ -77,9 +77,10 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 **Objectif** : ce sont des pistes dont la valeur est plausible mais qui nécessitent un arbitrage (outillage, décision d'équipe, ou capacité d'un outil tiers) avant de devenir des stories engageables. Ne pas les développer avant d'avoir la réponse au préalable identifié.
 
 **Contenu** :
-- #7 — Harmoniser les environnements Claude Code utilisés en interne *(préalable : retour d'un contributeur sur son usage terrain)*
 - #11 — Export/import direct des quiz vers Kahoot *(préalable : vérifier si Kahoot expose un format d'import)*
 - #13 — Mode par défaut Loop vs Annotations pour `comite-qualite` *(préalable : un cas d'usage réel en collaboratif)*
+
+*(#7 — harmonisation Claude Code vs Claude Desktop — est sorti de cet horizon le 26/08/2026 : arbitrage rendu par le Product Owner, les deux outils restent supportés, pas de convergence vers un seul. Voir `BACKLOG.md`.)*
 
 *(#9 — génération d'illustrations moins manuelle — est sorti de cet horizon le 28/07/2026 : le préalable a été levé directement par une demande explicite de l'utilisateur, sans passer par un spike comparatif formel. Voir Horizon 5.)*
 

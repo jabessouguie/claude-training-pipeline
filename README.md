@@ -236,7 +236,7 @@ Pour utiliser ce pipeline dans l'extension Claude Code de VS Code ou d'Antigravi
 
 **Gestion des quotas** : un blocage ponctuel sur les quotas (cotas) a été observé avec certains comptes professionnels ; ce n'est pas systématique et n'a pas été observé de façon répétée. Si un blocage survient, patienter (les quotas se renouvellent) plutôt que de changer de compte ou de modèle par réflexe.
 
-**Choix de l'éditeur** : l'extension Claude Code fonctionne aussi bien dans VS Code que dans Antigravity — le choix entre les deux est une préférence d'environnement, pas une contrainte du pipeline. Voir `BACKLOG.md` (item #7) pour l'arbitrage en cours sur l'harmonisation des outils utilisés en interne.
+**Choix de l'éditeur** : l'extension Claude Code fonctionne aussi bien dans VS Code que dans Antigravity — le choix entre les deux est une préférence d'environnement, pas une contrainte du pipeline. Voir `BACKLOG.md` (item #7) : arbitrage rendu le 26/08/2026, les deux outils restent supportés en interne, pas de convergence vers un seul.
 
 ### Sur l'application Claude (claude.ai, app desktop/mobile)
 
