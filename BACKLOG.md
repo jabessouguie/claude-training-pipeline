@@ -218,12 +218,17 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 
 ## P3 — Exploratoire / à cadrer davantage
 
-### 11. Étudier un export/import direct des quiz vers Kahoot
+### 11. Étudier un export/import direct des quiz vers Kahoot 🟡 Recherche menée le 26/08/2026, implémentation non lancée
 **Constat** : `formation-material-builder` génère déjà les quiz en markdown structuré (type de question, durée, réponses, bonne réponse), mais le paramétrage dans Kahoot reste 100% manuel — aucun fichier importable disponible à ce jour.
 **Valeur** : élimine une étape manuelle récurrente en fin de pipeline, sur un format déjà structuré.
 **Action** : vérifier si Kahoot expose un format d'import (CSV/XLSX en marque blanche ou API) et, si oui, ajouter une étape de conversion en sortie de `formation-material-builder`.
-**Effort** : M/L — dépend entièrement des capacités d'import exposées par Kahoot (à investiguer avant de chiffrer plus finement).
-**Dépend de** : disponibilité d'un format d'import côté Kahoot (hors de notre contrôle).
+**Effort** : S/M — revu à la baisse suite à la recherche du 26/08/2026 (voir Statut) : conversion markdown → `.xlsx` mécanique, même famille que les scripts déjà en place (`generate_cadrage_xlsx.py`, `generate_exigences_xlsx.py`), pas de développement exploratoire.
+**Dépend de** : rien — le préalable ("disponibilité d'un format d'import côté Kahoot") est levé, voir Statut.
+**Statut** (recherche web du 26/08/2026, sources : [support.kahoot.com](https://support.kahoot.com/hc/en-us/articles/115002812547-How-to-import-questions-from-a-spreadsheet-to-your-kahoot), [kahoot.com/blog](https://kahoot.com/blog/2018/08/23/import-kahoot-from-spreadsheet/), [results.kahoot.com/swagger](https://results.kahoot.com/swagger/)) :
+- Kahoot expose un **import `.xlsx`** via un gabarit officiel téléchargeable dans l'éditeur (Create → Add question → Import → Import spreadsheet) — **pas** de marque blanche, **pas** d'API de création de quiz publique (seule une API de rapports/analytics existe, authentifiée, hors sujet ici).
+- Format du gabarit : colonnes question / au moins 2 réponses / temps limite en secondes / numéro(s) de bonne(s) réponse(s) séparés par virgule (ex. `2` ou `1,3`).
+- Contraintes strictes : question ≤ 95 caractères, réponse ≤ 60 caractères, fichier ≤ 1 Mo, uniquement des questions QCM standard (pas de sondage, nuage de mots, question ouverte — ces formats devront rester hors de ce mode d'export).
+- **Implémentation non lancée** : cette recherche répond à l'Action de l'item mais ne constitue pas la story elle-même — écrire une story (critères d'acceptation vérifiables, dont le respect des limites de caractères ci-dessus) avant de modifier `formation-material-builder/SKILL.md`, conformément à la DoR de `CONTRIBUTING.md`.
 
 ### 12. Cadrer la limite de taille d'audience pour la recherche participants ✅ Fait le 24/07/2026 (spec) — voir US-9
 **Constat** : la recherche automatique de profils (web + LinkedIn) devient très coûteuse en temps et en tokens au-delà d'un certain nombre de participants (testé jusqu'à 12 ; jugé non viable pour une audience de 60). Pour les grands groupes, l'équipe raisonne plutôt en "profil type" qu'en recherche nominative.
