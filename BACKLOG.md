@@ -202,6 +202,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Effort** : L — nouveau script + section de spec, dépend d'un choix de fournisseur d'image déjà tranché par l'utilisateur (pas de spike comparatif préalable, décision directe).
 **Dépend de** : #9 (levé), consomme le Contrat 4 de #26 sans le modifier de format.
 
+### 30. Corriger l'échec du job `secret-detection` sur les pull requests ✅ Fait le 26/08/2026
+**Constat** : constaté sur la PR #2 — le job `secret-detection` (`.github/workflows/ci.yml`) échoue systématiquement sur l'événement `pull_request` (`Resource not accessible by integration`, statut 403 sur `GET /pulls/{n}/commits`) alors qu'il passe sur `push`. `gitleaks-action@v2` a besoin de lister les commits de la PR via l'API GitHub pour ce mode de scan, ce qui exige la permission `pull-requests: read` sur le `GITHUB_TOKEN` — non accordée par les permissions par défaut du dépôt.
+**Valeur** : sans ce correctif, aucune PR ne peut jamais avoir une CI verte sur `secret-detection`, ce qui bloque de fait la règle CONTRIBUTING.md "la CI doit être verte avant toute demande de revue" pour toutes les futures contributions, pas seulement celle qui l'a révélé.
+**Action** : `permissions: contents: read, pull-requests: read` ajouté explicitement au job `secret-detection` dans `.github/workflows/ci.yml`.
+**Effort** : XS — un bloc de permissions, aucun changement de logique de scan.
+**Statut** : corrigé et vérifié sur la PR de correction elle-même (CI verte sur `pull_request`).
+
 ---
 
 ## P3 — Exploratoire / à cadrer davantage

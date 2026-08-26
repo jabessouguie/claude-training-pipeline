@@ -2,6 +2,11 @@
 
 Historique des évolutions du pipeline de skills, du plus récent au plus ancien. Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/) ; les dates correspondent aux jalons de livraison de spec dans ce dépôt, pas nécessairement à une vérification en usage réel (voir `BACKLOG.md` pour le statut de vérification de chaque item).
 
+## 26/08/2026
+
+**Corrigé**
+- CI (`.github/workflows/ci.yml`) : le job `secret-detection` échouait sur tout événement `pull_request` (`gitleaks-action@v2` a besoin de la permission `pull-requests: read` sur le `GITHUB_TOKEN` pour lister les commits de la PR, non accordée par défaut) — ajout explicite de `permissions: contents: read, pull-requests: read` sur ce job ([#30](BACKLOG.md)).
+
 ## 29/07/2026
 
 **Ajouté**
