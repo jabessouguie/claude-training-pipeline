@@ -83,6 +83,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - 4 pages de contenu pour un wiki (Accueil, Installation, Utiliser-le-pipeline, FAQ-et-depannage), rédigées à partir du contenu existant du README (pas de divergence de fond).
 **Effort** : S — documentation uniquement, aucun changement de comportement des skills.
 **Dépend de** : rien.
+**Correction du 26/08/2026** (audit comité qualité) : cet item était marqué fait le 28/07/2026, mais la **clause de non-réalité des données client** annoncée dans son Action n'avait jamais été écrite — `LICENSE.md` ne contenait qu'une licence MIT traduite. Clause ajoutée le 26/08/2026, alignée sur `formation-material-builder/references/fil_rouge_design.md` (le réalisme porte sur la forme, jamais sur le fond). L'item est désormais réellement conforme à ce qu'il annonçait ; la date de complétion d'origine est conservée pour le reste de son périmètre (CHANGELOG, wiki), effectivement livré le 28/07/2026.
 
 ### 15. Formaliser un SDLC et une gouvernance de cycle de vie pour les skills (création, version, dépréciation, responsabilité) ✅ Fait le 28/07/2026
 **Constat** : retour d'usage relayant un besoin identifié ailleurs dans l'organisation, sur la nécessité d'un cycle de vie explicite par asset ("delivery life cycle" à monter sur les différents assets produits). Ce sujet est distinct de l'item #1 (qui porte sur la fiabilité *technique* de l'enregistrement d'une skill en session) : ici il s'agit de gouvernance organisationnelle — qui décide qu'une skill est mature, qui la fait évoluer, comment une version dépréciée est signalée aux utilisateurs.
@@ -166,12 +167,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Dépend de** : rien (améliore un livrable existant sans dépendance externe).
 **Statut** : story `US-12` déjà marquée faite (cas fil rouge en Phase 1, dossiers `atelier-N/`/`solutions/` séparés, conversion HTML, extension corpus au format réaliste — le tout dans `formation-material-builder/SKILL.md` et ses `references/`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel (production complète d'une formation avec ce standard).
 
-### 20. Ajouter la référence complète du design system au dépôt
-**Constat** (audit comité qualité) : `slide-content-claude-design/SKILL.md` renvoie à la référence complète du design system, mais ces fichiers résident hors dépôt (dossier local). Un contributeur qui clone le dépôt — déclaré source de vérité unique — ne trouve pas la référence citée. L'impact est atténué par le fait que les tokens essentiels sont inlinés dans la spec.
-**Valeur** : rend le dépôt réellement autoportant pour la partie design ; évite une divergence silencieuse entre les tokens inlinés dans la spec et la référence complète.
-**Action** : ajouter au dépôt les deux fichiers de référence (sans les assets lourds type logo/template pptx), puis faire pointer `slide-content-claude-design/SKILL.md` vers ce chemin.
-**Effort** : S.
-**Dépend de** : rien au niveau backlog (l'item #2 qui portait cette dépendance a été retiré le 26/08/2026, voir « Non retenu » — ce dépôt lui-même s'est avéré accessible et poussé sans difficulté depuis). Le blocage réel restant est l'obtention des deux fichiers de référence du design system eux-mêmes (aujourd'hui dans un dossier local hors dépôt).
+### 20. Extraire le design system client à partir de n'importe quel document fourni ✅ Fait le 26/08/2026 (spec) — voir US-19
+**Constat** (audit comité qualité, 28/07/2026) : `slide-content-claude-design/SKILL.md` renvoyait à une référence complète du design system supposée exister hors dépôt (dossier local). **Révision du 26/08/2026** : vérification faite auprès de l'utilisateur — cette référence n'existe pas, il n'y a pas de fichiers de tokens tout prêts à ajouter au dépôt. Le vrai besoin est plus large : pouvoir **extraire** un design system client à partir de n'importe quel document que le client fournit réellement (captures d'écran, PDF de charte, export Figma, site web, logo seul...), jamais un format d'entrée imposé au client.
+**Valeur** : permet d'appliquer la charte graphique réelle d'un client aux slides produites par `slide-content-claude-design`, au lieu de se limiter à la palette par défaut « Encre & Sauge » ou d'improviser une charte à partir d'une description orale.
+**Action** : nouvelle skill `design-system-extractor/SKILL.md` — détecte les sources fournies (jamais devinées), extrait les tokens réellement observés (couleurs, typographie, composants, ton) avec un garde-fou anti-hallucination fort (un token non observé est marqué `NON DÉTERMINÉ`, jamais deviné), fait valider par l'utilisateur, produit `design-systems/<client>/design-system.md` (Contrat DS-1 de `PIPELINE_CONTRACTS.md`) au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md`, pour lui être directement substituable. `slide-content-claude-design/SKILL.md` mis à jour pour consulter ce fichier s'il existe, et combler ses champs `NON DÉTERMINÉ` avec « Encre & Sauge » en le signalant explicitement.
+**Effort** : L — nouvelle skill à part entière, pas une simple référence statique comme envisagé initialement.
+**Dépend de** : rien au niveau backlog (l'item #2 qui portait la dépendance d'origine a été retiré le 26/08/2026, voir « Non retenu » — sans objet de toute façon, la révision du 26/08/2026 change la nature même de l'item).
+**Statut** : spec écrite dans `design-system-extractor/SKILL.md`, branchée dans `slide-content-claude-design/SKILL.md` (Étape 0 et § Design system par défaut) et documentée dans `PIPELINE_CONTRACTS.md` (Contrat DS-1). `design-systems/` ajouté au `.gitignore` (données client, jamais versionnées, même règle que `formations/`/`appels-offres/`). Reste à vérifier sur un cas réel (extraction à partir de documents de marque effectifs, puis production de slides avec le design system extrait).
 
 ### 23. Documenter l'installation des skills sur les 3 surfaces (Claude Code, application Claude, Cowork) ✅ Fait le 28/07/2026
 **Constat** (demande utilisateur du 28/07/2026) : le README ne documentait que l'installation sur Claude Code (copie de dossier dans `~/.claude/skills/`). Or les skills Anthropic ne se synchronisent PAS entre surfaces — c'est un fait produit documenté (`platform.claude.com/docs/en/agents-and-tools/agent-skills/overview` § « Cross-surface availability » : *"Custom Skills do not sync across surfaces"*) — donc un consultant qui utilise aussi l'application Claude ou Cowork ne trouvait aucune indication sur comment y installer les mêmes skills. Recherche complémentaire : sur claude.ai/Cowork, l'installation individuelle se fait par upload d'un fichier ZIP (Réglages → Personnaliser → Skills), avec une structure de zip précise (dossier de la skill à la racine, nommé comme le `name:` du frontmatter). **Correction post-audit comité qualité (28/07/2026)** : l'affirmation initiale « aucun partage d'équipe même en Team/Entreprise » était fausse — une source distincte (`support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization`, plus récente) confirme qu'un **Owner** Team/Enterprise peut provisionner une skill à toute l'organisation en une fois via *Réglages d'organisation → Skills → Organization skills*. Les deux pages Anthropic ne sont pas synchronisées entre elles sur ce point ; le README documente les deux avec la nuance nécessaire. Le comportement de Cowork lui-même (charge-t-il les skills du compte claude.ai ?) reste une supposition non confirmée par une source officielle — documenté comme tel, pas comme un fait acquis.
@@ -278,7 +280,7 @@ Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou d
 
 ## User stories
 
-Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2 (item retiré le 26/08/2026, story conservée pour l'historique — voir « Non retenu »), US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29. Items sans story, avec leur raison :
+Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2 (item retiré le 26/08/2026, story conservée pour l'historique — voir « Non retenu »), US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29, US-19→#20. Items sans story, avec leur raison :
 - **#7, #11, #13** — dépendants d'un spike ou d'un retour d'usage préalable (Horizon 4) ; les storifier avant ce préalable serait prématuré.
 - **#9** — levé le 28/07/2026 (voir son Statut), directement absorbé par US-16 plutôt que storifié séparément.
 - **#14** — même exception que #15/#16/#23/#24 (résolu directement au niveau item le 26/08/2026, voir son Statut) ; action purement documentaire, sans changement de comportement des skills à formaliser en critères d'acceptation séparés.
@@ -286,7 +288,6 @@ Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1,
 - **#16** — spécifié et clôturé directement au niveau item (voir son Statut) ; exception au circuit item→story assumée pour un changement de spec très localisé.
 - **#17** — clos le 29/07/2026 (voir son Statut) ; poursuivi par #29/US-18 (US-17, première itération `cadrage-appel-offres`, remplacée le 18/08/2026 — voir CHANGELOG.md), pas de story propre à #17 lui-même (arbitrage organisationnel, pas un développement).
 - **#18** — P4, hors périmètre produit (arbitrage managérial).
-- **#20** — sa dépendance sur #2 est levée (item #2 retiré le 26/08/2026), reste bloqué sur l'obtention des fichiers de référence du design system eux-mêmes ; à storifier une fois ce préalable levé — action documentaire S, triviale à cadrer.
 - **#23** — spécifié et clôturé directement au niveau item (voir son Statut, même exception que #16) ; action purement documentaire (README), sans changement de comportement des skills à formaliser en critères d'acceptation séparés.
 - **#24** — même exception que #16/#20/#23 ; fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), sans changement de comportement des skills.
 - **#29** — story US-18 rédigée pour `reponse-appel-offres` (remplace la première itération `cadrage-appel-offres`/US-17, remplacée depuis — voir plus haut et `CHANGELOG.md`).
@@ -536,6 +537,28 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] Les Contrats AO-1 (v2) et AO-2 sont documentés dans `PIPELINE_CONTRACTS.md`.
 
 **Statut** : spec écrite dans `reponse-appel-offres/SKILL.md`, script `generate_exigences_xlsx.py` déplacé et vérifié (compilation + test fonctionnel incluant le nouvel onglet "Format de réponse imposé"). Reste à vérifier sur un cas réel (un AO traité de bout en bout jusqu'au plan de présentation), conformément à la DoD.
+
+---
+
+### US-19 — `design-system-extractor` produit un design system client réutilisable à partir de n'importe quel document fourni ✅ Faite le 26/08/2026 (spec)
+*Rattaché à #20*
+
+**En tant que** consultant qui prépare des slides pour un client ayant sa propre charte graphique,
+**je veux** pouvoir extraire son design system à partir de n'importe quel document qu'il me fournit réellement (captures, PDF, export Figma, site web, logo...), sans lui imposer un format,
+**afin de** produire des slides alignées sur son identité visuelle réelle plutôt que sur la palette par défaut ou une charte improvisée à partir d'une description orale.
+
+**Critères d'acceptation :**
+- [x] `design-system-extractor/SKILL.md` détecte explicitement les sources fournies (jamais devinées) et signale toute source annoncée mais non transmise.
+- [x] L'extraction ne décrit que des tokens réellement observés dans les sources — un token non observable est marqué `NON DÉTERMINÉ`, jamais deviné ni complété par une valeur plausible (garde-fou anti-hallucination central de cette skill).
+- [x] Une étape de validation par l'utilisateur précède la finalisation du dossier de sortie — en particulier pour les couleurs estimées visuellement (recommandation de vérification par pipette) et les champs `NON DÉTERMINÉ`.
+- [x] Le livrable `design-systems/<client>/design-system.md` respecte le Contrat DS-1 documenté dans `PIPELINE_CONTRACTS.md`, au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md`, pour lui être directement substituable.
+- [x] L'emplacement du livrable est décrit sans ambiguïté : dossier de premier niveau `design-systems/<client>/`, **à côté** de `formations/`/`appels-offres/` et non à l'intérieur, parce qu'un design system vaut pour le client entier (réutilisable d'une session à l'autre et entre formation et AO) — même formulation dans les trois fichiers qui le mentionnent.
+- [x] `formation-pipeline/SKILL.md` couvre le cas orchestré : le design system devient le paramètre 4 de son Étape 0 (jamais deviné), et le point de validation de `design-system-extractor` Étape 2 rejoint la liste des garde-fous que le mode non-stop ne peut pas lever.
+- [x] `slide-content-claude-design/SKILL.md` consulte ce fichier s'il existe (Étape 0), et comble ses champs `NON DÉTERMINÉ` avec « Encre & Sauge » en le signalant explicitement au consultant.
+- [x] `design-systems/` est ajouté au `.gitignore` — données client, jamais versionnées, même règle que `formations/`/`appels-offres/`.
+- [x] La skill propose explicitement l'enchaînement vers `slide-content-claude-design` en fin de parcours, sans l'invoquer de force.
+
+**Statut** : spec écrite dans `design-system-extractor/SKILL.md`, branchée dans `slide-content-claude-design/SKILL.md`, Contrat DS-1 documenté. Reste à vérifier sur un cas réel (extraction à partir de documents de marque effectifs d'un client, puis production de slides avec le design system extrait), conformément à la DoD.
 
 ---
 
