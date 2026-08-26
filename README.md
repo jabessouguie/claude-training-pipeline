@@ -1,8 +1,10 @@
 # Skills — Pipelines de production de formation et de réponse à appel d'offres
 
-Les skills Claude Code utilisées pour préparer et produire, d'une part, le dossier complet d'une formation « Product Management augmenté » (utilisable sur n'importe quelle formation), et d'autre part une réponse à appel d'offres commercial (en cours de construction).
+Les skills Claude Code utilisées pour préparer et produire, d'une part, le dossier complet d'une formation « Product Management augmenté » (utilisable sur n'importe quelle formation), et d'autre part une réponse à appel d'offres commercial.
 
-Ce dépôt couvre désormais **deux pipelines** : la production de formation (5 skills, détaillées ci-dessous) et la réponse à appel d'offres (en cours de construction, voir « Pipeline réponse à appel d'offres » plus bas). Les deux partagent la même gouvernance, le même workflow Git, et le même fichier de contrats d'interface (`PIPELINE_CONTRACTS.md`) — voir `GOVERNANCE.md` pour l'arbitrage qui a permis cet élargissement.
+Ce dépôt couvre désormais **deux pipelines** : la production de formation (5 skills, détaillées ci-dessous) et la réponse à appel d'offres (voir « Pipeline réponse à appel d'offres » plus bas). Les deux partagent la même gouvernance, le même workflow Git, et le même fichier de contrats d'interface (`PIPELINE_CONTRACTS.md`) — voir `GOVERNANCE.md` pour l'arbitrage qui a permis cet élargissement.
+
+**Nouveau sur ce dépôt ?** [ONBOARDING.md](ONBOARDING.md) donne une vue d'ensemble des deux pipelines en une page, à montrer avant d'installer quoi que ce soit.
 
 ## En deux mots
 

@@ -7,6 +7,10 @@ Historique des évolutions du pipeline de skills, du plus récent au plus ancien
 **Arbitré**
 - **Item [#7](BACKLOG.md)** — Claude Code vs Claude Desktop : les deux outils restent supportés en interne, pas de convergence vers un seul. Sort de l'Horizon 4 de `ROADMAP.md`.
 **Ajouté**
+- **`ONBOARDING.md`** ([#14](BACKLOG.md)) : une page (schéma Mermaid + tableau entrées/sorties/points de validation par skill, pour chacun des deux pipelines) destinée à être montrée en 5 minutes à un nouvel arrivant avant qu'il n'installe quoi que ce soit — synthétisée du `README.md`, référencée depuis celui-ci et depuis `wiki/00-Accueil.md`.
+
+**Corrigé**
+- README.md : retrait de la mention obsolète « en cours de construction » pour `reponse-appel-offres`, livrée depuis le 18/08/2026 (US-18).
 - **`design-system-extractor`** ([#20](BACKLOG.md), US-19) : nouvelle skill transverse aux deux pipelines. Extrait le design system d'un client à partir de n'importe quel document réellement fourni (captures, PDF, export Figma, site web, logo...) — jamais un format d'entrée imposé. Garde-fou anti-hallucination central : un token non observé est marqué `NON DÉTERMINÉ`, jamais deviné. Produit `design-systems/<client>/design-system.md` (Contrat DS-1 de `PIPELINE_CONTRACTS.md`), consommé par `slide-content-claude-design` à la place de sa palette par défaut « Encre & Sauge » quand il existe. Révise le périmètre initial de l'item #20 (qui envisageait d'ajouter des fichiers de référence statiques supposés déjà exister) après vérification qu'aucun fichier de ce type n'existe réellement.
 
 **Corrigé**

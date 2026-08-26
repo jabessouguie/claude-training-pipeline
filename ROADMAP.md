@@ -28,7 +28,7 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 **Pourquoi en premier** : tout le reste de la roadmap suppose que le socle technique ne bloque pas — améliorer le contenu des skills (Horizon 2) est inutile si personne d'autre que le porteur du pipeline ne peut les faire tourner de façon fiable.
 
-**Complète le socle** : #14 — Packager le workflow complet comme asset transmissible (schéma + mode d'emploi de présentation, à produire à partir du `README.md` existant). Bien que ce ne soit pas un correctif technique, cet item conditionne la même condition de sortie : un nouvel arrivant doit pouvoir comprendre le pipeline en 5 minutes sans reproduire une session de démo complète.
+**Complète le socle** : #14 — Packager le workflow complet comme asset transmissible ✅ Fait le 26/08/2026 — `ONBOARDING.md` (schéma + une page, synthétisé du `README.md`). Un nouvel arrivant peut comprendre le pipeline en 5 minutes sans reproduire une session de démo complète.
 
 **Complète aussi le socle** : #24 — Standardiser les fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), pour la même raison : un point d'entrée navigable (wiki) qui ne suppose pas de cloner le dépôt.
 

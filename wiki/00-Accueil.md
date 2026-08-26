@@ -8,6 +8,7 @@ Bienvenue sur le wiki des pipelines de skills Claude Code de ce dépôt. Ce dép
 
 ## Par où commencer ?
 
+0. **Vue d'ensemble en 5 minutes**, avant d'installer quoi que ce soit → [ONBOARDING.md](../ONBOARDING.md) (schéma + une page, pour une démo à un nouvel arrivant)
 1. **Installer les skills** sur l'outil que tu utilises → [Installation](01-Installation/00-Sommaire)
 2. **Utiliser le pipeline** au quotidien → [Utiliser le pipeline](02-Utiliser-le-pipeline)
 3. **Un souci, une question ?** → [FAQ et dépannage](03-FAQ-et-depannage)
