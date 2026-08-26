@@ -86,4 +86,16 @@ Workflow en 8 étapes :
 
 ---
 
+## Skill transverse — `design-system-extractor`
+
+À utiliser dès qu'un client a sa propre charte graphique à appliquer aux slides, avant ou pendant `slide-content-claude-design`.
+
+1. **Fournir n'importe quel document de marque du client** — captures d'écran, PDF de charte graphique, export Figma, site web, logo seul... aucun format n'est imposé.
+2. La skill extrait les tokens **réellement observés** (couleurs, typographie, composants récurrents, ton) — un élément non observable est marqué explicitement `NON DÉTERMINÉ`, jamais deviné.
+3. **Validation** avant de finaliser : confirme les couleurs (recommande une pipette pour la précision hexadécimale) et les champs `NON DÉTERMINÉ`.
+
+**Sortie** : `design-systems/<client>/design-system.md`, que `slide-content-claude-design` applique ensuite à la place de sa palette par défaut « Encre & Sauge ».
+
+---
+
 Pour l'installation, voir [Installation](01-Installation/00-Sommaire). Pour un souci ou une question fréquente, voir [FAQ et dépannage](03-FAQ-et-depannage).

@@ -208,7 +208,7 @@ Proposer explicitement l'enchaînement vers `comite-qualite` en fin d'Étape 6 :
 
 Produit par `scripts/generate_exigences_xlsx.py` (mêmes conventions visuelles que `cadrage-formation/scripts/generate_cadrage_xlsx.py` : en-tête bleu marine, priorités en couleur, filtres + volets figés, pas de formule).
 
-#### Format du JSON d'entrée
+### Format du JSON d'entrée
 
 ```json
 {
@@ -253,7 +253,7 @@ Produit par `scripts/generate_exigences_xlsx.py` (mêmes conventions visuelles q
 
 Les clés `personnes`, `entite_emettrice`, `secteur_industrie`, `technologies`, `jalons`, `go_no_go`, `contexte`, `points_vigilance`, `format_reponse_impose` sont optionnelles mais fortement recommandées. La clé `questions_acheteur` n'est utilisée qu'en cas de période de questions ouverte avec format tableau demandé.
 
-#### Ce que produit le script
+### Ce que produit le script
 
 - Onglet **Exigences CCTP** (toujours présent) : N° / Source / Thème / Exigence / Catégorie / Critère de notation lié / Statut de traitement / Partie du mémoire / Page de réponse / Commentaire, avec filtres, volets figés, `ÉLIMINATOIRE` en rouge vif.
 - Onglets conditionnels : Deadline & jalons, Entité émettrice, Personnes liées à l'AO, Secteur & industrie, Technologies mentionnées, Go-No-go, Questions à l'acheteur, Format de réponse imposé (rempli si `format_reponse_impose` est renseigné).

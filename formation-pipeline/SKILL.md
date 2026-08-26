@@ -15,10 +15,10 @@ Une skill Claude Code n'est pas une fonction qu'on "appelle" — c'est un ensemb
 
 ## Étape 0 — Paramètres à établir avant de démarrer (jamais deviner)
 
-Si non précisés spontanément par l'utilisateur, poser explicitement ces trois questions avant de commencer :
+Si non précisés spontanément par l'utilisateur, poser explicitement ces questions avant de commencer :
 
 ```
-Quatre paramètres avant de lancer le pipeline complet :
+Cinq paramètres avant de lancer le pipeline complet :
 
 1. Mode de validation : je m'arrête à chaque point de validation déjà prévu
    par chaque étape ("step-by-step", recommandé), ou j'enchaîne sans interruption
@@ -35,12 +35,20 @@ Quatre paramètres avant de lancer le pipeline complet :
    arrêtés par ailleurs, cf. `formation-material-builder/SKILL.md` § « Mode
    standalone ») ?
 
-4. (Si standalone) : peux-tu fournir maintenant le contexte client et le plan
+4. Design system : la charte par défaut « Encre & Sauge » convient, ou le client
+   a-t-il une charte propre à appliquer ? Si oui : existe-t-il déjà un
+   `design-systems/<client>/design-system.md` (produit par
+   `design-system-extractor`), ou faut-il l'extraire d'abord de documents de
+   marque que tu fournirais (captures, PDF de charte, export Figma, site web…) ?
+
+5. (Si standalone) : peux-tu fournir maintenant le contexte client et le plan
    de formation ? Ils seront transmis tels quels à `formation-material-builder`
    Phase 0, sans passer par l'ingestion d'un xlsx.
 ```
 
 Ne jamais fixer ces paramètres par défaut silencieusement — ce sont des choix structurants (cf. le principe déjà appliqué dans `slide-content-claude-design/SKILL.md` § « Méthode », étape 0, pour densité/design system).
+
+**Cas du design system à extraire (paramètre 4)** : si l'utilisateur annonce une charte client sans fichier `design-systems/<client>/design-system.md` existant, invoquer `design-system-extractor` **avant** d'atteindre `slide-content-claude-design`, en suivant sa spec telle quelle — y compris son point de validation structurant (l'utilisateur confirme les tokens extraits avant finalisation). Ce point de validation n'est **jamais levé par le mode non-stop** : il rejoint la liste des garde-fous non contournables ci-dessous, car un design system mal extrait se propage à toutes les slides produites ensuite. Si l'utilisateur ne dispose d'aucun document de marque exploitable, poursuivre avec « Encre & Sauge » et le signaler explicitement — jamais improviser une charte à partir d'une description orale.
 
 Une fois établis, **ne jamais les redemander** à une sous-skill qui, invoquée seule, les demanderait normalement (ex. densité/design system de `slide-content-claude-design`) — les transmettre directement.
 
@@ -70,7 +78,7 @@ Reprend et étend le principe déjà en place dans `formation-material-builder/S
 ## Gestion des points de validation
 
 - **Mode step-by-step (défaut)** : à chaque transition du tableau ci-dessus, afficher ce que la sous-skill qui vient de tourner propose comme prochaine étape (elle l'écrit déjà elle-même en fin de section/phase dans son propre `SKILL.md`) — ne pas la reformuler, la relayer telle quelle — puis attendre confirmation avant de continuer.
-- **Mode non-stop** : enchaîner automatiquement les transitions, **sauf** les blocages que les sous-skills elles-mêmes qualifient comme non contournables sans intervention humaine : réponses INDISPENSABLE manquantes (`cadrage-formation`/`formation-material-builder`), validation du plan/fil rouge/roadmap (`formation-material-builder`), 🔴 bloquant en synthèse (`comite-qualite` Phase C). L'orchestrateur **ne peut jamais** lever un de ces garde-fous lui-même — ils appartiennent à la sous-skill qui les a posés.
+- **Mode non-stop** : enchaîner automatiquement les transitions, **sauf** les blocages que les sous-skills elles-mêmes qualifient comme non contournables sans intervention humaine : réponses INDISPENSABLE manquantes (`cadrage-formation`/`formation-material-builder`), validation du plan/fil rouge/roadmap (`formation-material-builder`), validation des tokens extraits (`design-system-extractor` Étape 2, si ce détour a été déclenché par le paramètre 4 de l'Étape 0), 🔴 bloquant en synthèse (`comite-qualite` Phase C). L'orchestrateur **ne peut jamais** lever un de ces garde-fous lui-même — ils appartiennent à la sous-skill qui les a posés.
 - Si une sous-skill signale une ambiguïté ou une information manquante qu'elle ne peut résoudre seule, basculer immédiatement en step-by-step pour cette transition, même si le mode général est non-stop.
 - Après chaque transition, même en mode non-stop, produire un message court (une ligne) de ce qui vient d'être fait — pas seulement un récapitulatif final.
 
@@ -84,4 +92,4 @@ Comme les 4 autres skills du pipeline (US-4) : à la fin de chaque transition (s
 
 ## Fichiers de référence
 
-Cette skill n'a pas de `references/` propre : elle s'appuie exclusivement sur les `SKILL.md` des 4 skills orchestrées et sur [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md).
+Cette skill n'a pas de `references/` propre : elle s'appuie exclusivement sur les `SKILL.md` des 4 skills orchestrées, sur celui de [`design-system-extractor`](../design-system-extractor/SKILL.md) quand le paramètre 4 de l'Étape 0 déclenche ce détour, et sur [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md).

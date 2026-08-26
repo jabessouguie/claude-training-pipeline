@@ -1,8 +1,8 @@
 # Contrats d'interface des pipelines de skills
 
-Ce fichier est la **source de vérité unique** du format exact de chaque fichier échangé entre deux skills, pour les pipelines de ce dépôt (production de formation, et réponse à appel d'offres). Les `SKILL.md` n'y renvoient que par référence courte ("voir Contrat N ci-dessous") — ils ne dupliquent jamais ce format. Toute divergence constatée entre ce fichier et le comportement réel d'une skill est un bug spec-driven à corriger immédiatement (voir [CONTRIBUTING.md](CONTRIBUTING.md) : la spec n'est jamais implicite, une seule source fait foi).
+Ce fichier est la **source de vérité unique** du format exact de chaque fichier échangé entre deux skills, pour les pipelines de ce dépôt (production de formation, réponse à appel d'offres) ainsi que pour les skills transverses aux deux (`design-system-extractor`). Les `SKILL.md` n'y renvoient que par référence courte ("voir Contrat N ci-dessous") — ils ne dupliquent jamais ce format. Toute divergence constatée entre ce fichier et le comportement réel d'une skill est un bug spec-driven à corriger immédiatement (voir [CONTRIBUTING.md](CONTRIBUTING.md) : la spec n'est jamais implicite, une seule source fait foi).
 
-Ce document ne décrit pas *pourquoi* chaque skill fait ce qu'elle fait (ça reste dans son `SKILL.md`) — seulement *ce qui passe d'une skill à l'autre* et sous quelle forme exacte. Les contrats du pipeline formation sont numérotés `1` à `5` ; ceux du pipeline réponse à appel d'offres sont préfixés `AO-` (ex. `AO-1`) pour éviter toute ambiguïté entre les deux métiers dans le même journal de versions.
+Ce document ne décrit pas *pourquoi* chaque skill fait ce qu'elle fait (ça reste dans son `SKILL.md`) — seulement *ce qui passe d'une skill à l'autre* et sous quelle forme exacte. Les contrats du pipeline formation sont numérotés `1` à `5` ; ceux du pipeline réponse à appel d'offres sont préfixés `AO-` (ex. `AO-1`) ; ceux transverses aux deux pipelines sont préfixés `DS-` (ex. `DS-1`, design system) — pour éviter toute ambiguïté entre les métiers dans le même journal de versions.
 
 ## Vue d'ensemble du pipeline
 
@@ -161,6 +161,29 @@ comite-qualite
 
 ---
 
+## Vue d'ensemble — skill transverse `design-system-extractor`
+
+```
+design-system-extractor (sources : captures, PDF, Figma, site web, logo...)
+   │  (Contrat DS-1 : design-systems/<client>/design-system.md)
+   ▼
+slide-content-claude-design ── Étape 0, à la place du design system par défaut « Encre & Sauge »
+```
+
+Skill invoquée à la demande, en amont de `slide-content-claude-design` — ne fait pas partie du déroulé séquentiel obligatoire d'aucun des deux pipelines.
+
+## Contrat DS-1 — `design-system-extractor` → `slide-content-claude-design`
+
+**Fichiers**, dans `design-systems/<client>/` — dossier de premier niveau, **à côté** de `formations/` et `appels-offres/` et non à l'intérieur : un design system vaut pour le client entier, réutilisable d'une session de formation à l'autre et entre formation et AO. Jamais versionné, comme les deux autres (voir `.gitignore`) :
+- `design-system.md` — couleurs (accent principal, accents secondaires, neutres, accents data), typographie (titres, corps), composants observés, ton, et une liste explicite des champs `NON DÉTERMINÉ` (jamais omise silencieusement).
+- `assets/` — logo(s) ou captures fournies telles quelles, si applicable (non retravaillées).
+
+**Règle de complétude** : un champ non observable dans les sources fournies est marqué `NON DÉTERMINÉ`, jamais deviné ni complété par une valeur par défaut au moment de l'extraction — c'est `slide-content-claude-design` qui comble ensuite un champ `NON DÉTERMINÉ` avec la valeur « Encre & Sauge » correspondante, en le signalant explicitement au consultant (voir son `SKILL.md` § Design system par défaut).
+
+**Version de contrat** : v1 (26/08/2026).
+
+---
+
 ## Journal des versions de contrat
 
 | Contrat | Version | Date | Changement |
@@ -175,3 +198,4 @@ comite-qualite
 | AO-1 | v1 | 29/07/2026 | Création — première itération du pipeline réponse à appel d'offres (US-17, #29) |
 | AO-1 | v2 | 18/08/2026 | Renommage de contexte (`reponse-appel-offres` remplace `cadrage-appel-offres`) + ajout de l'onglet "Format de réponse imposé" |
 | AO-2 | v1 | 18/08/2026 | Création — sortie finale du plan de présentation (remplace le chaînon `memoire-technique-builder`/`memoire-content-claude-design` jamais implémenté, US-18) |
+| DS-1 | v1 | 26/08/2026 | Création — sortie de `design-system-extractor`, consommée par `slide-content-claude-design` (item [#20](BACKLOG.md)) |
