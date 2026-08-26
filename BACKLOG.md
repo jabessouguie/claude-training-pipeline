@@ -28,7 +28,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 
 ## P1 — Valeur court terme (évolutions de skills demandées explicitement)
 
-### 19. `slide-content-claude-design` — séparer le contenu Claude Design du prompt illustration Gemini
+### 19. `slide-content-claude-design` — séparer le contenu Claude Design du prompt illustration Gemini ✅ Fait le 24/07/2026 (spec)
 **Constat** (interview de spécification US-10, à la suite d'une démo interne) : actuellement les slides.md générées contiennent le contenu textuel et les prompts d'illustration mélangés, ce qui rend difficile de :
   - Fournir le contenu structuré à Claude Design (sans distraction des prompts Gemini)
   - Générer les prompts d'illustration via Gemini avec contexte d'un prompt structuré et validé
@@ -41,6 +41,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - Les prompts Gemini intègrent les tokens par défaut exacts (bleu marine #2C5F8A, corail #D97757, vert sauge #4A8B6F) et les garde-fous visuels (aucun texte, pas de doublon texte/image, zéro faute).
 **Effort** : M — refonte du format de sortie de la skill, mais la logique pédagogique reste inchangée.
 **Dépend de** : rien (amélioration de workflow transverse à Horizon 1/2).
+**Statut** : story `US-10` déjà marquée faite (spec écrite dans `slide-content-claude-design/SKILL.md`, revue par le comité qualité) — cet item n'avait pas reçu le marqueur ✅ correspondant, corrigé ici pour que le suivi reflète l'état réel de la spec. Comme pour `US-10`, l'exécution sur un cas réel (création effective des deux fichiers et audit UX/UI en amont de Claude Design) reste à vérifier.
 
 ### 3. `cadrage-formation` — détecter et proposer les formations antérieures similaires
 **Constat** : retour d'usage récurrent — un contributeur suggère d'intégrer une vérification automatique des formations existantes au sein du skill de cadrage. Objectif : que l'agent demande "as-tu une formation déjà faite qui est proche ?", puis, si on lui donne accès à un répertoire de formations passées, qu'il propose lui-même la plus pertinente — **à valider par l'utilisateur, jamais appliquée automatiquement** (risque de réutiliser un gabarit inadapté sans validation).
