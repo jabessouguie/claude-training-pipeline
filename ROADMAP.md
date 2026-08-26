@@ -8,15 +8,16 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 ---
 
-## Horizon 1 — Fiabiliser le socle (adoption sans friction) 🟡 Majoritairement livré (US-2 en attente d'action humaine)
+## Horizon 1 — Fiabiliser le socle (adoption sans friction) ✅ Spec livrée (vérification en usage réel en attente)
 
 **Objectif** : n'importe qui dans l'équipe peut installer le pipeline, le lancer, et obtenir un premier livrable sans bloquer sur un problème d'outillage ou d'accès.
 
 **Contenu** (backlog associé) :
 - US-1 — Enregistrement fiable des skills entre sessions (#1)
-- US-2 — Dépôt comme source de vérité accessible à tous (#2)
 - US-7 — Guide de paramétrage de l'extension Claude Code (#8)
 - US-8 — Ouverture fluide des fichiers Excel générés (#10)
+
+*US-2 — Dépôt comme source de vérité accessible à tous (#2) — retirée le 26/08/2026 (voir `BACKLOG.md` § « Non retenu ») : l'incident qui l'avait motivée ne s'est pas reproduit. Ne conditionne plus cet horizon.*
 
 **Condition de sortie** : une personne de l'équipe qui n'a jamais utilisé le pipeline peut, seule, à partir du seul dépôt, installer les 4 skills et produire un premier plan de formation sans intervention orale d'un tiers.
 
@@ -26,7 +27,7 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 **Complète aussi le socle** : #24 — Standardiser les fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), pour la même raison : un point d'entrée navigable (wiki) qui ne suppose pas de cloner le dépôt.
 
-**Complète aussi le socle** : #20 — Ajouter la référence du design system au dépôt (dépend de #2/US-2) : le dépôt n'est réellement autoportant pour la partie design qu'une fois ces deux fichiers de référence poussés à côté des skills.
+**Complète aussi le socle** : #20 — Ajouter la référence du design system au dépôt : le dépôt n'est réellement autoportant pour la partie design qu'une fois ces deux fichiers de référence poussés à côté des skills. Ne dépend plus de #2/US-2 (retirée le 26/08/2026) ; reste bloqué sur l'obtention des fichiers eux-mêmes.
 
 ---
 
@@ -44,7 +45,7 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 **Condition de sortie** : un utilisateur qui suit le pipeline de bout en bout (cadrage → matériel → slides → audit) est à chaque étape informé de ce qu'il peut faire ensuite, sans avoir à consulter cette roadmap ou à demander à un collègue.
 
-**Dépendance** : suppose Horizon 1 terminé (US-2 en particulier, car US-5 et la réutilisation de formations passées présupposent un stockage fiable).
+**Dépendance** : suppose Horizon 1 terminé. US-5 (convention de rangement) est indépendante de US-2 (retirée le 26/08/2026) ; la réutilisation de formations passées (Horizon 3, US-3) présuppose toujours un stockage fiable des formations, besoin qui persiste sans être porté par un item de backlog dédié depuis le retrait de US-2.
 
 **Renforce cet horizon** : #16 — Intégrer le "personnage" d'un interlocuteur client au comité qualité, pour vérifier la fidélité du contenu produit à ce qui a été exprimé en entretien de cadrage. Rattaché à Horizon 2 plutôt qu'à Horizon 4 car il ne dépend d'aucun préalable externe, seulement de la qualité des notes déjà produites par `cadrage-formation`.
 
@@ -60,9 +61,9 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 - US-3 — Réutilisation d'une formation antérieure proche dans `cadrage-formation` (#3)
 - US-9 — Seuil de bascule vers une analyse par profil type au-delà d'une grande audience (#12)
 
-**Condition de sortie** : sur au moins 2 formations réelles consécutives pour un même client (à quelques mois d'écart), la seconde bénéficie effectivement du cadrage de la première via la skill, avec validation explicite de l'utilisateur à chaque réutilisation. **Non atteinte à ce stade** : la spec de US-3 et US-9 est écrite dans `cadrage-formation/SKILL.md`, mais US-3 reste bloquée en pratique tant que US-2 (dépôt source de vérité) n'est pas pleinement close — un répertoire de formations passées accessible à tous est le prérequis concret pour tester ce comportement en conditions réelles.
+**Condition de sortie** : sur au moins 2 formations réelles consécutives pour un même client (à quelques mois d'écart), la seconde bénéficie effectivement du cadrage de la première via la skill, avec validation explicite de l'utilisateur à chaque réutilisation. **Non atteinte à ce stade** : la spec de US-3 et US-9 est écrite dans `cadrage-formation/SKILL.md`, mais US-3 reste bloquée en pratique tant qu'un répertoire de formations passées n'est pas effectivement accessible à tous — c'est le prérequis concret pour tester ce comportement en conditions réelles. Ce prérequis n'est plus porté par un item de backlog dédié depuis le retrait de US-2/#2 le 26/08/2026 (voir `BACKLOG.md` § « Non retenu » — l'incident qui l'avait motivé ne s'est pas reproduit) ; à réouvrir comme item si le besoin redevient bloquant en pratique.
 
-**Dépendance** : nécessite Horizon 1 (US-2, un stockage stable des formations passées) comme prérequis dur — documenté aussi comme dépendance directe dans le backlog (#3 dépend de #2).
+**Dépendance** : nécessite un stockage stable des formations passées comme prérequis dur pour sa condition de sortie — non couvert par un item de backlog actif depuis le retrait de US-2/#2 (26/08/2026, voir « Non retenu »). US-3 (#3) reste donc formellement sans dépendance backlog bloquante, mais son critère de test en conditions réelles ne peut être vérifié tant que ce stockage n'existe pas.
 
 ---
 

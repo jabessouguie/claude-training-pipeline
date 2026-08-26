@@ -19,13 +19,6 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Effort** : S — c'est en grande partie déjà écrit dans le `README.md` (section Installation) ; il manque un test de non-régression + un mot sur le mode "auto".
 **Statut** : story `US-1` déjà marquée faite (spec écrite dans `README.md` § "Enregistrement fiable entre sessions") — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Le test manuel de non-régression (restart de session sans recréer de chat) reste à rejouer en session réelle, non vérifiable depuis ce dépôt.
 
-### 2. Réparer/vérifier l'accès aux ressources sur le dépôt partagé 🟡 Partiellement fait le 24/07/2026
-**Constat** : un livrable de formation censé être disponible sur le dépôt partagé s'est avéré absent malgré un lien envoyé à plusieurs reprises par un autre canal — un contributeur confirme un accès au dépôt mais sans fichier visible initialement.
-**Valeur** : bloque tout collaborateur qui n'a pas reçu le livrable par un canal parallèle — le dépôt doit être la source de vérité.
-**Action** : pousser systématiquement les livrables de formation sur le dépôt partagé dès leur production ; vérifier ensuite l'accès depuis un compte tiers (pas seulement celui qui a poussé le fichier).
-**Effort** : S.
-**Statut** : story `US-2` partiellement faite — le volet documentaire (`README.md` § "Source de vérité") est fait, mais les deux critères d'action humaine (livrable effectivement poussé, accès confirmé depuis un compte tiers) restent ouverts et hors du périmètre de ce dépôt. Ne pas marquer ✅ tant qu'ils ne sont pas cochés dans `US-2` — bloque encore #3 et #20.
-
 ---
 
 ## P1 — Valeur court terme (évolutions de skills demandées explicitement)
@@ -54,8 +47,8 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - Si oui → l'agent scanne un répertoire de formations passées fourni par l'utilisateur et propose 1–3 candidats avec justification (profil participants, thématique, niveau).
   - L'utilisateur valide avant que l'agent ne s'en serve de base.
 **Effort** : M — nécessite d'ajouter une étape de discovery + un prompt de scan de répertoire dans `cadrage-formation/SKILL.md`.
-**Dépend de** : #2 (les formations passées doivent être accessibles quelque part de stable, pas juste dans des envois ponctuels).
-**Statut** : story `US-3` déjà marquée faite (spec écrite dans `cadrage-formation/SKILL.md`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Dépend en pratique de #2 (encore partiel) pour qu'un répertoire de formations passées soit effectivement accessible ; reste à vérifier sur un cas réel une fois ce préalable levé.
+**Dépend de** : rien au niveau backlog (l'item #2 qui portait cette dépendance a été retiré le 26/08/2026, voir « Non retenu »), mais le besoin concret persiste : les formations passées doivent être accessibles quelque part de stable, pas juste dans des envois ponctuels.
+**Statut** : story `US-3` déjà marquée faite (spec écrite dans `cadrage-formation/SKILL.md`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel une fois un répertoire de formations passées effectivement accessible.
 
 ### 4. Proposer systématiquement les prochaines étapes après génération de contenu ✅ Fait le 24/07/2026 (spec)
 **Constat** : retour d'usage récurrent — plusieurs utilisateurs demandent que l'agent propose systématiquement les prochaines étapes de création après la génération du contenu. Observé concrètement : certains environnements le font spontanément (proposer un choix explicite entre plusieurs livrables possibles à produire ensuite) alors que d'autres ne le proposent pas nativement (comportement qui dépend du modèle et de l'environnement utilisés).
@@ -70,7 +63,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Valeur** : évite la perte de contexte en collaboratif (accès et versions dupliquées) et facilite la réutilisation par #3.
 **Action** : définir une convention de nommage/arborescence (ex. `formations/<client>-<thème>/<AAAA-MM>/`) et l'intégrer comme étape de `cadrage-formation` (création du dossier dès le cadrage) plutôt qu'en fin de pipeline.
 **Effort** : S/M — convention à documenter + petit ajustement du prompt de création de dossier dans la skill.
-**Dépend de** : aucune, mais facilite #3 et #2.
+**Dépend de** : aucune, mais facilite #3.
 **Statut** : story `US-5` déjà marquée faite (convention documentée, `cadrage-formation` crée le dossier dès l'Étape 0) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier par un premier usage réel.
 
 ### 14. Packager le workflow complet comme asset transmissible (skills + enchaînement + mode d'emploi)
@@ -78,7 +71,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Valeur** : transforme le pipeline d'un savoir-faire individuel (aujourd'hui largement documenté dans la tête du porteur du pipeline et démontré oralement) en un actif d'équipe réellement transmissible sans reproduire une session de démo à chaque nouvel arrivant.
 **Action** : produire, à partir du `README.md` existant, un support visuel court (1 schéma + 1 page) du pipeline complet (skill par skill, entrées/sorties, points de validation humaine), destiné à être montré en 5 minutes à un nouvel arrivant avant qu'il n'installe quoi que ce soit.
 **Effort** : S/M — capitalise sur le contenu déjà écrit dans le `README.md`, essentiellement un travail de mise en forme et de synthèse.
-**Dépend de** : US-1/US-2 (Horizon 1) pour que ce support pointe vers un pipeline effectivement installable sans friction.
+**Dépend de** : US-1 (Horizon 1) pour que ce support pointe vers un pipeline effectivement installable sans friction (US-2 retirée le 26/08/2026, ne conditionne plus cet item).
 
 ### 24. Standardiser les fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki) ✅ Fait le 28/07/2026
 **Constat** (demande utilisateur du 28/07/2026) : le dépôt n'avait ni fichier de licence explicite (statut juridique du contenu non clarifié), ni historique de version au format standard (les évolutions étaient notées en prose libre dans une section « Notes de version » du `README.md`, mêlant contenu daté et notes intemporelles), ni point d'entrée pour un consultant qui ne clone pas le dépôt Git (le README suppose l'accès au dépôt).
@@ -177,7 +170,7 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Valeur** : rend le dépôt réellement autoportant pour la partie design ; évite une divergence silencieuse entre les tokens inlinés dans la spec et la référence complète.
 **Action** : ajouter au dépôt les deux fichiers de référence (sans les assets lourds type logo/template pptx), puis faire pointer `slide-content-claude-design/SKILL.md` vers ce chemin.
 **Effort** : S.
-**Dépend de** : #2 (le dépôt doit être effectivement poussé et accessible).
+**Dépend de** : rien au niveau backlog (l'item #2 qui portait cette dépendance a été retiré le 26/08/2026, voir « Non retenu » — ce dépôt lui-même s'est avéré accessible et poussé sans difficulté depuis). Le blocage réel restant est l'obtention des deux fichiers de référence du design system eux-mêmes (aujourd'hui dans un dossier local hors dépôt).
 
 ### 23. Documenter l'installation des skills sur les 3 surfaces (Claude Code, application Claude, Cowork) ✅ Fait le 28/07/2026
 **Constat** (demande utilisateur du 28/07/2026) : le README ne documentait que l'installation sur Claude Code (copie de dossier dans `~/.claude/skills/`). Or les skills Anthropic ne se synchronisent PAS entre surfaces — c'est un fait produit documenté (`platform.claude.com/docs/en/agents-and-tools/agent-skills/overview` § « Cross-surface availability » : *"Custom Skills do not sync across surfaces"*) — donc un consultant qui utilise aussi l'application Claude ou Cowork ne trouvait aucune indication sur comment y installer les mêmes skills. Recherche complémentaire : sur claude.ai/Cowork, l'installation individuelle se fait par upload d'un fichier ZIP (Réglages → Personnaliser → Skills), avec une structure de zip précise (dossier de la skill à la racine, nommé comme le `name:` du frontmatter). **Correction post-audit comité qualité (28/07/2026)** : l'affirmation initiale « aucun partage d'équipe même en Team/Entreprise » était fausse — une source distincte (`support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization`, plus récente) confirme qu'un **Owner** Team/Enterprise peut provisionner une skill à toute l'organisation en une fois via *Réglages d'organisation → Skills → Organization skills*. Les deux pages Anthropic ne sont pas synchronisées entre elles sur ce point ; le README documente les deux avec la nuance nécessaire. Le comportement de Cowork lui-même (charge-t-il les skills du compte claude.ai ?) reste une supposition non confirmée par une source officielle — documenté comme tel, pas comme un fait acquis.
@@ -277,21 +270,22 @@ Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou d
 
 ## Non retenu / hors périmètre pour l'instant
 
+- **#2 — Réparer/vérifier l'accès aux ressources sur le dépôt partagé** (retiré le 26/08/2026, story `US-2` conservée pour l'historique) : l'incident qui avait motivé l'item (un livrable de formation absent du dépôt partagé malgré un lien envoyé à plusieurs reprises) ne s'est pas reproduit depuis — ce n'était pas un problème systémique du dépôt, pas de quoi maintenir un item de backlog actif dessus. Le volet documentaire déjà livré (`README.md` § "Source de vérité", désignant le dépôt comme référence) reste en place. **Conséquence sur les items qui en dépendaient** : #3 et #20 ne sont plus bloqués par un item de backlog #2 qui n'existe plus, mais le besoin concret sous-jacent (un répertoire de formations passées effectivement accessible à tous) n'est pas résolu pour autant — à réévaluer si le même type d'incident se reproduit.
 - **Génération de schémas d'architecture type Excalidraw** : mentionné comme besoin ("un schéma d'architecture, un truc qui ressemble à de l'Excalidraw") mais explicitement écarté pour l'instant côté outillage interne — à ne pas transformer en item tant qu'aucune piste d'outil n'est identifiée en interne.
 
 ---
 
 ## User stories
 
-Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2, US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29. Items sans story, avec leur raison :
+Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2 (item retiré le 26/08/2026, story conservée pour l'historique — voir « Non retenu »), US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29. Items sans story, avec leur raison :
 - **#7, #11, #13** — dépendants d'un spike ou d'un retour d'usage préalable (Horizon 4) ; les storifier avant ce préalable serait prématuré.
 - **#9** — levé le 28/07/2026 (voir son Statut), directement absorbé par US-16 plutôt que storifié séparément.
-- **#14** — story à rédiger lorsque US-1/US-2 seront closes (son livrable, un support d'onboarding, dépend d'un pipeline effectivement installable).
+- **#14** — story à rédiger lorsque US-1 sera close (son livrable, un support d'onboarding, dépend d'un pipeline effectivement installable ; US-2 retirée le 26/08/2026, ne conditionne plus cet item).
 - **#15** — traité directement dans `GOVERNANCE.md` (clarification organisationnelle, pas un développement).
 - **#16** — spécifié et clôturé directement au niveau item (voir son Statut) ; exception au circuit item→story assumée pour un changement de spec très localisé.
 - **#17** — clos le 29/07/2026 (voir son Statut) ; poursuivi par #29/US-18 (US-17, première itération `cadrage-appel-offres`, remplacée le 18/08/2026 — voir CHANGELOG.md), pas de story propre à #17 lui-même (arbitrage organisationnel, pas un développement).
 - **#18** — P4, hors périmètre produit (arbitrage managérial).
-- **#20** — dépend de #2 (dépôt effectivement poussé et accessible) ; à storifier une fois ce préalable levé — action documentaire S, triviale à cadrer.
+- **#20** — sa dépendance sur #2 est levée (item #2 retiré le 26/08/2026), reste bloqué sur l'obtention des fichiers de référence du design system eux-mêmes ; à storifier une fois ce préalable levé — action documentaire S, triviale à cadrer.
 - **#23** — spécifié et clôturé directement au niveau item (voir son Statut, même exception que #16) ; action purement documentaire (README), sans changement de comportement des skills à formaliser en critères d'acceptation séparés.
 - **#24** — même exception que #16/#20/#23 ; fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), sans changement de comportement des skills.
 - **#29** — story US-18 rédigée pour `reponse-appel-offres` (remplace la première itération `cadrage-appel-offres`/US-17, remplacée depuis — voir plus haut et `CHANGELOG.md`).
@@ -301,7 +295,7 @@ Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1,
 Une story n'entre en développement que si :
 - Le besoin est rattaché à un item du backlog priorisé (constat + valeur déjà documentés ci-dessus).
 - Les critères d'acceptation sont rédigés, vérifiables, et ne contiennent aucune ambiguïté sur le "fini".
-- Les dépendances amont sont soit levées, soit explicitement actées comme non bloquantes pour démarrer (ex. US-3 ne démarre pas avant que US-2 soit "Done").
+- Les dépendances amont sont soit levées, soit explicitement actées comme non bloquantes pour démarrer (ex. US-14 ne démarre pas avant que US-1 soit "Done").
 - Le fichier `SKILL.md` concerné est identifié (une story ne modifie jamais "toutes les skills" sans les lister nommément).
 - Il n'y a pas de question ouverte structurante non tranchée (ex. seuil exact, format de convention) — une valeur par défaut proposée vaut acceptation tant qu'elle est écrite noir sur blanc dans la story.
 
@@ -333,8 +327,8 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 
 ---
 
-### US-2 — Dépôt comme source de vérité accessible à tous 🟡 Partiellement faite le 24/07/2026
-*Rattaché à #2*
+### US-2 — Dépôt comme source de vérité accessible à tous — Item retiré le 26/08/2026 (voir BACKLOG.md § « Non retenu »)
+*Rattaché à #2 (retiré)*
 
 **En tant que** membre de l'équipe qui n'a pas reçu le livrable par un canal parallèle,
 **je veux** trouver les ressources de formation à jour sur le dépôt partagé,
@@ -345,7 +339,7 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [ ] Un utilisateur autre que celui qui a poussé le fichier confirme pouvoir cloner/accéder au dépôt et y retrouver les fichiers attendus. *(dépend du critère précédent)*
 - [x] Le `README.md` référence le dépôt comme source unique, à la place des envois par un canal parallèle.
 
-**Statut** : le volet documentaire est fait (`README.md`, § "Source de vérité", avec un encart signalant explicitement l'état d'attente). Les deux premiers critères restent ouverts et dépendent d'une action humaine hors du périmètre de ce dépôt — ne pas clôturer la story tant qu'ils ne sont pas cochés.
+**Statut** : le volet documentaire est fait (`README.md`, § "Source de vérité") et reste en place. Les deux premiers critères restent non cochés — la story n'est pas close par accomplissement, elle est **retirée** le 26/08/2026 en même temps que l'item #2 (l'incident déclencheur ne s'est pas reproduit, voir BACKLOG.md § « Non retenu ») ; conservée ici pour l'historique, non rejouée rétroactivement.
 
 ---
 
@@ -362,7 +356,7 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] L'agent ne réutilise jamais un gabarit sans validation explicite de l'utilisateur au préalable.
 - [x] Si l'utilisateur répond non, l'agent poursuit le cadrage from scratch sans blocage.
 
-**Statut** : spec écrite dans `cadrage-formation/SKILL.md`. Dépend en pratique de US-2 (Horizon 1) pour qu'un répertoire de formations passées soit effectivement accessible à tous — reste à vérifier sur un cas réel une fois ce répertoire disponible.
+**Statut** : spec écrite dans `cadrage-formation/SKILL.md`. Dépend en pratique d'un répertoire de formations passées effectivement accessible à tous (US-2, qui portait cette dépendance, a été retirée le 26/08/2026 — voir BACKLOG.md § « Non retenu » ; le besoin concret reste néanmoins à couvrir) — reste à vérifier sur un cas réel une fois ce répertoire disponible.
 
 ---
 
