@@ -1,8 +1,8 @@
 <!-- Page wiki GitHub : "Accueil". Sur GitHub, renommer sans le préfixe "00-" — le préfixe numérique sert uniquement à garder l'ordre de lecture visible dans un explorateur de fichiers local (Finder, VS Code), il n'a aucun rôle sur GitHub. -->
 
-# Pipeline de création de formation
+# Pipelines de production de formation et de réponse à appel d'offres
 
-Bienvenue sur le wiki du pipeline de skills Claude Code. Ce pipeline t'aide, étape par étape, à produire une formation client complète : de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz.
+Bienvenue sur le wiki des pipelines de skills Claude Code de ce dépôt. Ce dépôt couvre **deux pipelines** : la production d'une formation client complète (de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz), et la réponse à un appel d'offres commercial (de la recherche méthodologique jusqu'au plan de présentation).
 
 **Tu dialogues avec l'assistant en français, il fait le gros du travail.** Tu n'as pas besoin de connaître le détail technique du pipeline pour t'en servir — l'assistant te guide à chaque étape (voir [Comment l'assistant te guide](#comment-lassistant-te-guide) plus bas).
 
@@ -12,9 +12,9 @@ Bienvenue sur le wiki du pipeline de skills Claude Code. Ce pipeline t'aide, ét
 2. **Utiliser le pipeline** au quotidien → [Utiliser le pipeline](02-Utiliser-le-pipeline)
 3. **Un souci, une question ?** → [FAQ et dépannage](03-FAQ-et-depannage)
 
-## Les 4 skills, en un coup d'œil
+## Les skills, en un coup d'œil
 
-Le pipeline s'exécute dans cet ordre — chaque étape consomme la sortie de la précédente :
+### Pipeline formation — 4 skills, dans cet ordre (chaque étape consomme la sortie de la précédente)
 
 | # | Skill | Ce qu'elle produit |
 |---|---|---|
@@ -22,6 +22,12 @@ Le pipeline s'exécute dans cet ordre — chaque étape consomme la sortie de la
 | 1 | `formation-material-builder` | Tout le matériel pédagogique : slides, livret stagiaire, guide formateur, ateliers, quiz |
 | 2 | `slide-content-claude-design` | Le contenu prêt à générer visuellement dans Claude Design + les prompts d'illustration pour Gemini |
 | 3 | `comite-qualite` | Un audit multi-relecteurs du dossier complet, jusqu'à convergence |
+
+Une cinquième skill optionnelle, `formation-pipeline`, enchaîne les 4 ci-dessus à la suite sans avoir à les relancer une par une.
+
+### Pipeline réponse à appel d'offres — une skill unique
+
+`reponse-appel-offres` pilote la réponse complète à un appel d'offres (AO) commercial en 8 étapes internes : recherche méthodologique, recherche client, analyse du besoin (checklist d'exigences CCTP tracée), fit cabinet/client, sourcing et sélection de références, plan de présentation détaillé pour Claude Design, renvoi vers `comite-qualite`.
 
 Détail complet de chaque skill → [Utiliser le pipeline](02-Utiliser-le-pipeline).
 

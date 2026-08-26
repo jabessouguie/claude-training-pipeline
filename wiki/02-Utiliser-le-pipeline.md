@@ -65,4 +65,25 @@ Le format exact des fichiers échangés entre les skills est documenté dans `PI
 
 ---
 
+## Pipeline réponse à appel d'offres (`reponse-appel-offres`)
+
+Second pipeline de ce dépôt, indépendant du pipeline formation : une skill unique qui pilote la réponse complète à un appel d'offres (AO) commercial, de la recherche méthodologique jusqu'au plan de présentation prêt à coller dans Claude Design.
+
+À utiliser dès qu'on reçoit un dossier d'AO, un CCTP, un règlement de consultation, ou qu'on veut préparer une réponse à appel d'offres.
+
+Workflow en 8 étapes :
+
+0. **Recherche méthodologique** — bonnes pratiques et erreurs à éviter en réponse à AO, pour ce type de client et de mission.
+1. **Recherche étendue sur le client** émetteur de l'AO — type de dossier (marché public vs privé, jamais deviné), activité, organisation, personnes liées.
+2. **Analyse du besoin** — extraction exhaustive des exigences en checklist tracée (`OBLIGATOIRE`/`SOUHAITABLE`/`ÉLIMINATOIRE`), détection d'un éventuel format de réponse imposé par le client, critères de notation.
+3. **Analyse de l'adéquation cabinet/besoin** — via un profil cabinet (`profil-cabinet.md`, jamais un cabinet présupposé : chaque consultant renseigne le sien).
+4. **Références du cabinet** — demandées au consultant ET complétées par une recherche web de références publiques.
+5. **Sélection des références pertinentes** — critères explicites (secteur, techno, taille de mission).
+6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide + un fichier de prompts séparé.
+7. **Comité qualité** — proposition explicite d'enchaînement vers `comite-qualite`.
+
+**Sortie** : `exigences_<client>.xlsx` (livrable interne) et `plan-presentation-content.md`/`plan-presentation-prompts.md` (livrable final) — voir `PIPELINE_CONTRACTS.md` pour le détail des formats.
+
+---
+
 Pour l'installation, voir [Installation](01-Installation/00-Sommaire). Pour un souci ou une question fréquente, voir [FAQ et dépannage](03-FAQ-et-depannage).

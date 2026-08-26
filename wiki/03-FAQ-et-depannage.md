@@ -2,7 +2,7 @@
 
 # FAQ et dépannage
 
-## Je ne trouve pas les 4 dossiers de skills dans le dépôt GitHub
+## Je ne trouve pas les dossiers de skills dans le dépôt GitHub
 
 **Ce dépôt GitHub est la référence unique** pour récupérer les skills — ne pas se fier à un envoi ponctuel par e-mail ou par zip, qui peut être partiel ou périmé. Si les dossiers ne sont pas là, contacte la personne responsable du dépôt (voir `CONTRIBUTING.md`) plutôt que de repartir d'un zip reçu par ailleurs.
 
