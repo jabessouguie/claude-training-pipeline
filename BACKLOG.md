@@ -111,11 +111,12 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 
 ## P2 — Confort / harmonisation outillage
 
-### 7. Harmoniser Claude Code vs Claude Desktop en interne
+### 7. Harmoniser Claude Code vs Claude Desktop en interne ✅ Arbitré le 26/08/2026
 **Constat** : clivage observé dans l'équipe entre utilisateurs "Claude Code only" et "Claude Desktop only" — action déjà assignée en interne pour évaluer des solutions d'harmonisation.
 **Valeur** : réduit la friction d'onboarding et le nombre de chemins différents à documenter/maintenir pour un même pipeline de skills.
 **Action** : évaluer les options (formation croisée, guide de choix par profil "dev vs non-dev", ou convergence vers un seul outil) — à formaliser suite à un retour d'usage terrain.
 **Effort** : L — dépend de la décision d'outillage, hors du seul périmètre des skills.
+**Statut** : arbitrage rendu par le Product Owner le 26/08/2026 — **les deux outils restent supportés**, pas de convergence vers un seul. Ce dépôt documente déjà les deux (voir `README.md` § "Mise en place technique" et `wiki/01-Installation/`, qui couvrent Claude Code, l'application Claude et Cowork séparément) ; aucune nouvelle friction identifiée qui justifierait un guide de choix par profil dédié à ce stade. À rouvrir si un nouveau retour d'usage terrain montre que la coexistence pose un problème concret non déjà couvert par la documentation existante.
 
 ### 8. Documenter le paramétrage de l'extension Claude Code dans un IDE ✅ Fait le 24/07/2026 (documentation)
 **Constat** : un utilisateur a perdu un temps significatif en démo pour connecter son compte pro à l'extension Claude Code dans son IDE (icône à utiliser, lien d'authentification, gestion des quotas) — souci récurrent de blocage sur les quotas côté comptes pro.

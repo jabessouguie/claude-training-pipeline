@@ -4,6 +4,9 @@ Historique des évolutions du pipeline de skills, du plus récent au plus ancien
 
 ## 26/08/2026
 
+**Arbitré**
+- **Item [#7](BACKLOG.md)** — Claude Code vs Claude Desktop : les deux outils restent supportés en interne, pas de convergence vers un seul. Sort de l'Horizon 4 de `ROADMAP.md`.
+
 **Corrigé**
 - CI (`.github/workflows/ci.yml`) : le job `secret-detection` échouait sur tout événement `pull_request` (`gitleaks-action@v2` a besoin de la permission `pull-requests: read` sur le `GITHUB_TOKEN` pour lister les commits de la PR, non accordée par défaut) — ajout explicite de `permissions: contents: read, pull-requests: read` sur ce job ([#30](BACKLOG.md)).
 - Audit systématique du `BACKLOG.md` : 11 items (#1, #3, #4, #5, #6, #8, #10, #15, #19, #21, #22) avaient une story déjà marquée faite sans que l'item parent en porte le marqueur — corrigé, sans changement de comportement de skill.
