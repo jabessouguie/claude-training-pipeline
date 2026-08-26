@@ -6,7 +6,7 @@ Ce document définit qui décide quoi sur ce dépôt, et comment, pour une équi
 
 ### Product Owner (rôle, pas nécessairement titre)
 Porte la priorisation du [BACKLOG.md](BACKLOG.md) et la cohérence de la [ROADMAP.md](ROADMAP.md). Tranche en cas de désaccord sur ce qui doit être fait en premier.
-- **Actuellement** : la personne à l'origine des skills historiques du pipeline formation (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`, `formation-pipeline`), qui anime les deux pipelines — ce périmètre inclut désormais aussi le pipeline réponse à appel d'offres (`reponse-appel-offres` et ses évolutions futures), même Product Owner sauf mention contraire.
+- **Actuellement** : la personne à l'origine des skills historiques du pipeline formation (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`, `formation-pipeline`), qui anime les deux pipelines — ce périmètre inclut désormais aussi le pipeline réponse à appel d'offres (`reponse-appel-offres` et ses évolutions futures) et les skills transverses aux deux (`design-system-extractor`), même Product Owner sauf mention contraire.
 - Ce rôle est explicitement révisable — voir "Évolution de la gouvernance" ci-dessous.
 
 ### Contributeurs
@@ -19,6 +19,8 @@ Toute personne du cabinet qui utilise une ou plusieurs skills de l'un des deux p
 Ce dépôt couvre la capitalisation des **skills** (savoir-faire packagé et réutilisable), distincte de la capitalisation **projet** classique (retours d'expérience, livrables archivés par mission) — les deux sont complémentaires : un projet donne l'occasion d'extraire une skill réutilisable, qui peut ensuite être redéclinée dans d'autres process.
 
 Ce dépôt couvre désormais **deux processus de capitalisation skills** : la production de formation et la réponse à appel d'offres. Cet élargissement a fait l'objet d'un arbitrage explicite le 29/07/2026 (voir `BACKLOG.md` item #17, statut clos) — la version précédente de cette section exigeait un tel arbitrage avant tout élargissement, et cette exigence a été remplie plutôt que contournée. Tout élargissement futur à un troisième processus suit la même exigence d'arbitrage explicite avec les porteurs de ce process, avant d'écrire la moindre spec.
+
+**Une skill transverse n'est pas un troisième processus** : `design-system-extractor` (26/08/2026) sert les deux processus déjà couverts sans en ouvrir un nouveau — elle n'a donc pas requis d'arbitrage au titre du paragraphe ci-dessus, et cette exigence reste entière pour tout vrai troisième processus métier. Le critère de distinction : une skill transverse alimente des livrables des processus existants ; un nouveau processus a ses propres livrables finaux, ses propres utilisateurs métier, et son propre porteur à consulter.
 
 ## Comment une décision se prend
 

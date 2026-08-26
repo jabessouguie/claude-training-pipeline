@@ -174,7 +174,7 @@ Skill invoquée à la demande, en amont de `slide-content-claude-design` — ne 
 
 ## Contrat DS-1 — `design-system-extractor` → `slide-content-claude-design`
 
-**Fichiers**, dans `design-systems/<client>/` :
+**Fichiers**, dans `design-systems/<client>/` — dossier de premier niveau, **à côté** de `formations/` et `appels-offres/` et non à l'intérieur : un design system vaut pour le client entier, réutilisable d'une session de formation à l'autre et entre formation et AO. Jamais versionné, comme les deux autres (voir `.gitignore`) :
 - `design-system.md` — couleurs (accent principal, accents secondaires, neutres, accents data), typographie (titres, corps), composants observés, ton, et une liste explicite des champs `NON DÉTERMINÉ` (jamais omise silencieusement).
 - `assets/` — logo(s) ou captures fournies telles quelles, si applicable (non retravaillées).
 

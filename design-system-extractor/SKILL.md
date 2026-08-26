@@ -1,6 +1,6 @@
 ---
 name: design-system-extractor
-description: Extrait un design system client (couleurs, typographie, motifs de composants, ton) à partir de n'importe quel document fourni par l'utilisateur — captures d'écran, PDF de charte graphique, export Figma, page web, logo seul, etc. — jamais un format d'entrée imposé. Produit un dossier de référence réutilisable dans le workspace du client, au même format que la section "Design system par défaut" de slide-content-claude-design/SKILL.md, pour que ce dernier puisse l'appliquer directement à la place de sa palette par défaut. Déclencher quand l'utilisateur demande d'"extraire la charte graphique du client", de "récupérer le design system à partir de ces captures/ce PDF/ce site", de "styliser les slides selon l'identité visuelle du client", ou fournit un ou plusieurs documents de marque sans plus de précision sur ce qu'il veut en faire.
+description: Extrait un design system client (couleurs, typographie, motifs de composants, ton) à partir de n'importe quel document fourni par l'utilisateur — captures d'écran, PDF de charte graphique, export Figma, page web, logo seul, etc. — jamais un format d'entrée imposé. Produit un dossier de référence réutilisable design-systems/<client>/, au même format que la section "Design system par défaut" de slide-content-claude-design/SKILL.md, pour que ce dernier puisse l'appliquer directement à la place de sa palette par défaut. Déclencher quand l'utilisateur demande d'"extraire la charte graphique du client", de "récupérer le design system à partir de ces captures/ce PDF/ce site", de "styliser les slides selon l'identité visuelle du client", ou fournit un ou plusieurs documents de marque sans plus de précision sur ce qu'il veut en faire.
 ---
 
 # Extraction de design system client
@@ -44,7 +44,7 @@ Ne jamais finaliser le dossier de sortie (Étape 3) avant cette validation — u
 
 ## Étape 3 — Produire le dossier de sortie
 
-Créer, dans le workspace du client (**jamais à la racine du dépôt**, cohérent avec la règle déjà en place pour `formations/`, `appels-offres/` et `profil-cabinet.md`) :
+Créer un dossier de premier niveau `design-systems/<client>/`, **à côté** des workspaces `formations/` et `appels-offres/` plutôt qu'à l'intérieur de l'un d'eux : un design system client est réutilisable d'une formation à l'autre **et** entre formation et appel d'offres pour le même client — l'enfermer dans le workspace d'une session de formation obligerait à le recopier à chaque fois. Comme `formations/` et `appels-offres/`, ce dossier n'est **jamais versionné** (données client — voir `.gitignore` et `GOVERNANCE.md`) :
 
 ```
 design-systems/<client>/
@@ -52,7 +52,7 @@ design-systems/<client>/
 └── assets/                # logo(s) ou captures fournies telles quelles, si applicable — jamais retravaillées
 ```
 
-`<client>` : kebab-case, cohérent avec la convention déjà utilisée par `formations/<client>-<thème>/` et `appels-offres/<client>-<objet>/`.
+`<client>` : kebab-case, cohérent avec la convention déjà utilisée par `formations/<client>-<thème>/` et `appels-offres/<client>-<objet>/` — sans suffixe de thème ni de date, puisque le design system vaut pour le client entier et non pour une session donnée.
 
 `design-system.md` reprend **exactement** la structure de la section "Design system par défaut — Encre & Sauge" de `slide-content-claude-design/SKILL.md`, pour rester directement substituable :
 
