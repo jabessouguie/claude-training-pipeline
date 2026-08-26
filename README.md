@@ -100,7 +100,7 @@ Second pipeline de ce dépôt : `reponse-appel-offres`, une skill unique qui pil
 
 **Historique** : une première itération (`cadrage-appel-offres`) se limitait à l'analyse du dossier. Le 18/08/2026, le périmètre a été élargi en une seule skill bout-en-bout — voir `CHANGELOG.md` et `BACKLOG.md` #29.
 
-### `reponse-appel-offres` — de la recherche méthodologique au plan de présentation
+## `reponse-appel-offres` — de la recherche méthodologique au plan de présentation
 
 À utiliser dès qu'on reçoit un dossier d'AO, un CCTP, un règlement de consultation, ou qu'on veut préparer une réponse à appel d'offres.
 
@@ -127,7 +127,7 @@ Extrait le design system d'un client à partir de **n'importe quel document rée
 
 **Sortie** : `design-systems/<client>/design-system.md` (Contrat DS-1 de `PIPELINE_CONTRACTS.md`), au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md` — cette dernière l'applique directement à la place de sa palette par défaut « Encre & Sauge » quand il existe, en comblant les champs `NON DÉTERMINÉ` restants avec les valeurs par défaut correspondantes.
 
-## Modèle et niveau d'effort recommandés
+# Modèle et niveau d'effort recommandés
 
 **En pratique** : dans Claude Code, choisis **Sonnet 5** et le niveau d'effort **`high`** au démarrage de ta session (menu/commande de sélection du modèle et de l'effort de ton installation — le nom exact de cette commande dépend de la version de l'outil ; dans l'application Claude ou Cowork, le réglage équivalent se trouve dans les paramètres de conversation). C'est la seule chose à retenir pour un usage quotidien du pipeline ; le reste de cette section est une justification détaillée, utile si tu veux comprendre le "pourquoi" ou si tu contribues au dépôt — pas une lecture nécessaire avant de lancer une skill.
 
@@ -137,7 +137,7 @@ Extrait le design system d'un client à partir de **n'importe quel document rée
 
 Cette recommandation est vérifiable, pas une préférence : elle découle de choses observables dans ce dépôt (le texte des `SKILL.md` eux-mêmes, leurs propres garde-fous explicites), pas d'une règle générique — voir « Sur quoi se base cette recommandation, et ses limites » en fin de section (cette dernière sous-section s'adresse surtout à un contributeur qui voudrait comprendre ou faire évoluer la recommandation, pas à l'usage courant).
 
-### Ce qui, dans ces skills, exige ce choix précis
+## Ce qui, dans ces skills, exige ce choix précis
 
 Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différent d'un classement rapide ou d'un problème de code isolé :
 
@@ -146,13 +146,13 @@ Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différ
 - **Des garde-fous imbriqués qu'il ne faut jamais lever par erreur** — `formation-pipeline/SKILL.md` distingue explicitement les blocages que l'orchestrateur peut lever de ceux qu'il ne peut jamais lever, y compris en mode non-stop ; `comite-qualite/SKILL.md` a des règles anti-théâtre précises (ne pas inventer de problème, mais ne pas non plus déclarer une convergence hâtive). Une lecture trop rapide de ces règles en cascade est justement le type d'erreur qu'on a corrigée lors de l'audit qualité de ce dépôt (contradiction non-stop/garde-fou, voir [`CHANGELOG.md`](CHANGELOG.md)).
 - **Un jugement pédagogique et éditorial réel, pas de la simple extraction** — calibrer un niveau 100/200/300 selon Bloom, juger si une réponse client est réellement actionnable ou évasive, composer une équipe de relecteurs pertinente pour un livrable donné : ce sont des décisions de fond, pas du classement de texte.
 
-### Pourquoi pas un autre modèle
+## Pourquoi pas un autre modèle
 
 - **Haiku (4.5)** — Haiku est conçu et positionné pour la vitesse et le coût sur des tâches courtes et répétitives à grande échelle (classification, extraction simple, routing) : c'est explicitement le compromis qu'il assume, au prix d'une profondeur de raisonnement moindre sur des tâches longues et enchevêtrées. Rien dans ce dépôt ne relève de ce profil — même l'étape la plus mécanique (`cadrage-formation` Étape 3, recherche de profils) exige un jugement sur l'ambiguïté ("À confirmer" plutôt qu'inventer) que ce classement rapide ne priorise pas. Utiliser Haiku ici économiserait des tokens au prix d'un risque concret : un format de fichier mal respecté (Contrat 2, 3 ou 4 de `PIPELINE_CONTRACTS.md`) casserait silencieusement l'étape suivante du pipeline, ou une des règles anti-théâtre de `comite-qualite` serait appliquée de façon trop mécanique (inventer des problèmes pour "faire le travail", ou au contraire déclarer une convergence hâtive).
 - **Opus (5)** — Opus vise les tâches où une réponse fausse coûte cher et où le raisonnement multi-étapes est la difficulté centrale (debugging profond, architecture complexe, preuve mathématique) — c'est le palier de raisonnement au-dessus de Sonnet dans la gamme, sous Fable (voir ci-dessous), pas le plafond absolu. Les skills de ce dépôt ne sont pas de ce registre : la difficulté n'est pas dans un raisonnement logique en profondeur, elle est dans le respect méticuleux et répété d'un format de spec déjà écrit, sur un grand volume de texte à produire. Opus n'apporterait pas un avantage identifiable sur ce type de tâche par rapport à Sonnet, pour un coût par token nettement supérieur — un delta de qualité qui ne se traduirait pas en meilleure conformité aux contrats de fichier ni en meilleure fidélité pédagogique, les deux vrais points de friction observés dans ce dépôt (voir l'audit qualité du [`CHANGELOG.md`](CHANGELOG.md), dont les corrections portaient sur la cohérence de spec, pas sur un raisonnement insuffisamment profond).
 - **Fable (5)** — c'est le modèle le plus capable disponible, positionné pour les tâches qui justifient une prime de coût significative sur la sortie la plus soignée possible (contexte 1M token, mais facturé en conséquence). Le contenu produit ici (slides, ateliers, quiz) a une exigence de qualité réelle, mais elle est bornée par un format déjà écrit dans les `SKILL.md`/`PIPELINE_CONTRACTS.md` — la marge de progression qu'apporterait Fable au-delà de Sonnet 5 sur *ce type de tâche contrainte* n'est pas justifiée au vu du volume de contenu à produire sur une formation multi-jours (plusieurs modules × plusieurs livrables). Fable se justifierait si ce dépôt produisait, par exemple, un unique document stratégique très court où chaque phrase compte au maximum — ce n'est pas le profil de ce pipeline.
 
-### Pourquoi pas un autre niveau d'effort
+## Pourquoi pas un autre niveau d'effort
 
 - **`low`** — pensé pour des tâches courtes, mécaniques, où la vitesse prime (voir la doc Anthropic sur les niveaux d'effort). Aucune des 5 skills n'est courte : même `cadrage-formation` seule enchaîne 8 étapes avec recherche web et synthèse. `low` produirait des livrables qui respectent la forme sans forcément le fond (ex. un plan de formation qui liste des modules sans la logique de progression qu'on vient d'exiger explicitement dans `formation-material-builder/SKILL.md`).
 - **`medium`** — le niveau "tâches quotidiennes, coûts maîtrisés" est raisonnable pour un usage ponctuel et simple, mais sous-dimensionné pour un pipeline dont chaque étape peut réécrire un format de fichier lu par l'étape suivante : le risque de dérive de contrat (cf. § ci-dessus) est plus élevé qu'à `high`.
@@ -160,7 +160,7 @@ Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différ
 - **`max`** — la documentation Anthropic est explicite sur ce niveau : il n'a pas de plafond de dépense de tokens, mais les gains sont marginaux au-delà de `xhigh` et il est sujet au sur-raisonnement ("overthinking"). Sur des skills dont la difficulté est le respect d'un format déjà écrit (pas une énigme à résoudre), `max` ferait dépenser des tokens sans lever la vraie contrainte du pipeline.
 - **Ultracode (workflow multi-agents)** — Ultracode envoie `xhigh` au modèle tout en orchestrant un workflow multi-agents pour la tâche *(fonctionnalité de Claude Code, distincte des 5 niveaux d'effort standard — pas nécessairement documentée dans la même page que ceux-ci, à vérifier dans la doc Claude Code à jour si le comportement décrit ici semble avoir changé)*. C'est pertinent pour un audit exhaustif nécessitant des perspectives indépendantes qui se vérifient entre elles (exactement ce qui a été fait pour l'audit `comite-qualite` de ce dépôt, avec 7 relecteurs en parallèle) — mais ce n'est pas le mode par défaut pour produire un module de formation ou un cadrage : ce travail est une production cohérente et séquentielle (un fil rouge qui se déroule, un plan qui se construit progressivement), pas un problème qui bénéficie de plusieurs angles indépendants à faire converger. Réserver Ultracode à un usage explicite et ponctuel — un audit `comite-qualite` volontairement exhaustif — plutôt qu'un mode par défaut du pipeline.
 
-### Mécanique vs jugement, à l'intérieur de chaque skill
+## Mécanique vs jugement, à l'intérieur de chaque skill
 
 `high` n'a pas besoin d'être appliqué avec la même intensité sur tout le déroulé d'une skill — chacune mélange des passages purement mécaniques (remplir un gabarit déjà entièrement spécifié, exécuter un script) et des passages de jugement ouvert où une dérive coûte cher. Si l'outil que tu utilises permet de faire varier l'effort en cours de route, voici où il compte le plus dans chaque skill :
 
@@ -170,7 +170,7 @@ Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différ
 - **`comite-qualite`** — mécanique : la Phase C (application des corrections déjà décidées, dans l'ordre 🔴→🟠→🟡) ; jugement : la composition de l'équipe de relecteurs (Phase 0.1-0.3, y compris le garde-fou anti-hallucination du rôle "Voix du client"), les constats de chaque relecteur et le calibrage défaut-vs-préférence (Phases A/D) — ce dernier revient à chaque itération de la boucle, jusqu'à 3.
 - **`formation-pipeline`** — mécanique : la détection d'état du workspace (table de détection, la plupart des transitions) ; jugement : reconnaître un garde-fou que la sous-skill a posé comme non contournable (voir la contradiction corrigée dans [`CHANGELOG.md`](CHANGELOG.md)) — c'est le point où une lecture trop rapide des règles en cascade a le plus de conséquences.
 
-### Sur quoi se base cette recommandation, et ses limites
+## Sur quoi se base cette recommandation, et ses limites
 
 **Ceci est une analyse de tâche, pas un benchmark.** Aucun test A/B n'a été mené comparant Haiku, Sonnet, Opus ou Fable sur ces 5 skills, ni sur un cas de formation réel. Chaque affirmation ci-dessus vient de la lecture des `SKILL.md` eux-mêmes — leurs étapes explicites, leurs propres garde-fous déjà écrits dans les specs (la règle de hedging de `cadrage-formation`, la règle anti-théâtre de `comite-qualite`, le point de validation du module 1 de `formation-material-builder`, la distinction garde-fou-levable/non-levable de `formation-pipeline`) — croisée avec des paliers de capacité de modèle connus de façon générale (Haiku : rapide/économique, plus faible sur la cohérence longue durée et le jugement ouvert ; Sonnet : généraliste, palier par défaut pour la plupart des tâches agentiques de rédaction/code ; Opus : plafond de raisonnement le plus élevé ; Fable : profil différencié, pas le choix par défaut pour ce type de pipeline sauf demande explicite) et sur les niveaux d'effort tels que documentés par Anthropic à la date de rédaction (29/07/2026).
 
