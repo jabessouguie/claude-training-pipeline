@@ -103,13 +103,31 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 ---
 
+## Horizon 6 — Pipeline avant-vente (réponse à appel d'offres) 🟡 Refondu (US-18 livrée, périmètre élargi jusqu'au plan de présentation)
+
+**Objectif** : un consultant peut analyser un dossier d'appel d'offres et produire un plan de présentation détaillé optimisé pour Claude Design, en une seule skill bout-en-bout — recherche méthodologique, recherche client, analyse du besoin (avec checklist d'exigences CCTP tracée), analyse de fit cabinet/client, sourcing et sélection de références, plan de présentation, comité qualité. Même logique spec-driven que le pipeline formation, adaptée aux spécificités de l'avant-vente (conformité CCTP exhaustive, deadline dure, différenciation réelle, cohérence multi-contributeurs).
+
+**Contenu** (backlog associé) :
+- US-18 — `reponse-appel-offres` produit un mémoire de réponse à AO complet jusqu'au plan de présentation Claude Design (#29)
+
+**Révision du 18/08/2026** : après la première itération (`cadrage-appel-offres`, US-17, limitée à l'analyse du dossier), l'utilisateur a redéfini le périmètre en un workflow explicite à 8 étapes bien plus large. Décision actée : élargissement direct en une skill unique `reponse-appel-offres`, plutôt que la trajectoire initialement prévue en 4 skills séquentielles (`memoire-technique-builder`, `memoire-content-claude-design`, `appel-offres-pipeline` — abandonnées, jamais écrites). Ce changement de stratégie reste cohérent avec le principe itératif de départ : la première itération a servi à valider le mécanisme le plus critique (la checklist d'exigences, conservée à l'identique dans la nouvelle skill) avant d'investir dans un périmètre plus large.
+
+**Condition de sortie** : un premier AO réel traité de bout en bout via `reponse-appel-offres` (recherche → analyse → plan de présentation → composition Claude Design), sans jamais nommer cet AO dans le dépôt (cohérence avec la règle de gouvernance des données déjà actée côté formation — `formations/` et `appels-offres/` ne sont jamais versionnés pour un cas réel).
+
+**Pourquoi un nouvel horizon plutôt qu'un sous-horizon** : ce pipeline sert un métier distinct (avant-vente, pas formation) — un horizon séquentiel propre reste plus lisible qu'un "Horizon 1 bis" mélangé à la trajectoire du pipeline formation.
+
+**Dépendance** : aucune dépendance dure sur les horizons 1-5 (pipeline distinct), mais réutilise leurs acquis transverses (`CONTRIBUTING.md`, workflow Git, format `PIPELINE_CONTRACTS.md`, rôles conditionnels déjà existants de `comite-qualite`) sans les dupliquer.
+
+---
+
 ## Hors trajectoire produit — organisationnel et commercial
 
-Ces items (#15, #17, #18 dans `BACKLOG.md`) ne suivent pas la logique d'horizon ci-dessus parce qu'ils ne dépendent pas de l'avancement technique du pipeline, mais d'arbitrages hors du périmètre des 3 contributeurs actuels :
+Ces items (#15, #18 dans `BACKLOG.md`) ne suivent pas la logique d'horizon ci-dessus parce qu'ils ne dépendent pas de l'avancement technique du pipeline, mais d'arbitrages hors du périmètre des 3 contributeurs actuels :
 
 - **#15 — SDLC et gouvernance de cycle de vie des skills** : traité directement dans `GOVERNANCE.md` plutôt que planifié comme un horizon ; à réévaluer si le nombre de contributeurs augmente significativement.
-- **#17 — Alignement avec le processus d'avant-vente** : dépend d'un arbitrage interne sur le périmètre du dépôt de skills — pas engageable tant que cet arbitrage n'a pas eu lieu.
 - **#18 — Offre commerciale externe à des instituts tiers** : purement exploratoire, sans sponsor commercial identifié à ce stade — à ne pas confondre avec une priorité produit.
+
+*(#17 — Alignement avec le processus d'avant-vente — est sorti de cette section le 29/07/2026 : l'arbitrage a été rendu, l'item est clos, et sa suite opérationnelle vit désormais dans l'Horizon 6 ci-dessus.)*
 
 ## Ce qui n'est pas dans cette roadmap
 

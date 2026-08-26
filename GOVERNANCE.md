@@ -1,22 +1,24 @@
-# Gouvernance — Pipeline de skills de formation
+# Gouvernance — Pipelines de skills (formation et réponse à appel d'offres)
 
-Ce document définit qui décide quoi sur ce dépôt, et comment, pour une équipe restreinte (3 contributeurs) qui fait évoluer ce pipeline en parallèle de son activité de conseil.
+Ce document définit qui décide quoi sur ce dépôt, et comment, pour une équipe restreinte (3 contributeurs) qui fait évoluer ces pipelines en parallèle de son activité de conseil.
 
 ## Rôles
 
 ### Product Owner (rôle, pas nécessairement titre)
 Porte la priorisation du [BACKLOG.md](BACKLOG.md) et la cohérence de la [ROADMAP.md](ROADMAP.md). Tranche en cas de désaccord sur ce qui doit être fait en premier.
-- **Actuellement** : la personne à l'origine des 4 skills historiques (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`), qui anime le pipeline — ce périmètre inclut aussi `formation-pipeline`, la skill orchestratrice additionnelle qui les enchaîne.
+- **Actuellement** : la personne à l'origine des skills historiques du pipeline formation (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`, `formation-pipeline`), qui anime les deux pipelines — ce périmètre inclut désormais aussi le pipeline réponse à appel d'offres (`reponse-appel-offres` et ses évolutions futures), même Product Owner sauf mention contraire.
 - Ce rôle est explicitement révisable — voir "Évolution de la gouvernance" ci-dessous.
 
 ### Contributeurs
-Toute personne qui modifie une `SKILL.md`, ses `references/`, ou ses `scripts/` — chacun aussi utilisateur final du pipeline (dogfooding).
+Toute personne qui modifie une `SKILL.md`, ses `references/`, ou ses `scripts/` — chacun aussi utilisateur final du pipeline concerné (dogfooding).
 
 ### Utilisateurs
-Toute personne du cabinet qui utilise une ou plusieurs des 4 skills pour produire une formation, sans forcément contribuer au code. Leurs retours d'usage sont la source principale d'évolution du backlog.
+Toute personne du cabinet qui utilise une ou plusieurs skills de l'un des deux pipelines (production de formation, réponse à appel d'offres) sans forcément contribuer au code. Leurs retours d'usage sont la source principale d'évolution du backlog.
 
 ### Périmètre de ce dépôt vs autres démarches de capitalisation
-Ce dépôt couvre la capitalisation des **skills** (savoir-faire packagé et réutilisable), distincte de la capitalisation **projet** classique (retours d'expérience, livrables archivés par mission) — les deux sont complémentaires : un projet donne l'occasion d'extraire une skill réutilisable, qui peut ensuite être redéclinée dans d'autres process. Avant d'élargir le périmètre d'usage de ce dépôt à un autre process que la production de formation, un arbitrage explicite avec les porteurs de ce process est nécessaire.
+Ce dépôt couvre la capitalisation des **skills** (savoir-faire packagé et réutilisable), distincte de la capitalisation **projet** classique (retours d'expérience, livrables archivés par mission) — les deux sont complémentaires : un projet donne l'occasion d'extraire une skill réutilisable, qui peut ensuite être redéclinée dans d'autres process.
+
+Ce dépôt couvre désormais **deux processus de capitalisation skills** : la production de formation et la réponse à appel d'offres. Cet élargissement a fait l'objet d'un arbitrage explicite le 29/07/2026 (voir `BACKLOG.md` item #17, statut clos) — la version précédente de cette section exigeait un tel arbitrage avant tout élargissement, et cette exigence a été remplie plutôt que contournée. Tout élargissement futur à un troisième processus suit la même exigence d'arbitrage explicite avec les porteurs de ce process, avant d'écrire la moindre spec.
 
 ## Comment une décision se prend
 
