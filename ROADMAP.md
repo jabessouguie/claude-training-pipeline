@@ -1,6 +1,11 @@
-# Roadmap — Pipeline de skills de formation
+# Roadmap — Pipelines de skills (formation et réponse à appel d'offres)
 
-Vision produit : **faire du pipeline de 4 skills (`cadrage-formation` → `formation-material-builder` → `slide-content-claude-design` → `comite-qualite`) l'outil par défaut de tout consultant pour produire une formation client**, du premier appel de cadrage jusqu'au dossier livrable complet, en réduisant le temps manuel à l'appropriation finale (anecdotes, ajustements visuels, quiz).
+Vision produit : **faire des pipelines de skills de ce dépôt l'outillage par défaut de tout consultant sur ses deux productions les plus coûteuses en temps** —
+
+- **Produire une formation client** (`cadrage-formation` → `formation-material-builder` → `slide-content-claude-design` → `comite-qualite`), du premier appel de cadrage jusqu'au dossier livrable complet, en réduisant le temps manuel à l'appropriation finale (anecdotes, ajustements visuels, quiz).
+- **Répondre à un appel d'offres** (`reponse-appel-offres` → `comite-qualite`), de la recherche méthodologique jusqu'au plan de présentation, en sécurisant la conformité au cahier des charges et la différenciation réelle de l'offre.
+
+Les horizons 1 à 5 ci-dessous portent la trajectoire du pipeline formation (le plus ancien et le plus abouti) ; l'horizon 6 celle du pipeline réponse à AO. Les acquis transverses (gouvernance, workflow Git, `PIPELINE_CONTRACTS.md`, `comite-qualite`, skills transverses comme l'extraction de design system) servent les deux sans être dupliqués.
 
 Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLOG.md). Elle raisonne par horizon plutôt que par date fixe : une équipe de 3 contributeurs à temps partiel sur ce sujet ne peut pas s'engager sur des sprints classiques, mais peut s'engager sur un **ordre** et sur ce qui définit le passage d'un horizon à l'autre.
 
