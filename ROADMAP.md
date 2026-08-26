@@ -27,7 +27,7 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 **Complète aussi le socle** : #24 — Standardiser les fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), pour la même raison : un point d'entrée navigable (wiki) qui ne suppose pas de cloner le dépôt.
 
-**Complète aussi le socle** : #20 — Ajouter la référence du design system au dépôt : le dépôt n'est réellement autoportant pour la partie design qu'une fois ces deux fichiers de référence poussés à côté des skills. Ne dépend plus de #2/US-2 (retirée le 26/08/2026) ; reste bloqué sur l'obtention des fichiers eux-mêmes.
+**Complète aussi le socle** : #20 — `design-system-extractor` (US-19) ✅ Fait le 26/08/2026 : plutôt qu'une référence statique supposée exister hors dépôt, une skill qui extrait le design system client à partir de n'importe quel document réellement fourni, consommée par `slide-content-claude-design`.
 
 ---
 

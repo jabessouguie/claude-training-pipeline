@@ -35,5 +35,9 @@ venv/
 fil-rouge-stockpilot/**/.DS_Store
 fil-rouge-stockpilot/.DS_Store
 
-# Workspaces de formation, s'ils sont produits à l'intérieur du dépôt par erreur
+# Workspaces de formation/AO/design system, s'ils sont produits à l'intérieur du dépôt par erreur —
+# jamais versionnés pour un cas réel (données client, cf. GOVERNANCE.md et LICENSE.md).
+# appels-offres/ manquait ici alors que ROADMAP.md affirmait déjà cette règle pour les deux pipelines.
 formations/
+appels-offres/
+design-systems/

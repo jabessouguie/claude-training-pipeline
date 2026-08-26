@@ -117,11 +117,21 @@ Workflow en 8 étapes :
 
 **Sortie** : `exigences_<client>.xlsx` (livrable interne, Contrat AO-1) à la racine de `appels-offres/<client>-<objet>/<AAAA-MM>/`, et `plan-presentation-content.md`/`plan-presentation-prompts.md` (livrable final, Contrat AO-2 de `PIPELINE_CONTRACTS.md`) dans son sous-dossier `livrables/` — l'ensemble distinct du dossier `formations/` du premier pipeline.
 
+---
+
+# Skill transverse : `design-system-extractor`
+
+Skill invoquée à la demande, en amont de `slide-content-claude-design` — pas une étape obligatoire d'aucun des deux pipelines ci-dessus.
+
+Extrait le design system d'un client à partir de **n'importe quel document réellement fourni** (captures d'écran, PDF de charte graphique, export Figma, site web, logo seul...) — jamais un format d'entrée imposé au client. Un token non observé dans les sources fournies n'est jamais deviné : il est marqué explicitement `NON DÉTERMINÉ`, garde-fou anti-hallucination central de cette skill.
+
+**Sortie** : `design-systems/<client>/design-system.md` (Contrat DS-1 de `PIPELINE_CONTRACTS.md`), au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md` — cette dernière l'applique directement à la place de sa palette par défaut « Encre & Sauge » quand il existe, en comblant les champs `NON DÉTERMINÉ` restants avec les valeurs par défaut correspondantes.
+
 ## Modèle et niveau d'effort recommandés
 
 **En pratique** : dans Claude Code, choisis **Sonnet 5** et le niveau d'effort **`high`** au démarrage de ta session (menu/commande de sélection du modèle et de l'effort de ton installation — le nom exact de cette commande dépend de la version de l'outil ; dans l'application Claude ou Cowork, le réglage équivalent se trouve dans les paramètres de conversation). C'est la seule chose à retenir pour un usage quotidien du pipeline ; le reste de cette section est une justification détaillée, utile si tu veux comprendre le "pourquoi" ou si tu contribues au dépôt — pas une lecture nécessaire avant de lancer une skill.
 
-**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des skills de ce dépôt — les 5 du pipeline formation (y compris `formation-pipeline` en mode orchestration) et `reponse-appel-offres` du pipeline réponse à AO. Cette dernière partage le même profil de difficulté (extraction exhaustive contrainte par un format, deep research à plusieurs volets, jugement de fit et de sélection) — pas de recommandation distincte tant qu'aucune divergence réelle n'a été observée en usage. Compte tenu de sa longueur (8 étapes, plusieurs deep research successives, un livrable détaillé slide par slide), monter à **`xhigh`** sur `reponse-appel-offres` est aussi défendable que sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours (même emplacement de réglage) — voir le détail par cas ci-dessous.
+**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des skills de ce dépôt — les 5 du pipeline formation (y compris `formation-pipeline` en mode orchestration), `reponse-appel-offres` du pipeline réponse à AO, et la skill transverse `design-system-extractor`. Ces dernières partagent le même profil de difficulté (extraction exhaustive contrainte par un format, deep research à plusieurs volets, jugement de fit et de sélection) — pas de recommandation distincte tant qu'aucune divergence réelle n'a été observée en usage. Compte tenu de sa longueur (8 étapes, plusieurs deep research successives, un livrable détaillé slide par slide), monter à **`xhigh`** sur `reponse-appel-offres` est aussi défendable que sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours (même emplacement de réglage) — voir le détail par cas ci-dessous.
 
 **Escalade conditionnelle vers Opus** : rester sur Sonnet par défaut, mais basculer ponctuellement sur Opus (même sélecteur de modèle que ci-dessus, changer juste le nom du modèle pour la session ou l'étape concernée) pour les décisions les plus coûteuses à défaire une fois prises — la conception du cas fil rouge et de la roadmap en Phase 1 de `formation-material-builder` (la spec elle-même les qualifie de coûteuses à corriger après coup : « Mieux vaut 10 min de cadrage que 2h de retravail »), la recherche de participants dans `cadrage-formation` si l'audience est nombreuse/senior/multi-entités (zone d'ambiguïté la plus exposée au risque d'hypothèse présentée à tort comme un fait), ou un audit `comite-qualite` sur un livrable client/contractuel à fort enjeu. Ce n'est pas un changement de modèle par défaut sur toute une skill, seulement sur son point de décision le plus structurant.
 
@@ -201,13 +211,15 @@ Copier chaque dossier dans `~/.claude/skills/` :
 │   └── SKILL.md
 ├── formation-pipeline/      (optionnel — orchestrateur du pipeline complet)
 │   └── SKILL.md
-└── reponse-appel-offres/    (pipeline réponse à AO)
-    ├── SKILL.md
-    ├── references/          (gabarit de profil cabinet)
-    └── scripts/             (générateur de la checklist d'exigences Excel)
+├── reponse-appel-offres/    (pipeline réponse à AO)
+│   ├── SKILL.md
+│   ├── references/          (gabarit de profil cabinet)
+│   └── scripts/             (générateur de la checklist d'exigences Excel)
+└── design-system-extractor/ (transverse aux deux pipelines, à la demande)
+    └── SKILL.md
 ```
 
-**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
+**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres`, `/design-system-extractor` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
 
 **Procédure de repli si une skill n'est pas détectée** (à utiliser en dernier recours, pas par défaut) :
 - Ouvrir un nouveau chat plutôt que de réutiliser une session existante.
