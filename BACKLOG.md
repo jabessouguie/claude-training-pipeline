@@ -242,11 +242,12 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 
 Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou de positionnement commercial. Ils sont suivis ici parce qu'ils conditionnent le périmètre d'usage du pipeline, mais leur mise en œuvre relève d'un arbitrage managérial plutôt que produit — voir `GOVERNANCE.md`.
 
-### 17. Aligner le dépôt de skills avec le processus d'avant-vente
+### 17. Aligner le dépôt de skills avec le processus d'avant-vente ✅ Clos le 29/07/2026
 **Constat** : retour d'usage — question de savoir si le pipeline peut s'intégrer au processus d'avant-vente, pas seulement à la production de formations déjà vendues. Proposition de centraliser l'ensemble des skills au sein d'un répertoire unique et d'établir une logique de responsabilité claire pour leur gestion, avec un arbitrage nécessaire sur qui porte la capitalisation projet vs la capitalisation skills. Nuance utile relevée en discussion : la capitalisation "projet" et la capitalisation "skills" sont complémentaires mais distinctes — le travail par projet permet d'extraire des skills réutilisables, qui peuvent ensuite être redéclinées dans d'autres process (dont l'avant-vente).
 **Valeur** : élargit la valeur du pipeline au-delà de la seule production de formation déjà engagée, potentiellement vers la réponse à appel d'offres.
-**Action** : clarifier, avec les porteurs du processus d'avant-vente, si et comment le dépôt de skills actuel (ou une extension) peut servir l'avant-vente, sans dilemme de responsabilité entre les deux usages.
-**Effort** : L — dépend d'un arbitrage organisationnel hors du périmètre de ce dépôt.
+**Action (résolution)** : arbitrage rendu le 29/07/2026 par le Product Owner — le dépôt `skills-portfolio-export` accueille désormais un second pipeline dédié à la réponse à appel d'offres, dans le même dépôt (pas un dépôt séparé), pour partager `CONTRIBUTING.md`, le workflow Git, et le format `PIPELINE_CONTRACTS.md`. Voir `GOVERNANCE.md` § "Périmètre de ce dépôt" pour le constat mis à jour, et #29 ci-dessous pour le nouvel item produit qui en découle.
+**Effort** : L pour l'arbitrage lui-même — réalisé sans dépendance externe, directement par le Product Owner porteur du dépôt.
+**Statut** : cet item n'est plus P4/hors périmètre produit — il devient un item produit à part entière, poursuivi par #29. Reclassé ici pour mémoire de la décision, mais son suivi opérationnel se fait désormais dans #29/US-17 et suivants.
 
 ### 18. Évaluer une offre commerciale externe (méthodologie proposée à des instituts de formation tiers)
 **Constat** : retour d'usage — suggestion de proposer cette méthodologie modernisée de production de formation comme service à des instituts de formation externes.
@@ -270,16 +271,18 @@ Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou d
 
 ## User stories
 
-Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2, US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28. Items sans story, avec leur raison :
+Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2, US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29. Items sans story, avec leur raison :
 - **#7, #11, #13** — dépendants d'un spike ou d'un retour d'usage préalable (Horizon 4) ; les storifier avant ce préalable serait prématuré.
 - **#9** — levé le 28/07/2026 (voir son Statut), directement absorbé par US-16 plutôt que storifié séparément.
 - **#14** — story à rédiger lorsque US-1/US-2 seront closes (son livrable, un support d'onboarding, dépend d'un pipeline effectivement installable).
 - **#15** — traité directement dans `GOVERNANCE.md` (clarification organisationnelle, pas un développement).
 - **#16** — spécifié et clôturé directement au niveau item (voir son Statut) ; exception au circuit item→story assumée pour un changement de spec très localisé.
-- **#17, #18** — P4, hors périmètre produit (arbitrage managérial).
+- **#17** — clos le 29/07/2026 (voir son Statut) ; poursuivi par #29/US-18 (US-17, première itération `cadrage-appel-offres`, remplacée le 18/08/2026 — voir CHANGELOG.md), pas de story propre à #17 lui-même (arbitrage organisationnel, pas un développement).
+- **#18** — P4, hors périmètre produit (arbitrage managérial).
 - **#20** — dépend de #2 (dépôt effectivement poussé et accessible) ; à storifier une fois ce préalable levé — action documentaire S, triviale à cadrer.
 - **#23** — spécifié et clôturé directement au niveau item (voir son Statut, même exception que #16) ; action purement documentaire (README), sans changement de comportement des skills à formaliser en critères d'acceptation séparés.
 - **#24** — même exception que #16/#20/#23 ; fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), sans changement de comportement des skills.
+- **#29** — story US-18 rédigée pour `reponse-appel-offres` (remplace la première itération `cadrage-appel-offres`/US-17, remplacée depuis — voir plus haut et `CHANGELOG.md`).
 
 ### Definition of Ready (DoR) — commune à toutes les stories
 
@@ -480,6 +483,52 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] La spec précise explicitement que la composition dans Claude Design reste manuelle dans ce mode — ce n'est pas un mode "tout automatique".
 
 **Statut** : spec écrite, script créé et vérifié syntaxiquement (`py_compile`) ainsi que sur le parsing (bloc Direction artistique + prompts par slide + exclusion des slides en fallback vectoriel, testé sur un exemple fidèle au format). Reste à vérifier avec un vrai appel API (clé Gemini valide) sur un cas réel.
+
+---
+
+### US-17 — `cadrage-appel-offres` produit une checklist d'exigences exhaustive et traçable ✅ Faite le 29/07/2026 (spec)
+*Rattaché à #29*
+
+**En tant que** consultant qui reçoit un dossier d'appel d'offres,
+**je veux** une analyse exhaustive du dossier avec une checklist d'exigences traçable jusqu'à sa réponse finale, une deep research sur l'entité/les personnes/le secteur/les technologies, et une recommandation Go/No-go argumentée,
+**afin de** ne jamais rater une exigence obligatoire, décider sereinement d'engager le cabinet sur l'AO, et disposer d'une base de travail exploitable pour la rédaction du mémoire technique (à venir).
+
+**Critères d'acceptation :**
+- [x] `cadrage-appel-offres/SKILL.md` détecte explicitement le type de dossier (marché public zip vs privé informel), jamais deviné.
+- [x] La skill détecte explicitement si une période de questions/réponses avec l'acheteur est ouverte et, si oui, demande le format de sortie souhaité (texte libre ou tableau) — le livrable devient alors une liste de questions dérivée de l'extraction d'exigences, plutôt que la checklist habituelle, sans jamais poser une question dont la réponse est déjà dans le dossier.
+- [x] Chaque exigence du CCTP/CCAP (ou équivalent informel) est extraite individuellement, jamais résumée collectivement, avec une catégorie (`OBLIGATOIRE`/`SOUHAITABLE`/`ÉLIMINATOIRE`) et une source exacte traçable.
+- [x] La deep research couvre 4 volets explicites : l'entité émettrice, les personnes liées à l'AO (avec la même règle anti-hallucination et le même seuil de bascule à 20 personnes que `cadrage-formation`), le secteur/l'industrie, et les technologies/méthodologies mentionnées dans le dossier.
+- [x] Une recommandation Go/No-go argumentée est produite, jamais imposée — la décision reste à l'utilisateur.
+- [x] Le livrable final est un fichier `.xlsx` (`exigences_<client>.xlsx`), jamais une liste dans la conversation, avec les colonnes "Partie du mémoire"/"Page de réponse" déjà présentes dans le format (vides pour l'instant, en préparation de `memoire-technique-builder`).
+- [x] Ce fichier respecte le Contrat AO-1 documenté dans `PIPELINE_CONTRACTS.md`.
+- [x] La skill signale explicitement que les skills suivantes du pipeline AO n'existent pas encore, sans jamais laisser croire qu'une étape non écrite est déjà disponible.
+
+**Statut** : spec écrite dans `cadrage-appel-offres/SKILL.md`, script `generate_exigences_xlsx.py` créé et vérifié (compilation + test fonctionnel sur un jeu de données fidèle au format, incluant une exigence `OBLIGATOIRE` et une `ÉLIMINATOIRE`, coloration validée).
+
+**Statut (mise à jour 18/08/2026)** : remplacée par US-18 (`reponse-appel-offres`) — voir `CHANGELOG.md`. Conservée ici pour l'historique : cette première itération a servi de base de validation avant l'élargissement de périmètre, ses critères d'acceptation restent un fait daté, non rejoués rétroactivement.
+
+---
+
+### US-18 — `reponse-appel-offres` produit un mémoire de réponse à AO complet jusqu'au plan de présentation Claude Design ✅ Faite le 18/08/2026 (spec)
+*Rattaché à #29*
+
+**En tant que** consultant qui répond à un appel d'offres,
+**je veux** un pipeline unique qui va de la recherche méthodologique jusqu'au plan de présentation détaillé pour Claude Design, en passant par l'analyse du besoin, l'analyse de fit avec mon cabinet, et la sélection de références pertinentes,
+**afin de** produire une réponse différenciée, conforme aux exigences du CCTP, et prête à composer visuellement, sans avoir à recomposer moi-même chaque étape à la main.
+
+**Critères d'acceptation :**
+- [x] `reponse-appel-offres/SKILL.md` couvre les 8 étapes explicites (recherche méthodologique, recherche client, analyse du besoin, fit cabinet, références, sélection, plan de présentation, comité qualité).
+- [x] La checklist d'exigences CCTP (catégories `OBLIGATOIRE`/`SOUHAITABLE`/`ÉLIMINATOIRE`, traçabilité, script Excel) est conservée à l'identique comme livrable interne de l'Étape 2 — pas perdue dans la refonte.
+- [x] L'Étape 2 détecte explicitement tout format de réponse imposé par le client (trame, sommaire obligatoire, pagination) — jamais deviné — et ce format prime sur le vocabulaire de blocs par défaut à l'Étape 6.
+- [x] L'agent vérifie l'existence de `profil-cabinet.md` **dans le workspace de l'AO en cours** avant l'Étape 3 et le crée interactivement à partir du gabarit `references/profil_cabinet_gabarit.md` s'il est absent — jamais un cabinet deviné ou présupposé par défaut.
+- [x] L'Étape 4 combine toujours la demande explicite à l'utilisateur et une recherche web de références publiques du cabinet — une référence non confirmée par au moins une des deux sources n'est jamais retenue.
+- [x] L'Étape 5 sélectionne 3 à 5 références selon des critères explicites (secteur, techno, taille de mission), jamais une référence encore "à confirmer".
+- [x] Le plan de présentation (Étape 6) produit exactement deux fichiers, au format identique à `slide-content-claude-design` (fiche par slide entièrement dimensionnée/positionnée/colorisée + fichier de prompts séparé), avec le vocabulaire de blocs `{COUVERTURE, SOMMAIRE, COMPRÉHENSION-ENJEUX, APPROCHE, ÉQUIPE-RÉFÉRENCES, PLANNING, CONFORMITÉ, SYNTHÈSE}` par défaut.
+- [x] La skill rappelle explicitement que Claude Design n'a pas d'API programmatique — la composition reste manuelle dans tous les cas.
+- [x] La skill propose explicitement l'enchaînement vers `comite-qualite` en fin de parcours, sans l'invoquer de force ; `comite-qualite/SKILL.md` n'a nécessité aucune modification (ses rôles conditionnels existants couvrent déjà ce type de livrable).
+- [x] Les Contrats AO-1 (v2) et AO-2 sont documentés dans `PIPELINE_CONTRACTS.md`.
+
+**Statut** : spec écrite dans `reponse-appel-offres/SKILL.md`, script `generate_exigences_xlsx.py` déplacé et vérifié (compilation + test fonctionnel incluant le nouvel onglet "Format de réponse imposé"). Reste à vérifier sur un cas réel (un AO traité de bout en bout jusqu'au plan de présentation), conformément à la DoD.
 
 ---
 

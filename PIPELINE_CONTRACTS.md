@@ -1,8 +1,8 @@
-# Contrats d'interface du pipeline de formation
+# Contrats d'interface des pipelines de skills
 
-Ce fichier est la **source de vérité unique** du format exact de chaque fichier échangé entre deux skills du pipeline de production de formation. Les `SKILL.md` n'y renvoient que par référence courte ("voir Contrat N ci-dessous") — ils ne dupliquent jamais ce format. Toute divergence constatée entre ce fichier et le comportement réel d'une skill est un bug spec-driven à corriger immédiatement (voir [CONTRIBUTING.md](CONTRIBUTING.md) : la spec n'est jamais implicite, une seule source fait foi).
+Ce fichier est la **source de vérité unique** du format exact de chaque fichier échangé entre deux skills, pour les pipelines de ce dépôt (production de formation, et réponse à appel d'offres). Les `SKILL.md` n'y renvoient que par référence courte ("voir Contrat N ci-dessous") — ils ne dupliquent jamais ce format. Toute divergence constatée entre ce fichier et le comportement réel d'une skill est un bug spec-driven à corriger immédiatement (voir [CONTRIBUTING.md](CONTRIBUTING.md) : la spec n'est jamais implicite, une seule source fait foi).
 
-Ce document ne décrit pas *pourquoi* chaque skill fait ce qu'elle fait (ça reste dans son `SKILL.md`) — seulement *ce qui passe d'une skill à l'autre* et sous quelle forme exacte.
+Ce document ne décrit pas *pourquoi* chaque skill fait ce qu'elle fait (ça reste dans son `SKILL.md`) — seulement *ce qui passe d'une skill à l'autre* et sous quelle forme exacte. Les contrats du pipeline formation sont numérotés `1` à `5` ; ceux du pipeline réponse à appel d'offres sont préfixés `AO-` (ex. `AO-1`) pour éviter toute ambiguïté entre les deux métiers dans le même journal de versions.
 
 ## Vue d'ensemble du pipeline
 
@@ -102,6 +102,65 @@ Aucun format imposé en entrée : `comite-qualite` s'adapte au livrable qu'on lu
 
 ---
 
+## Vue d'ensemble du pipeline — réponse à appel d'offres
+
+```
+reponse-appel-offres (skill unique, 8 étapes internes)
+   0 — recherche méthodologique
+   1 — recherche client
+   2 — analyse du besoin ──────────► (interne, Contrat AO-1) : exigences_<client>.xlsx
+   3 — fit cabinet (profil-cabinet.md, dans le workspace de l'AO)
+   4 — références (demande + recherche web)
+   5 — sélection des références
+   6 — plan de présentation ───────► (sortie finale, Contrat AO-2) :
+   │                                  plan-presentation-content.md
+   │                                  plan-presentation-prompts.md
+   ▼
+   7 — propose l'enchaînement vers comite-qualite
+   ▼ (tout livrable, Contrat 5 — déjà applicable, générique aux deux pipelines)
+comite-qualite
+```
+
+## Contrat AO-1 — `reponse-appel-offres` Étape 2 (interne)
+
+**Fichier** : `appels-offres/<client>-<objet>/<AAAA-MM>/exigences_<client>.xlsx`
+
+**Structure** (produite par `reponse-appel-offres/scripts/generate_exigences_xlsx.py`) :
+
+| Onglet | Statut | Colonnes |
+|---|---|---|
+| Exigences CCTP | Toujours présent | N° / Source / Thème / Exigence / Catégorie (`OBLIGATOIRE`\|`SOUHAITABLE`\|`ÉLIMINATOIRE`) / Critère de notation lié / Statut de traitement (`Non traité`\|`En cours`\|`Traité`\|`Non applicable (à justifier)`) / Partie du mémoire / Page de réponse / Commentaire |
+| Deadline & jalons | Si extrait | Jalon / Date / Contrainte associée |
+| Entité émettrice | Si deep research menée | Synthèse texte |
+| Personnes liées à l'AO | Si deep research menée | Nom / Prénom / Rôle dans l'AO / Poste actuel / Séniorité / Profil / Statut |
+| Secteur & industrie | Si deep research menée | Synthèse texte |
+| Technologies mentionnées | Si deep research menée | Techno/Méthodologie / Citée où / État de l'art / Maturité / Alternatives / Point de vigilance |
+| Go/No-go | Si produit | Critère / Constat / Poids dans la décision |
+| Questions à l'acheteur | Si période de questions ouverte avec format tableau | Question / Article CCTP concerné / Justification |
+| Format de réponse imposé | Si détecté | Synthèse texte (trame/sommaire/pagination imposés par le client) |
+
+**Règle de complétude** : toute exigence de catégorie `OBLIGATOIRE` ou `ÉLIMINATOIRE` doit atteindre le statut `Traité` (avec une `Page de réponse` renseignée une fois le plan de présentation produit à l'Étape 6) ou `Non applicable (à justifier)` avant la remise de l'offre — contrairement au Contrat 1 du pipeline formation, où une question INDISPENSABLE sans réponse peut rester une vigilance ouverte, ici l'absence de traitement est un motif de disqualification réel, jamais un choix laissé filer silencieusement.
+
+**Livrable alternatif** : si une période de questions/réponses avec l'acheteur est ouverte (détectée à l'Étape 2 de `reponse-appel-offres/SKILL.md`), le livrable présenté à l'utilisateur devient une liste de questions (onglet "Questions à l'acheteur" si format tableau demandé, ou texte libre sinon) — dérivée de l'extraction d'exigences, mais `exigences_<client>.xlsx` continue d'être produit en interne dans les deux cas.
+
+**Version de contrat** : v2 (18/08/2026 — renommage de contexte, `reponse-appel-offres` remplace `cadrage-appel-offres`, ajout de l'onglet "Format de réponse imposé" ; v1 du 29/07/2026 couvrait le format initial).
+
+---
+
+## Contrat AO-2 — `reponse-appel-offres` Étape 6 → Claude Design
+
+**Fichiers**, colocalisés dans `appels-offres/<client>-<objet>/<AAAA-MM>/livrables/` :
+- `plan-presentation-content.md` — une fiche par slide, format identique au Contrat 4 (`M<n>-slides-content.md`), avec le vocabulaire de blocs `TYPE ∈ {COUVERTURE, SOMMAIRE, COMPRÉHENSION-ENJEUX, APPROCHE, ÉQUIPE-RÉFÉRENCES, PLANNING, CONFORMITÉ, SYNTHÈSE}` par défaut.
+- `plan-presentation-prompts.md` — bloc « Direction artistique » unique en tête + un prompt par slide illustrée, format identique au Contrat 4 (`M<n>-prompts.md`).
+
+**Règle de priorité** : si un format de réponse imposé a été détecté à l'Étape 2 (Contrat AO-1, onglet "Format de réponse imposé"), il prime sur le vocabulaire de blocs par défaut ci-dessus — le fichier produit documente alors explicitement quel `TYPE` correspond à quelle section imposée, jamais un mélange silencieux non signalé.
+
+**Note sur Claude Design** : comme pour le Contrat 4 du pipeline formation, Claude Design n'expose aucune API programmatique (vérifié le 28/07/2026) — la composition visuelle finale reste toujours une action humaine.
+
+**Version de contrat** : v1 (18/08/2026).
+
+---
+
 ## Journal des versions de contrat
 
 | Contrat | Version | Date | Changement |
@@ -113,3 +172,6 @@ Aucun format imposé en entrée : `comite-qualite` s'adapte au livrable qu'on lu
 | 4 | v1 | 24/07/2026 | Mode manuel (US-10/US-11) |
 | 4 | v2 | 28/07/2026 | Ajout du mode auto illustrations (script Gemini) |
 | 5 | v1 | 24/07/2026 | Consolidation (US-6) |
+| AO-1 | v1 | 29/07/2026 | Création — première itération du pipeline réponse à appel d'offres (US-17, #29) |
+| AO-1 | v2 | 18/08/2026 | Renommage de contexte (`reponse-appel-offres` remplace `cadrage-appel-offres`) + ajout de l'onglet "Format de réponse imposé" |
+| AO-2 | v1 | 18/08/2026 | Création — sortie finale du plan de présentation (remplace le chaînon `memoire-technique-builder`/`memoire-content-claude-design` jamais implémenté, US-18) |

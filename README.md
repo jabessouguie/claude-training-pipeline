@@ -1,10 +1,12 @@
-# Skills — Pipeline de création de formation
+# Skills — Pipelines de production de formation et de réponse à appel d'offres
 
-Les skills Claude Code utilisées pour préparer et produire le dossier complet d'une formation « Product Management augmenté », utilisables sur n'importe quelle formation.
+Les skills Claude Code utilisées pour préparer et produire, d'une part, le dossier complet d'une formation « Product Management augmenté » (utilisable sur n'importe quelle formation), et d'autre part une réponse à appel d'offres commercial (en cours de construction).
+
+Ce dépôt couvre désormais **deux pipelines** : la production de formation (5 skills, détaillées ci-dessous) et la réponse à appel d'offres (en cours de construction, voir « Pipeline réponse à appel d'offres » plus bas). Les deux partagent la même gouvernance, le même workflow Git, et le même fichier de contrats d'interface (`PIPELINE_CONTRACTS.md`) — voir `GOVERNANCE.md` pour l'arbitrage qui a permis cet élargissement.
 
 ## En deux mots
 
-Ce dépôt fournit **quatre « skills »** — des modes d'emploi que Claude Code (l'assistant IA) suit automatiquement pour t'aider, étape par étape, à produire une formation client complète : de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz. Tu dialogues avec l'assistant **en français**, il fait le gros du travail. Une **cinquième skill, `formation-pipeline`**, orchestre les quatre premières à la suite si tu préfères ne pas les relancer une par une (voir « Mode bout-en-bout » plus bas) — mais l'usage skill-par-skill décrit ci-dessous reste toujours possible et n'est jamais remplacé.
+Ce dépôt fournit **quatre « skills »** de production de formation — des modes d'emploi que Claude Code (l'assistant IA) suit automatiquement pour t'aider, étape par étape, à produire une formation client complète : de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz. Tu dialogues avec l'assistant **en français**, il fait le gros du travail. Une **cinquième skill, `formation-pipeline`**, orchestre les quatre premières à la suite si tu préfères ne pas les relancer une par une (voir « Mode bout-en-bout » plus bas) — mais l'usage skill-par-skill décrit ci-dessous reste toujours possible et n'est jamais remplacé.
 
 - **Une fois installé** (voir « Mise en place technique » plus bas — c'est une étape technique ponctuelle, déléguable à un collègue), l'usage quotidien ne demande **aucune manipulation technique** : tu décris ta formation, l'assistant enchaîne les étapes et te demande de valider aux moments-clés.
 - **Où commencer** : par la skill `cadrage-formation` (étape 0 ci-dessous), qui prépare les questions à poser au client. Chaque skill propose ensuite d'elle-même l'étape suivante.
@@ -90,11 +92,36 @@ Avant de démarrer, elle te demande explicitement (jamais deviné) :
 
 **Ce qui reste toujours manuel, quel que soit le mode choisi** : la composition finale dans **Claude Design**. Claude Design n'expose aujourd'hui aucune API programmatique (vérifié le 28/07/2026) — même en mode "auto", tu arrives dans Claude Design avec les images déjà générées et rangées par slide, mais c'est toi qui composes la slide.
 
+---
+
+# Pipeline réponse à appel d'offres
+
+Second pipeline de ce dépôt : `reponse-appel-offres`, une skill unique qui pilote la réponse complète à un appel d'offres (AO) commercial, de la recherche méthodologique jusqu'au plan de présentation prêt à coller dans Claude Design — même logique spec-driven que le pipeline formation, adaptée aux spécificités de l'avant-vente (conformité stricte au cahier des charges, deadline non négociable, différenciation réelle, cohérence entre plusieurs contributeurs).
+
+**Historique** : une première itération (`cadrage-appel-offres`) se limitait à l'analyse du dossier. Le 18/08/2026, le périmètre a été élargi en une seule skill bout-en-bout — voir `CHANGELOG.md` et `BACKLOG.md` #29.
+
+### `reponse-appel-offres` — de la recherche méthodologique au plan de présentation
+
+À utiliser dès qu'on reçoit un dossier d'AO, un CCTP, un règlement de consultation, ou qu'on veut préparer une réponse à appel d'offres.
+
+Workflow en 8 étapes :
+
+0. **Recherche méthodologique** — bonnes pratiques et erreurs à éviter en réponse à AO, pour ce type de client et de mission (mémoire générique, réponse point par point, spécificités de notation public/privé).
+1. **Recherche étendue sur le client** émetteur de l'AO — détection du type de dossier (marché public vs privé, jamais deviné), activité, organisation, personnes liées.
+2. **Analyse du besoin** — extraction exhaustive des exigences en checklist tracée (`OBLIGATOIRE`/`SOUHAITABLE`/`ÉLIMINATOIRE`), détection d'un éventuel **format de réponse imposé par le client** (trame, sommaire obligatoire, pagination — toujours prioritaire sur le format par défaut de l'étape 6), critères de notation.
+3. **Analyse de l'adéquation cabinet/besoin** — via un profil cabinet (`profil-cabinet.md`, jamais un cabinet présupposé : chaque consultant renseigne le sien), croisé avec les exigences.
+4. **Références du cabinet** — demandées au consultant ET complétées par une recherche web de références publiques, jamais l'une sans l'autre.
+5. **Sélection des références pertinentes** — critères explicites (secteur, techno, taille de mission).
+6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide entièrement dimensionnée/positionnée/colorisée + un fichier de prompts séparé, prêts à coller dans Claude Design (composition toujours manuelle, Claude Design n'a pas d'API programmatique).
+7. **Comité qualité** — proposition explicite d'enchaînement vers `comite-qualite`, sans modification nécessaire de cette skill (ses rôles existants couvrent déjà ce type de livrable).
+
+**Sortie** : `exigences_<client>.xlsx` (livrable interne, Contrat AO-1) à la racine de `appels-offres/<client>-<objet>/<AAAA-MM>/`, et `plan-presentation-content.md`/`plan-presentation-prompts.md` (livrable final, Contrat AO-2 de `PIPELINE_CONTRACTS.md`) dans son sous-dossier `livrables/` — l'ensemble distinct du dossier `formations/` du premier pipeline.
+
 ## Modèle et niveau d'effort recommandés
 
 **En pratique** : dans Claude Code, choisis **Sonnet 5** et le niveau d'effort **`high`** au démarrage de ta session (menu/commande de sélection du modèle et de l'effort de ton installation — le nom exact de cette commande dépend de la version de l'outil ; dans l'application Claude ou Cowork, le réglage équivalent se trouve dans les paramètres de conversation). C'est la seule chose à retenir pour un usage quotidien du pipeline ; le reste de cette section est une justification détaillée, utile si tu veux comprendre le "pourquoi" ou si tu contribues au dépôt — pas une lecture nécessaire avant de lancer une skill.
 
-**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des 5 skills de ce dépôt (y compris `formation-pipeline` en mode orchestration). Sur une session `comite-qualite` en dossier complet (plusieurs livrables, plusieurs rôles simulés) ou une formation multi-jours en une seule passe via `formation-pipeline`, monter à **`xhigh`** est justifié (même emplacement de réglage) — voir le détail par cas ci-dessous.
+**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des skills de ce dépôt — les 5 du pipeline formation (y compris `formation-pipeline` en mode orchestration) et `reponse-appel-offres` du pipeline réponse à AO. Cette dernière partage le même profil de difficulté (extraction exhaustive contrainte par un format, deep research à plusieurs volets, jugement de fit et de sélection) — pas de recommandation distincte tant qu'aucune divergence réelle n'a été observée en usage. Compte tenu de sa longueur (8 étapes, plusieurs deep research successives, un livrable détaillé slide par slide), monter à **`xhigh`** sur `reponse-appel-offres` est aussi défendable que sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours (même emplacement de réglage) — voir le détail par cas ci-dessous.
 
 **Escalade conditionnelle vers Opus** : rester sur Sonnet par défaut, mais basculer ponctuellement sur Opus (même sélecteur de modèle que ci-dessus, changer juste le nom du modèle pour la session ou l'étape concernée) pour les décisions les plus coûteuses à défaire une fois prises — la conception du cas fil rouge et de la roadmap en Phase 1 de `formation-material-builder` (la spec elle-même les qualifie de coûteuses à corriger après coup : « Mieux vaut 10 min de cadrage que 2h de retravail »), la recherche de participants dans `cadrage-formation` si l'audience est nombreuse/senior/multi-entités (zone d'ambiguïté la plus exposée au risque d'hypothèse présentée à tort comme un fait), ou un audit `comite-qualite` sur un livrable client/contractuel à fort enjeu. Ce n'est pas un changement de modèle par défaut sur toute une skill, seulement sur son point de décision le plus structurant.
 
@@ -172,11 +199,15 @@ Copier chaque dossier dans `~/.claude/skills/` :
 │   └── scripts/             (génération auto des illustrations, optionnel)
 ├── comite-qualite/
 │   └── SKILL.md
-└── formation-pipeline/      (optionnel — orchestrateur du pipeline complet)
-    └── SKILL.md
+├── formation-pipeline/      (optionnel — orchestrateur du pipeline complet)
+│   └── SKILL.md
+└── reponse-appel-offres/    (pipeline réponse à AO)
+    ├── SKILL.md
+    ├── references/          (gabarit de profil cabinet)
+    └── scripts/             (générateur de la checklist d'exigences Excel)
 ```
 
-**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
+**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
 
 **Procédure de repli si une skill n'est pas détectée** (à utiliser en dernier recours, pas par défaut) :
 - Ouvrir un nouveau chat plutôt que de réutiliser une session existante.
@@ -222,5 +253,6 @@ Cowork tourne dans l'application Claude. **Ce qui suit est une supposition raiso
 - Ces quatre skills fonctionnent aussi indépendamment les unes des autres. `formation-pipeline` (mode bout-en-bout) est additionnelle et optionnelle.
 - `cadrage-formation` : le script `scripts/generate_cadrage_xlsx.py` nécessite Python avec `openpyxl` (génération du fichier Excel).
 - `slide-content-claude-design` : le script optionnel `scripts/generate_illustrations.py` (mode génération automatique des illustrations) nécessite Python avec `google-genai` et une clé d'API Gemini valide dans la variable d'environnement `GEMINI_API_KEY`.
+- `reponse-appel-offres` : le script `scripts/generate_exigences_xlsx.py` nécessite Python avec `openpyxl`, même dépendance que `cadrage-formation`.
 
 Pour l'historique daté des évolutions du pipeline, voir [`CHANGELOG.md`](CHANGELOG.md).
