@@ -17,7 +17,7 @@ Produit, pour chaque module, **deux fichiers colocalisés** : `M<n>-slides-conte
 | Input | Statut | Rôle |
 |---|---|---|
 | Source de contenu (plan, recherche, brief, .md) | requis | matière des slides ; **ancrer les chiffres dessus, ne rien inventer** |
-| Design system (tokens couleurs/typo/composants) | recommandé | cohérence visuelle ; défaut = **Encre & Sauge** (voir plus bas) |
+| Design system (tokens couleurs/typo/composants) | recommandé | cohérence visuelle ; défaut = **Encre & Sauge** (voir plus bas), ou `design-systems/<client>/design-system.md` si extrait via `design-system-extractor` |
 | Métaphore filée / fil rouge | recommandé | renforce l'arc narratif — voir « Où trouver la métaphore filée » ci-dessous |
 | Plage de numérotation des slides | optionnel | utile pour aligner avec un script ou un découpage multi-blocs |
 
@@ -34,7 +34,7 @@ Avant de rédiger le bloc « Direction artistique » d'un module (étape 4 ci-de
 Cette métaphore filée globale est ce que chaque bloc « Direction artistique » (un par module, voir plus bas) décline localement — elle doit être identifiable en une phrase avant de commencer à écrire des prompts.
 
 ## Méthode (étapes)
-0. **Si la densité et le design system n'ont pas été précisés spontanément**, les demander avant de commencer à produire : *« Deux paramètres avant de commencer : (1) densité — une idée par slide ("complet") ou plusieurs idées regroupées par slide ("condensé") ? (2) design system — la charte par défaut par défaut convient, ou le client a-t-elle une charte propre à appliquer ? »* Ne pas deviner ces deux paramètres ni les fixer par défaut sans les avoir posés — ce sont des choix structurants qui coûtent cher à corriger après coup (toutes les slides déjà rédigées).
+0. **Si la densité et le design system n'ont pas été précisés spontanément**, les demander avant de commencer à produire : *« Deux paramètres avant de commencer : (1) densité — une idée par slide ("complet") ou plusieurs idées regroupées par slide ("condensé") ? (2) design system — la charte par défaut « Encre & Sauge » convient, ou le client a-t-il une charte propre à appliquer ? »* Ne pas deviner ces deux paramètres ni les fixer par défaut sans les avoir posés — ce sont des choix structurants qui coûtent cher à corriger après coup (toutes les slides déjà rédigées). Si le client a une charte propre : vérifier d'abord si `design-systems/<client>/design-system.md` existe déjà (dossier de premier niveau, à côté de `formations/` — un design system vaut pour le client entier, pas pour une session ; produit par `design-system-extractor`) ; sinon, proposer d'invoquer `design-system-extractor` sur les documents de marque du client avant de poursuivre, plutôt que d'improviser une charte à partir d'une simple description orale.
 1. **Lire la/les source(s)** et en extraire l'arc : modules → idées-clés. Une **idée = une slide** (densité « complet »), ou regrouper (densité « condensé ») selon la réponse à l'étape 0.
 2. **Établir la métaphore filée globale** de la formation (voir « Où trouver la métaphore filée » ci-dessus) — une seule fois, avant le premier module, jamais réinventée en cours de route.
 3. **Construire la colonne vertébrale** : liste numérotée de slides (type + titre + objectif d'une ligne) AVANT de rédiger. La faire valider si la formation est longue.
@@ -164,7 +164,9 @@ Si la slide demande un visuel que le générateur d'image **ne saura pas rendre 
 Le bitmap généré est réservé aux **illustrations conceptuelles** sans texte ; tout ce qui porte de l'information précise se fait en couche texte/vecteur.
 
 ## Design system par défaut — Encre & Sauge
-Si aucun design system n'est fourni, utiliser « Encre & Sauge ». Les tokens essentiels sont inlinés ci-dessous ; une référence complète séparée (fichier de tokens + spécimen de composants) peut être ajoutée au dépôt si besoin (cf. `BACKLOG.md`, item #20).
+Si aucun design system n'est fourni, utiliser « Encre & Sauge ». Les tokens essentiels sont inlinés ci-dessous.
+
+**Si un design system client existe** (`design-systems/<client>/design-system.md`, produit par `design-system-extractor`), l'appliquer à sa place — champ par champ. Un champ marqué `NON DÉTERMINÉ` dans ce fichier se comble avec la valeur par défaut « Encre & Sauge » correspondante, jamais deviné à partir d'une impression générale du reste de la charte ; le signaler explicitement dans la proposition de contenu produite, pour que le consultant sache quels éléments restent à confirmer avec le client.
 
 **Pour les fiches `M<n>-slides-content.md` (Claude Design)** :
 - **Accent unique** : bleu marine `#2C5F8A` (avec parcimonie). Neutres : encre `#1F1F1F`, gris `#4A4A4A`/`#6B6B6B`, fonds blanc/`#F7F7F7`, beige chaud `#E8E2DA`. Accents data : corail `#D97757`, vert sauge `#4A8B6F`.

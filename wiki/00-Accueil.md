@@ -29,6 +29,10 @@ Une cinquième skill optionnelle, `formation-pipeline`, enchaîne les 4 ci-dessu
 
 `reponse-appel-offres` pilote la réponse complète à un appel d'offres (AO) commercial en 8 étapes internes : recherche méthodologique, recherche client, analyse du besoin (checklist d'exigences CCTP tracée), fit cabinet/client, sourcing et sélection de références, plan de présentation détaillé pour Claude Design, renvoi vers `comite-qualite`.
 
+### Skill transverse — `design-system-extractor`
+
+Extrait la charte graphique d'un client à partir de n'importe quel document fourni (captures, PDF, export Figma, site web...), pour que `slide-content-claude-design` l'applique à la place de sa palette par défaut. À la demande, pas une étape obligatoire.
+
 Détail complet de chaque skill → [Utiliser le pipeline](02-Utiliser-le-pipeline).
 
 ## Comment l'assistant te guide

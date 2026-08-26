@@ -19,17 +19,19 @@ Copier chaque dossier de skill (récupéré depuis le dépôt GitHub, voir [Accu
 │   └── SKILL.md
 ├── formation-pipeline/      (optionnel — orchestrateur du pipeline formation complet)
 │   └── SKILL.md
-└── reponse-appel-offres/    (pipeline réponse à AO, indépendant)
-    ├── SKILL.md
-    ├── references/
-    └── scripts/
+├── reponse-appel-offres/    (pipeline réponse à AO, indépendant)
+│   ├── SKILL.md
+│   ├── references/
+│   └── scripts/
+└── design-system-extractor/ (transverse aux deux pipelines, à la demande)
+    └── SKILL.md
 ```
 
 Copier uniquement les skills dont tu as besoin — les deux pipelines sont indépendants (voir [Utiliser le pipeline](../02-Utiliser-le-pipeline)).
 
 **Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf).
 
-Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres` (ou en langage naturel — chaque skill décrit ses propres déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
+Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres`, `/design-system-extractor` (ou en langage naturel — chaque skill décrit ses propres déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
 
 **Si une skill n'est pas détectée** (dernier recours) :
 - Ouvrir un nouveau chat plutôt que de réutiliser une session existante.
