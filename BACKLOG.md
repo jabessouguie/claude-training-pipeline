@@ -90,12 +90,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Effort** : S — documentation uniquement, aucun changement de comportement des skills.
 **Dépend de** : rien.
 
-### 15. Formaliser un SDLC et une gouvernance de cycle de vie pour les skills (création, version, dépréciation, responsabilité)
+### 15. Formaliser un SDLC et une gouvernance de cycle de vie pour les skills (création, version, dépréciation, responsabilité) ✅ Fait le 28/07/2026
 **Constat** : retour d'usage relayant un besoin identifié ailleurs dans l'organisation, sur la nécessité d'un cycle de vie explicite par asset ("delivery life cycle" à monter sur les différents assets produits). Ce sujet est distinct de l'item #1 (qui porte sur la fiabilité *technique* de l'enregistrement d'une skill en session) : ici il s'agit de gouvernance organisationnelle — qui décide qu'une skill est mature, qui la fait évoluer, comment une version dépréciée est signalée aux utilisateurs.
 **Valeur** : évite que le pipeline ne repose que sur la disponibilité d'une seule personne pour trancher toute évolution, et donne une réponse claire quand plusieurs contributeurs modifient une même skill en parallèle.
 **Action** : ce sujet dépasse le scope d'un seul item de backlog produit — voir `GOVERNANCE.md`, qui documente désormais un cycle retour d'usage → item de backlog → story → implémentation ; à enrichir d'une notion explicite de version de skill si le nombre de contributeurs augmente.
 **Effort** : M — davantage une clarification organisationnelle qu'un développement.
 **Dépend de** : rien, mais conditionne la scalabilité de #14 et de l'ensemble de la gouvernance si l'équipe de contributeurs s'élargit au-delà des 3 actuels.
+**Statut** : traité directement au niveau item, sans story séparée (même exception que #16/#23/#24) — `GOVERNANCE.md` § "Cycle de vie d'une skill (SDLC léger)" documente création, évolution, dépréciation et un repère de maturité explicite, avec la table "qui décide quoi" en tête de fichier pour la responsabilité. Volontairement sans versionnage sémantique tant que l'équipe reste à 3 contributeurs (à réévaluer si ce nombre augmente) — cet item n'avait pas reçu son marqueur ✅ malgré une action déjà réalisée, corrigé ici.
 
 ### 16. Intégrer le "personnage" (personnalité) d'un interlocuteur client au comité qualité ✅ Fait le 24/07/2026 (spec)
 **Constat** : retour d'usage — proposition d'extraire, à partir des entretiens de cadrage, le "personnage" de l'interlocuteur client et de l'intégrer comme référence au comité qualité, pour vérifier que le contenu produit correspond bien à ce que cette personne a exprimé.
