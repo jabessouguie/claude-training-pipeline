@@ -2,17 +2,10 @@
 
 Historique des évolutions du pipeline de skills, du plus récent au plus ancien. Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/) ; les dates correspondent aux jalons de livraison de spec dans ce dépôt, pas nécessairement à une vérification en usage réel (voir `BACKLOG.md` pour le statut de vérification de chaque item).
 
-## 18/08/2026
-
-**Ajouté**
-- **`reponse-appel-offres`** ([#29](BACKLOG.md), US-18) — remplace `cadrage-appel-offres` (US-17, 29/07/2026) par une skill unique bout-en-bout en 8 étapes : recherche méthodologique sur les bonnes pratiques de réponse à AO (Étape 0), recherche étendue sur le client émetteur (Étape 1), analyse du besoin avec checklist d'exigences CCTP tracée et détection d'un éventuel format de réponse imposé par le client — toujours prioritaire sur le format par défaut (Étape 2), analyse de l'adéquation cabinet/besoin via un profil cabinet réutilisable (Étape 3), sourcing de références combinant demande explicite et recherche web publique (Étape 4), sélection des références pertinentes selon des critères explicites (Étape 5), plan de présentation détaillé au même niveau de format que `slide-content-claude-design` — fiche par slide + fichier de prompts séparé (Étape 6), et renvoi explicite vers `comite-qualite` (Étape 7).
-- **`reponse-appel-offres/references/profil_cabinet_gabarit.md`** : gabarit vide de profil cabinet — jamais un cabinet présupposé (le nom du cabinet varie selon le consultant), rempli à chaque exécution dans le workspace de l'AO en cours (`appels-offres/<client>-<objet>/<AAAA-MM>/profil-cabinet.md`), jamais à la racine du dépôt.
-- **Contrat AO-2** dans `PIPELINE_CONTRACTS.md` : format de sortie final du plan de présentation (`plan-presentation-content.md`/`plan-presentation-prompts.md`), miroir du Contrat 4 côté formation, avec une clause de priorité explicite sur tout format de réponse imposé par le client.
+## 26/08/2026
 
 **Corrigé**
-- Contrat AO-1 (v2) : renommage de contexte (`reponse-appel-offres` remplace `cadrage-appel-offres`), ajout de l'onglet "Format de réponse imposé" dans `exigences_<client>.xlsx`.
-- `cadrage-appel-offres/` retirée du dépôt — n'avait jamais été committée dans l'historique git (aucune perte de contenu versionné). La checklist d'exigences CCTP (catégories `OBLIGATOIRE`/`SOUHAITABLE`/`ÉLIMINATOIRE`, traçabilité anti-élimination, script `generate_exigences_xlsx.py`) est conservée à l'identique, intégrée comme livrable interne de l'Étape 2 de `reponse-appel-offres`. `comite-qualite/SKILL.md` n'a nécessité aucune modification — ses rôles conditionnels existants (« Directeur de mission », « UX/Directeur artistique ») couvrent déjà ce type de livrable.
-- `BACKLOG.md` #29, `ROADMAP.md` Horizon 6, `README.md`, `GOVERNANCE.md` mis à jour pour refléter le nouveau périmètre ; US-17 conservée pour l'historique (marquée remplacée par US-18, critères d'acceptation non rejoués rétroactivement).
+- CI (`.github/workflows/ci.yml`) : le job `secret-detection` échouait sur tout événement `pull_request` (`gitleaks-action@v2` a besoin de la permission `pull-requests: read` sur le `GITHUB_TOKEN` pour lister les commits de la PR, non accordée par défaut) — ajout explicite de `permissions: contents: read, pull-requests: read` sur ce job ([#30](BACKLOG.md)).
 
 ## 29/07/2026
 
