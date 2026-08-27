@@ -38,6 +38,13 @@ flowchart LR
 
 **Point de validation** : le profil cabinet (`profil-cabinet.md`) est renseigné interactivement s'il n'existe pas encore — jamais un cabinet présupposé. Un format de réponse imposé par le client, s'il est détecté, prime toujours sur le vocabulaire de blocs par défaut de l'Étape 6.
 
+## Skills transverses (à la demande, pas une étape obligatoire)
+
+| Skill | Alimente | Ce qu'elle fait |
+|---|---|---|
+| `design-system-extractor` | `slide-content-claude-design` | Extrait une charte graphique client de n'importe quel document fourni |
+| `consultants-references-extractor` | `reponse-appel-offres` (Étapes 4bis/5bis) | Extrait un référentiel de CV et de références/missions, réutilisable d'un AO à l'autre. Confidentialité classée mais **jamais** auto-autorisée : confirmation humaine toujours requise avant usage externe |
+
 ## Modèle recommandé
 
 **Sonnet 5**, niveau d'effort **`high`** pour l'ensemble des skills des deux pipelines (détail et justification complète dans [README.md § « Modèle et niveau d'effort recommandés »](README.md#modèle-et-niveau-deffort-recommandés)).

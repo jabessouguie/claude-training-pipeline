@@ -116,10 +116,13 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 **Contenu** (backlog associé) :
 - US-18 — `reponse-appel-offres` produit un mémoire de réponse à AO complet jusqu'au plan de présentation Claude Design (#29)
+- US-20 — `consultants-references-extractor` alimente la sélection d'équipe et de références (#31) — Étapes 4bis/5bis conditionnelles, une slide `ÉQUIPE-MEMBRE`/`RÉFÉRENCE` par entrée à l'Étape 6, confidentialité jamais autorisée sans confirmation humaine
 
 **Révision du 18/08/2026** : après la première itération (`cadrage-appel-offres`, US-17, limitée à l'analyse du dossier), l'utilisateur a redéfini le périmètre en un workflow explicite à 8 étapes bien plus large. Décision actée : élargissement direct en une skill unique `reponse-appel-offres`, plutôt que la trajectoire initialement prévue en 4 skills séquentielles (`memoire-technique-builder`, `memoire-content-claude-design`, `appel-offres-pipeline` — abandonnées, jamais écrites). Ce changement de stratégie reste cohérent avec le principe itératif de départ : la première itération a servi à valider le mécanisme le plus critique (la checklist d'exigences, conservée à l'identique dans la nouvelle skill) avant d'investir dans un périmètre plus large.
 
-**Condition de sortie** : un premier AO réel traité de bout en bout via `reponse-appel-offres` (recherche → analyse → plan de présentation → composition Claude Design), sans jamais nommer cet AO dans le dépôt (cohérence avec la règle de gouvernance des données déjà actée côté formation — `formations/` et `appels-offres/` ne sont jamais versionnés pour un cas réel).
+**Révision du 27/08/2026** : ajout de `consultants-references-extractor` (US-20, #31), skill transverse qui alimente `reponse-appel-offres` en équipe et références catalogées — sans exemple de deck source disponible pour cadrer la spec sur un cas réel, contrairement au reste du pipeline (voir Statut de #31 dans `BACKLOG.md`).
+
+**Condition de sortie** : un premier AO réel traité de bout en bout via `reponse-appel-offres` (recherche → analyse → plan de présentation → composition Claude Design), sans jamais nommer cet AO dans le dépôt (cohérence avec la règle de gouvernance des données déjà actée côté formation — `formations/` et `appels-offres/` ne sont jamais versionnés pour un cas réel). Depuis le 27/08/2026, cette condition inclut aussi la vérification de `consultants-references-extractor` sur un cas réel dès qu'un deck source est disponible.
 
 **Pourquoi un nouvel horizon plutôt qu'un sous-horizon** : ce pipeline sert un métier distinct (avant-vente, pas formation) — un horizon séquentiel propre reste plus lisible qu'un "Horizon 1 bis" mélangé à la trajectoire du pipeline formation.
 

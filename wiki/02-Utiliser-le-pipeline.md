@@ -79,7 +79,8 @@ Workflow en 8 étapes :
 3. **Analyse de l'adéquation cabinet/besoin** — via un profil cabinet (`profil-cabinet.md`, jamais un cabinet présupposé : chaque consultant renseigne le sien).
 4. **Références du cabinet** — demandées au consultant ET complétées par une recherche web de références publiques.
 5. **Sélection des références pertinentes** — critères explicites (secteur, techno, taille de mission).
-6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide + un fichier de prompts séparé.
+4bis/5bis. **Équipe et références depuis un référentiel** (conditionnelles, si `consultants-references-extractor` a été utilisée) — voir plus bas, s'ajoutent aux étapes 4/5 sans les remplacer.
+6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide + un fichier de prompts séparé. Une slide `ÉQUIPE-MEMBRE` par consultant retenu et une slide `RÉFÉRENCE` par référence retenue, jamais regroupées.
 7. **Comité qualité** — proposition explicite d'enchaînement vers `comite-qualite`.
 
 **Sortie** : `exigences_<client>.xlsx` (livrable interne) et `plan-presentation-content.md`/`plan-presentation-prompts.md` (livrable final) — voir `PIPELINE_CONTRACTS.md` pour le détail des formats.
@@ -95,6 +96,20 @@ Workflow en 8 étapes :
 3. **Validation** avant de finaliser : confirme les couleurs (recommande une pipette pour la précision hexadécimale) et les champs `NON DÉTERMINÉ`.
 
 **Sortie** : `design-systems/<client>/design-system.md`, que `slide-content-claude-design` applique ensuite à la place de sa palette par défaut « Encre & Sauge ».
+
+---
+
+## Skill transverse — `consultants-references-extractor`
+
+À utiliser pour capitaliser les CV et les références du cabinet d'une réponse à AO à l'autre, plutôt que de repartir de zéro à chaque fois.
+
+1. **Fournir les documents sources** — decks internes (une slide par CV/référence), PDF, Word, export LinkedIn, tableur RH. La mise en page peut varier d'un auteur à l'autre, aucun format homogène n'est requis.
+2. La skill extrait les CV et les références **par lots**, avec un point de contrôle après chacun (utile sur de gros volumes, plusieurs centaines d'entrées).
+3. Un consultant peut avoir plusieurs missions distinctes ; une référence peut réunir plusieurs consultants — les deux référentiels produits sont liés dans les deux sens.
+4. **Confidentialité** : chaque référence est classée (nommée / anonymisée / interne uniquement / non précisé) — ce classement ne suffit **jamais** à autoriser un usage externe, une confirmation humaine explicite reste toujours nécessaire au moment de la sélection dans `reponse-appel-offres`.
+5. **Ré-import** : une nouvelle extraction fusionne avec l'existant, sans jamais écraser silencieusement une fiche déjà modifiée à la main.
+
+**Sortie** : `consultants/<identifiant>.md` et `references-missions/<identifiant>.md`, consommés par `reponse-appel-offres` (Étapes 4bis/5bis) pour sélectionner et reformuler l'équipe et les références les plus pertinentes pour l'AO en cours.
 
 ---
 
