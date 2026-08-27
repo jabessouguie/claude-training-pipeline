@@ -17,7 +17,8 @@ Fichier produit : `references-missions/<client-objet>.md` (dossier de premier ni
 - **Rappel** : ce niveau documente ce qui a été trouvé à l'extraction — il n'autorise jamais, à lui seul, un usage externe. Toute inclusion dans un livrable envoyé à un client exige une confirmation humaine explicite au moment de la sélection (voir `reponse-appel-offres/SKILL.md`), quel que soit le niveau ci-dessus.
 
 ## Client
-- Nom : <valeur, ou "non citable — niveau ANONYMISÉE/INTERNE_UNIQUEMENT">
+- Nom (usage interne) : <nom réel du client, toujours renseigné s'il est connu — voir la règle ci-dessous>
+- Citable à l'externe : OUI (niveau NOMMÉE, sous réserve de la confirmation humaine à la sélection) | NON (niveaux ANONYMISÉE, INTERNE_UNIQUEMENT, NON PRÉCISÉ)
 - Secteur : <valeur ou NON DÉTERMINÉ>
 
 ## Contexte et enjeux
@@ -42,4 +43,5 @@ Fichier produit : `references-missions/<client-objet>.md` (dossier de premier ni
 
 - La détection de confidentialité s'interprète en contexte (le format varie d'un document à l'autre) — jamais un mot-clé unique attendu.
 - Une absence de mention de confidentialité se classe `NON PRÉCISÉ`, jamais interprétée comme une autorisation implicite.
+- **Le nom réel du client est toujours conservé dans le référentiel, quel que soit le niveau de confidentialité** — y compris `INTERNE_UNIQUEMENT`. Ce référentiel est interne et jamais versionné (`.gitignore`) : sa raison d'être est précisément de permettre une sélection éclairée en interne, ce qu'un nom effacé rend impossible (on ne peut plus repérer qu'une mission concerne un concurrent du client visé, ni dédoublonner au ré-import — l'identifiant du fichier est lui-même construit à partir du nom). Effacer le nom ici ne protégerait rien tout en détruisant l'usage : la confidentialité se joue **au moment de la sélection** (`reponse-appel-offres` Étape 5bis), qui décide ce qui sort du cabinet, jamais à l'extraction.
 - Un champ non observable dans les documents sources reste `NON DÉTERMINÉ`, jamais complété par une valeur plausible.

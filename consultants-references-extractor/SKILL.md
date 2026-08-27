@@ -56,6 +56,8 @@ Même logique que l'Étape 1, appliquée aux slides/documents de référence :
 
 **Garde-fou** : jamais inventer un résultat chiffré ou un contexte non écrit ; jamais reclasser silencieusement une référence `INTERNE_UNIQUEMENT` vers un niveau plus permissif, même si son contenu semble anodin.
 
+**Le nom réel du client est toujours conservé**, quel que soit le niveau de confidentialité détecté — y compris `INTERNE_UNIQUEMENT`. Le référentiel est interne et jamais versionné : l'effacer n'apporterait aucune protection (l'identifiant du fichier est construit à partir du nom) tout en rendant impossible la sélection éclairée et le dédoublonnage au ré-import. La confidentialité se joue **à la sélection** (`reponse-appel-offres` Étape 5bis), qui décide ce qui sort du cabinet — jamais à l'extraction, qui se contente de documenter.
+
 ## Étape 3 — Lier les deux référentiels
 
 Une fois l'Étape 1 et l'Étape 2 terminées pour un lot : vérifier que chaque mission listée dans un fichier consultant pointe vers un fichier référence existant (le créer si besoin, avec les seules informations déjà connues, complétées à l'extraction suivante), et que chaque fichier référence liste bien tous les consultants identifiés pour cette mission. Lien maintenu dans les deux sens, jamais un seul.

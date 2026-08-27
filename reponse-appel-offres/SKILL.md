@@ -101,17 +101,24 @@ Voir le format JSON d'entrée et la structure du classeur produit en fin de docu
 
 **Validation** : **structurante** pour le remplissage initial du profil (réutilisé pour toute la suite de cet AO, coûteux à mal remplir) ; légère pour l'analyse de fit elle-même.
 
-### Étape 4 — Demander la liste des références
+### Étape 4 — Demander les références et l'équipe pressentie
 
-Demander explicitement au consultant sa liste de références à mettre en avant (client, objet de la mission, résultats, secteur, année). **Compléter systématiquement** par une recherche web de références **publiques** du cabinet (études de cas publiées, mentions presse, témoignages clients publiés, site du cabinet) — toujours les deux sources, sauf impossibilité signalée explicitement (ex. cabinet sans présence web).
+Deux matières distinctes sont collectées ici, toutes deux nécessaires à l'Étape 6 : les **références** du cabinet et l'**équipe** qu'il compte mobiliser.
+
+**4.a — Références.** Demander explicitement au consultant sa liste de références à mettre en avant (client, objet de la mission, résultats, secteur, année). **Compléter systématiquement** par une recherche web de références **publiques** du cabinet (études de cas publiées, mentions presse, témoignages clients publiés, site du cabinet) — toujours les deux sources, sauf impossibilité signalée explicitement (ex. cabinet sans présence web).
+
+**4.b — Équipe pressentie.** Demander explicitement au consultant qui il compte mobiliser sur la mission et, pour chaque personne, ce qui justifie sa présence : rôle proposé, missions antérieures pertinentes vis-à-vis de cet AO, compétences utiles. **Ne jamais composer l'équipe soi-même à partir du seul CCTP** — le cabinet seul sait qui est disponible et qui il engage. Une personne annoncée sans élément justifiant sa présence reste dans la liste, mais son manque est signalé explicitement comme point de vigilance : une slide `ÉQUIPE-MEMBRE` (Étape 6) ne peut pas être rédigée sans ces éléments, et ils ne s'inventent pas.
+
+Si un référentiel de consultants existe, l'Étape 4bis enrichit cette collecte à partir de `consultants/` plutôt que de tout redemander de mémoire — mais 4.b reste le socle : c'est elle qui garantit qu'une équipe existe même sans référentiel.
 
 **Garde-fous stricts** :
+- Jamais inventer un membre d'équipe, un rôle, ou une mission antérieure non fournis par le consultant ou présents dans `consultants/`.
 - Jamais inventer une référence non confirmée par au moins une des deux sources.
 - Une référence mentionnée par le consultant mais non trouvée en ligne reste valide (mission confidentielle, fréquente en conseil) — marquée « source : consultant, non publique ».
 - Une référence trouvée en ligne mais non confirmée par le consultant est marquée « source : recherche web publique, à confirmer avant utilisation » — **jamais utilisée telle quelle** dans le plan de présentation (Étape 6) sans cette confirmation.
 - Jamais attribuer au cabinet cible une référence d'un homonyme ou d'une entité différente sans vérification croisée explicite (nom exact, activité cohérente).
 
-**Livrable** : liste consolidée (Client / Secteur / Objet / Année / Taille approximative / Source / Lien si public).
+**Livrable** : liste de références consolidée (Client / Secteur / Objet / Année / Taille approximative / Source / Lien si public) **et** liste de l'équipe pressentie (Nom / Rôle proposé / Missions antérieures pertinentes / Compétences utiles / éléments manquants signalés).
 
 **Validation** : légère pour les références fournies directement par le consultant (déjà maîtrisées) ; **une confirmation verbale rapide ("oui, ok") ne suffit pas** pour une référence "à confirmer" issue de la recherche web — demander explicitement au consultant s'il a vérifié que le client est toujours d'accord pour être cité et que l'information reste d'actualité, pas seulement qu'il "connaît" cette référence. Si cette vérification active ne peut pas être faite dans le délai disponible, la référence reste marquée "à confirmer" et **n'est pas éligible à la sélection de l'Étape 5** — jamais retenue par défaut faute de temps pour vérifier.
 
@@ -132,7 +139,7 @@ Retenir 3 à 5 références, chacune justifiée par au moins un des trois critè
 
 ### Étape 4bis — Sélectionner l'équipe à mobiliser (si un référentiel de consultants existe)
 
-Ne s'exécute que si `consultants/` (produit par `consultants-references-extractor`) contient des fiches. S'ajoute à l'Étape 4, ne la remplace pas.
+Ne s'exécute que si `consultants/` (produit par `consultants-references-extractor`) contient des fiches. **Enrichit l'Étape 4.b**, ne la remplace pas : 4.b garantit qu'une équipe existe dans tous les cas (elle est demandée au consultant) ; 4bis évite de tout ressaisir de mémoire quand le référentiel est disponible, et permet une sélection argumentée parmi plusieurs candidats. Si le consultant a déjà nommé son équipe en 4.b, croiser avec `consultants/` pour compléter les fiches plutôt que de reprendre la sélection à zéro — ne jamais écarter silencieusement quelqu'un que le consultant a explicitement désigné.
 
 1. **Déterminer les profils requis** à partir des exigences de l'Étape 2 (compétences, technologies, méthodologies attendues) et du volume/de la durée de la mission si connus.
 2. **Rechercher dans `consultants/`** les consultants correspondant aux profils requis, sur la base de leurs compétences (tags explicites et déduites), de leur séniorité, et de leur disponibilité si renseignée.
@@ -176,8 +183,8 @@ TYPE ∈ {COUVERTURE, SOMMAIRE, COMPRÉHENSION-ENJEUX, APPROCHE, ÉQUIPE-MEMBRE,
 - **SOMMAIRE** : structure de la présentation
 - **COMPRÉHENSION-ENJEUX** : reformulation du besoin (Étape 2), preuve de lecture réelle du dossier — répond au piège du mémoire générique (Étape 0)
 - **APPROCHE** : méthodologie proposée, différenciateurs (issus du profil cabinet, Étape 3)
-- **ÉQUIPE-MEMBRE** : **une slide par consultant retenu** (Étape 4/4bis) — jamais plusieurs consultants regroupés sur une seule slide, quel que soit leur nombre. Gabarit dédié ci-dessous.
-- **RÉFÉRENCE** : **une slide par référence retenue** (Étape 5/5bis) — jamais plusieurs références regroupées sur une seule slide. Gabarit dédié ci-dessous.
+- **ÉQUIPE-MEMBRE** : **une slide par consultant retenu** — jamais plusieurs consultants regroupés sur une seule slide, quel que soit leur nombre. Contenu issu de l'Étape 4.b (équipe demandée au consultant, socle toujours présent), enrichi par l'Étape 4bis si un référentiel existe. Gabarit dédié ci-dessous.
+- **RÉFÉRENCE** : **une slide par référence retenue** (Étape 5, complétée par 5bis si un référentiel existe) — jamais plusieurs références regroupées sur une seule slide. Gabarit dédié ci-dessous.
 - **PLANNING** : jalons, macro-planning de la mission
 - **CONFORMITÉ** : réponse point par point aux exigences `OBLIGATOIRE`/`ÉLIMINATOIRE` majeures — répond explicitement au piège « grandes masses plutôt que point par point » (Étape 0)
 - **SYNTHÈSE** : rappel de la valeur différenciante, appel à l'action
@@ -217,12 +224,12 @@ Si un format imposé s'applique, adapter le champ `TYPE` aux sections réellemen
 ````
 ### Slide N — ÉQUIPE-MEMBRE — <Nom du consultant>
 - **Rôle proposé sur cette mission** : <valeur>
-- **Pourquoi ce profil est indispensable** : <reformulation factuelle depuis consultants/<identifiant>.md — jamais une compétence non présente dans sa fiche>
+- **Pourquoi ce profil est indispensable** : <reformulation strictement factuelle de ce qu'a fourni le consultant (Étape 4.b) ou de sa fiche consultants/<identifiant>.md si elle existe — jamais une compétence ou une justification absente des deux>
 - **Missions pertinentes vis-à-vis de l'AO** :
   - <Intitulé mission 1> — valeur ajoutée : <texte>
   - <Intitulé mission 2> — valeur ajoutée : <texte>   ← autant que de missions retenues à l'Étape 4bis
-- **Compétences utiles pour cette mission** : <liste, issue de consultants/<identifiant>.md>
-- **Résultats chiffrés** (si disponibles sur une mission mise en avant) : <donnée + (source : consultants/<identifiant>.md)>   ← omettre si non pertinent
+- **Compétences utiles pour cette mission** : <liste, issue de l'Étape 4.b ou de consultants/<identifiant>.md>
+- **Résultats chiffrés** (si disponibles sur une mission mise en avant) : <donnée + (source : Étape 4.b | consultants/<identifiant>.md)>   ← omettre si non pertinent
 ````
 
 **Gabarit dédié `RÉFÉRENCE`** (une slide par référence retenue, en plus des champs génériques ci-dessus) :

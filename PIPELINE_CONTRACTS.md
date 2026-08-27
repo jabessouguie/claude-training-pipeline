@@ -216,7 +216,9 @@ Skill invoquée à la demande, en amont ou en cours de `reponse-appel-offres` �
 
 **Fichiers**, dans `references-missions/` — dossier de premier niveau, même statut que `consultants/` (à côté, jamais versionné) : un fichier `<client-objet>.md` par mission/référence, gabarit exact dans [`consultants-references-extractor/references/reference_gabarit.md`](consultants-references-extractor/references/reference_gabarit.md).
 
-**Contenu** : niveau de confidentialité (`NOMMÉE`/`ANONYMISÉE`/`INTERNE_UNIQUEMENT`/`NON PRÉCISÉ`), client/secteur, contexte et enjeux, notre approche, valeur ajoutée/résultats, détails complémentaires (durée, taille d'équipe, technologies), et la liste des consultants ayant contribué (lien bidirectionnel avec le Contrat CR-1).
+**Contenu** : niveau de confidentialité (`NOMMÉE`/`ANONYMISÉE`/`INTERNE_UNIQUEMENT`/`NON PRÉCISÉ`), nom réel du client (**toujours conservé**, voir ci-dessous) et secteur, contexte et enjeux, notre approche, valeur ajoutée/résultats, détails complémentaires (durée, taille d'équipe, technologies), et la liste des consultants ayant contribué (lien bidirectionnel avec le Contrat CR-1).
+
+**Règle de conservation du nom** : le nom réel du client figure toujours dans la fiche, quel que soit le niveau de confidentialité — le référentiel est interne et jamais versionné, et l'identifiant du fichier est lui-même construit à partir de ce nom. L'effacer ne protégerait rien tout en rendant impossibles la sélection éclairée et le dédoublonnage au ré-import. La fiche porte en revanche un champ explicite « Citable à l'externe : OUI/NON » qui, lui, conditionne l'usage en livrable.
 
 **Règle de confidentialité — la plus importante de ce contrat** : le niveau documenté dans une fiche **ne vaut que pour ce qui a été trouvé à l'extraction** — il n'autorise jamais, à lui seul, un usage externe. Toute inclusion d'une fiche `references-missions/` dans un livrable envoyé à un client exige une confirmation humaine explicite au moment de la sélection (`reponse-appel-offres` Étape 5bis), quel que soit le niveau, y compris `NOMMÉE`.
 
