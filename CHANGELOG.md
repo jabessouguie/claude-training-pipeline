@@ -2,6 +2,18 @@
 
 Historique des évolutions du pipeline de skills, du plus récent au plus ancien. Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/) ; les dates correspondent aux jalons de livraison de spec dans ce dépôt, pas nécessairement à une vérification en usage réel (voir `BACKLOG.md` pour le statut de vérification de chaque item).
 
+## 27/08/2026
+
+**Ajouté**
+- **`consultants-references-extractor`** ([#31](BACKLOG.md), US-20) : nouvelle skill transverse, alimente `reponse-appel-offres`. Extrait deux référentiels distincts et liés (`consultants/<identifiant>.md`, Contrat CR-1 ; `references-missions/<identifiant>.md`, Contrat CR-2) à partir de n'importe quel document fourni (decks hétérogènes, PDF, Word, LinkedIn, tableur), par lots avec point de contrôle. Confidentialité classée à quatre niveaux (`NOMMÉE`/`ANONYMISÉE`/`INTERNE_UNIQUEMENT`/`NON PRÉCISÉ`) mais **jamais** auto-autorisée pour un usage externe — confirmation humaine toujours requise. Ré-import : fusion avec l'existant, jamais d'écrasement silencieux d'une modification manuelle.
+- `reponse-appel-offres/SKILL.md` : deux étapes conditionnelles, Étape 4bis (sélection d'équipe depuis le référentiel, validation du consultant concerné requise) et Étape 5bis (sélection de références depuis le référentiel, confirmation de confidentialité toujours requise) — s'ajoutent aux Étapes 4/5 existantes, ne les remplacent pas.
+- Contrat AO-2 v2 : bloc `ÉQUIPE-RÉFÉRENCES` (mélangeait équipe et références) éclaté en `ÉQUIPE-MEMBRE`/`RÉFÉRENCE`, une slide par entrée, avec gabarits dédiés reprenant les champs minimum requis par [#31](BACKLOG.md).
+- `PIPELINE_CONTRACTS.md` : nouveau préfixe `CR-` pour les contrats des skills transverses consultants/références (Contrats CR-1, CR-2) ; la règle de nommage des préfixes transverses (un préfixe thématique par skill, jamais un préfixe générique partagé) est clarifiée dans l'en-tête du fichier.
+
+**Corrigé**
+- **Item [#29](BACKLOG.md)** (`reponse-appel-offres`, le pipeline réponse à AO) était cité comme dépendance/rattachement à 5 endroits de `BACKLOG.md` (item #17, ligne de couverture des stories US-17/US-18...) mais n'avait **jamais eu sa propre entrée** dans le fichier — ni dans l'historique git du dépôt, avant cette session comprise. Restauré fidèlement.
+- `reponse-appel-offres/SKILL.md` : une note laissait croire qu'une skill d'extraction de charte graphique était encore « en pause » — `design-system-extractor` existe depuis le 26/08/2026 (branchée dans `slide-content-claude-design`, pas encore ici). Note corrigée pour refléter l'état réel.
+
 ## 26/08/2026
 
 **Arbitré**

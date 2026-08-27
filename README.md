@@ -114,7 +114,8 @@ Workflow en 8 étapes :
 3. **Analyse de l'adéquation cabinet/besoin** — via un profil cabinet (`profil-cabinet.md`, jamais un cabinet présupposé : chaque consultant renseigne le sien), croisé avec les exigences.
 4. **Références du cabinet** — demandées au consultant ET complétées par une recherche web de références publiques, jamais l'une sans l'autre.
 5. **Sélection des références pertinentes** — critères explicites (secteur, techno, taille de mission).
-6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide entièrement dimensionnée/positionnée/colorisée + un fichier de prompts séparé, prêts à coller dans Claude Design (composition toujours manuelle, Claude Design n'a pas d'API programmatique).
+4bis/5bis. **Équipe et références depuis un référentiel** (conditionnelles — seulement si `consultants-references-extractor` a été utilisée) — sélection de consultants et de missions catalogués, en plus des Étapes 4/5 ci-dessus, jamais à leur place. Voir « Skill transverse : `consultants-references-extractor` » plus bas.
+6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide entièrement dimensionnée/positionnée/colorisée + un fichier de prompts séparé, prêts à coller dans Claude Design (composition toujours manuelle, Claude Design n'a pas d'API programmatique). Une slide `ÉQUIPE-MEMBRE` par consultant retenu et une slide `RÉFÉRENCE` par référence retenue, jamais regroupées.
 7. **Comité qualité** — proposition explicite d'enchaînement vers `comite-qualite`, sans modification nécessaire de cette skill (ses rôles existants couvrent déjà ce type de livrable).
 
 **Sortie** : `exigences_<client>.xlsx` (livrable interne, Contrat AO-1) à la racine de `appels-offres/<client>-<objet>/<AAAA-MM>/`, et `plan-presentation-content.md`/`plan-presentation-prompts.md` (livrable final, Contrat AO-2 de `PIPELINE_CONTRACTS.md`) dans son sous-dossier `livrables/` — l'ensemble distinct du dossier `formations/` du premier pipeline.
@@ -129,11 +130,23 @@ Extrait le design system d'un client à partir de **n'importe quel document rée
 
 **Sortie** : `design-systems/<client>/design-system.md` (Contrat DS-1 de `PIPELINE_CONTRACTS.md`), au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md` — cette dernière l'applique directement à la place de sa palette par défaut « Encre & Sauge » quand il existe, en comblant les champs `NON DÉTERMINÉ` restants avec les valeurs par défaut correspondantes.
 
+---
+
+# Skill transverse : `consultants-references-extractor`
+
+Skill invoquée à la demande, en amont ou en cours de `reponse-appel-offres` — pas une étape obligatoire du pipeline AO, mais un accélérateur pour ses Étapes 4bis/5bis conditionnelles.
+
+Extrait un référentiel de CV consultants et un référentiel de références/missions à partir de **n'importe quel document réellement fourni** — decks internes (une slide par CV/référence, format réel mais mise en page hétérogène d'un auteur à l'autre), PDF, Word, export LinkedIn, tableur RH. Gère de gros volumes (plusieurs centaines d'entrées) par lots, avec un point de contrôle après chacun. Un consultant peut avoir plusieurs missions distinctes ; une mission peut réunir plusieurs consultants — les deux référentiels sont liés dans les deux sens. Un ré-import régulier fusionne avec l'existant, sans jamais écraser silencieusement une modification manuelle.
+
+**Confidentialité** : chaque référence est classée `NOMMÉE`/`ANONYMISÉE`/`INTERNE_UNIQUEMENT`/`NON PRÉCISÉ` à l'extraction — ce classement documente ce qui a été trouvé, il **n'autorise jamais** un usage externe. Toute inclusion dans un livrable envoyé à un client exige une confirmation humaine explicite au moment de la sélection, quel que soit le niveau.
+
+**Sortie** : `consultants/<identifiant>.md` (Contrat CR-1) et `references-missions/<identifiant>.md` (Contrat CR-2 de `PIPELINE_CONTRACTS.md`) — consommés par `reponse-appel-offres` aux Étapes 4bis (sélection d'équipe, validation du consultant concerné avant toute fiche reformulée finale) et 5bis (sélection de références, confirmation de confidentialité toujours requise).
+
 # Modèle et niveau d'effort recommandés
 
 **En pratique** : dans Claude Code, choisis **Sonnet 5** et le niveau d'effort **`high`** au démarrage de ta session (menu/commande de sélection du modèle et de l'effort de ton installation — le nom exact de cette commande dépend de la version de l'outil ; dans l'application Claude ou Cowork, le réglage équivalent se trouve dans les paramètres de conversation). C'est la seule chose à retenir pour un usage quotidien du pipeline ; le reste de cette section est une justification détaillée, utile si tu veux comprendre le "pourquoi" ou si tu contribues au dépôt — pas une lecture nécessaire avant de lancer une skill.
 
-**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des skills de ce dépôt — les 5 du pipeline formation (y compris `formation-pipeline` en mode orchestration), `reponse-appel-offres` du pipeline réponse à AO, et la skill transverse `design-system-extractor`. Ces dernières partagent le même profil de difficulté (extraction exhaustive contrainte par un format, deep research à plusieurs volets, jugement de fit et de sélection) — pas de recommandation distincte tant qu'aucune divergence réelle n'a été observée en usage. Compte tenu de sa longueur (8 étapes, plusieurs deep research successives, un livrable détaillé slide par slide), monter à **`xhigh`** sur `reponse-appel-offres` est aussi défendable que sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours (même emplacement de réglage) — voir le détail par cas ci-dessous.
+**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des skills de ce dépôt — les 5 du pipeline formation (y compris `formation-pipeline` en mode orchestration), `reponse-appel-offres` du pipeline réponse à AO, et les skills transverses `design-system-extractor` et `consultants-references-extractor`. Ces dernières partagent le même profil de difficulté (extraction exhaustive contrainte par un format, deep research à plusieurs volets, jugement de fit et de sélection) — pas de recommandation distincte tant qu'aucune divergence réelle n'a été observée en usage. Compte tenu de sa longueur (8 étapes, plusieurs deep research successives, un livrable détaillé slide par slide), monter à **`xhigh`** sur `reponse-appel-offres` est aussi défendable que sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours (même emplacement de réglage) — voir le détail par cas ci-dessous.
 
 **Escalade conditionnelle vers Opus** : rester sur Sonnet par défaut, mais basculer ponctuellement sur Opus (même sélecteur de modèle que ci-dessus, changer juste le nom du modèle pour la session ou l'étape concernée) pour les décisions les plus coûteuses à défaire une fois prises — la conception du cas fil rouge et de la roadmap en Phase 1 de `formation-material-builder` (la spec elle-même les qualifie de coûteuses à corriger après coup : « Mieux vaut 10 min de cadrage que 2h de retravail »), la recherche de participants dans `cadrage-formation` si l'audience est nombreuse/senior/multi-entités (zone d'ambiguïté la plus exposée au risque d'hypothèse présentée à tort comme un fait), ou un audit `comite-qualite` sur un livrable client/contractuel à fort enjeu. Ce n'est pas un changement de modèle par défaut sur toute une skill, seulement sur son point de décision le plus structurant.
 
@@ -217,11 +230,14 @@ Copier chaque dossier dans `~/.claude/skills/` :
 │   ├── SKILL.md
 │   ├── references/          (gabarit de profil cabinet)
 │   └── scripts/             (générateur de la checklist d'exigences Excel)
-└── design-system-extractor/ (transverse aux deux pipelines, à la demande)
-    └── SKILL.md
+├── design-system-extractor/ (transverse aux deux pipelines, à la demande)
+│   └── SKILL.md
+└── consultants-references-extractor/ (transverse, alimente reponse-appel-offres à la demande)
+    ├── SKILL.md
+    └── references/          (gabarits fiche consultant / fiche référence)
 ```
 
-**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres`, `/design-system-extractor` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
+**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres`, `/design-system-extractor`, `/consultants-references-extractor` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
 
 **Procédure de repli si une skill n'est pas détectée** (à utiliser en dernier recours, pas par défaut) :
 - Ouvrir un nouveau chat plutôt que de réutiliser une session existante.

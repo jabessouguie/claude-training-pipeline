@@ -1,6 +1,6 @@
 ---
 name: reponse-appel-offres
-description: Pilote la réponse complète à un appel d'offres (AO) commercial, de la recherche méthodologique jusqu'au plan de présentation prêt à coller dans Claude Design — en 8 étapes : recherche sur les bonnes pratiques de réponse à AO, recherche étendue sur le client émetteur, analyse du besoin (avec checklist d'exigences CCTP tracée et détection d'un éventuel format de réponse imposé), analyse de l'adéquation cabinet/besoin (profil cabinet), sourcing et sélection de références pertinentes, plan de présentation détaillé slide par slide, puis renvoi vers comite-qualite. Déclencher dès que l'utilisateur partage un dossier d'AO, un CCTP, un règlement de consultation, ou demande de "répondre à un appel d'offres", une "analyse de fit", une "checklist d'exigences", ou un "plan de présentation commerciale". Remplace l'ancienne skill cadrage-appel-offres, qui ne couvrait que l'analyse du dossier — voir CHANGELOG.md.
+description: Pilote la réponse complète à un appel d'offres (AO) commercial, de la recherche méthodologique jusqu'au plan de présentation prêt à coller dans Claude Design — en 8 étapes : recherche sur les bonnes pratiques de réponse à AO, recherche étendue sur le client émetteur, analyse du besoin (avec checklist d'exigences CCTP tracée et détection d'un éventuel format de réponse imposé), analyse de l'adéquation cabinet/besoin (profil cabinet), sourcing et sélection de références pertinentes, plan de présentation détaillé slide par slide, puis renvoi vers comite-qualite. Si un référentiel consultants-references-extractor existe, deux étapes conditionnelles s'ajoutent en parallèle des étapes 4/5 : sélection de l'équipe à mobiliser (CV reformulés, une slide par consultant) et sélection de références sourcées du référentiel plutôt que du seul web/consultant. Déclencher dès que l'utilisateur partage un dossier d'AO, un CCTP, un règlement de consultation, ou demande de "répondre à un appel d'offres", une "analyse de fit", une "checklist d'exigences", ou un "plan de présentation commerciale". Remplace l'ancienne skill cadrage-appel-offres, qui ne couvrait que l'analyse du dossier — voir CHANGELOG.md.
 ---
 
 # Réponse à appel d'offres
@@ -15,7 +15,9 @@ Les 8 étapes s'exécutent normalement dans l'ordre, sans étape à sauter par d
 
 Si le consultant confirme un mode resserré : les Étapes 0 et 1 produisent une synthèse plus courte (2-3 points de vigilance méthodologique au lieu de 5-8, recherche client limitée aux informations rapidement disponibles) — jamais en dessous du garde-fou anti-invention (une information non trouvée reste "à confirmer", jamais devinée pour aller plus vite). Les Étapes 2 (checklist d'exigences), 3 (fit cabinet) et 6 (plan de présentation) **restent pleinement structurantes dans tous les cas** : ce sont elles qui déterminent si l'offre est conforme et vendable, jamais des étapes à raccourcir sous prétexte de délai. Ne jamais réduire la profondeur d'une étape sans que le consultant l'ait explicitement demandé pour celle-ci.
 
-## Workflow en 8 étapes (0 à 7)
+## Workflow en 8 étapes (0 à 7), plus deux étapes conditionnelles (4bis, 5bis)
+
+Les Étapes 4bis et 5bis ne s'exécutent que si un référentiel produit par `consultants-references-extractor` existe (`consultants/` et/ou `references-missions/` non vides) — sinon le workflow reste exactement celui décrit depuis la création de cette skill, Étapes 4/5 comprises, sans aucune dépendance à cette skill transverse. Quand le référentiel existe, 4bis et 5bis **s'ajoutent** aux Étapes 4/5 plutôt que de les remplacer : une référence ou un profil hors référentiel (one-off, jamais catalogué) reste éligible via le circuit historique demande-consultant/recherche-web.
 
 ### Étape 0 — Recherche méthodologique (bonnes pratiques et erreurs à éviter)
 
@@ -124,9 +126,39 @@ Retenir 3 à 5 références, chacune justifiée par au moins un des trois critè
 
 **Garde-fou** : jamais sélectionner une référence encore « à confirmer » ; signaler explicitement une référence qui ne coche qu'un seul critère faiblement (« proximité sectorielle forte, mais taille de mission très inférieure »).
 
-**Livrable** : sélection finale justifiée, alimente directement la slide ÉQUIPE-RÉFÉRENCES de l'Étape 6.
+**Livrable** : sélection finale justifiée, alimente directement les slides `RÉFÉRENCE` de l'Étape 6 (une par référence retenue, voir Étape 6).
 
 **Validation** : légère.
+
+### Étape 4bis — Sélectionner l'équipe à mobiliser (si un référentiel de consultants existe)
+
+Ne s'exécute que si `consultants/` (produit par `consultants-references-extractor`) contient des fiches. S'ajoute à l'Étape 4, ne la remplace pas.
+
+1. **Déterminer les profils requis** à partir des exigences de l'Étape 2 (compétences, technologies, méthodologies attendues) et du volume/de la durée de la mission si connus.
+2. **Rechercher dans `consultants/`** les consultants correspondant aux profils requis, sur la base de leurs compétences (tags explicites et déduites), de leur séniorité, et de leur disponibilité si renseignée.
+3. **Pour chaque profil requis où plusieurs consultants sont candidats** : ne jamais trancher seul — présenter toutes les options viables (y compris, si pertinent, mettre en avant deux candidats concurrents dans la sélection provisoire) et laisser le consultant/rédacteur choisir.
+4. **Pour chaque consultant retenu, sélectionner ses missions les plus pertinentes** vis-à-vis de l'AO (même logique à deux niveaux que la sélection de références : d'abord quels consultants, puis quelles missions de ces consultants mettre en avant) — un consultant peut avoir plusieurs missions candidates, n'en retenir que les plus pertinentes au regard des exigences de l'Étape 2.
+5. **Reformuler strictement factuellement** le rôle, la valeur ajoutée, et les compétences utiles de chaque consultant retenu pour cet AO précis — jamais une compétence ou un résultat non présent dans sa fiche `consultants/`.
+
+**Garde-fou** : aucun nombre cible de consultants à retenir — dépend entièrement de ce que l'AO demande (nombre de profils exigés, taille d'équipe attendue). Jamais gonfler artificiellement l'équipe présentée au-delà du besoin réel.
+
+**Livrable** : sélection d'équipe justifiée + fiches reformulées, alimentent directement les slides `ÉQUIPE-MEMBRE` de l'Étape 6.
+
+**Validation** : **structurante** — chaque fiche reformulée doit être validée par le consultant concerné avant d'être considérée finale (même logique que la validation senior du profil cabinet, Étape 3) ; ne jamais proposer l'enchaînement vers l'Étape 6 tant qu'une fiche retenue n'a pas été validée par la personne qu'elle décrit.
+
+### Étape 5bis — Sélectionner des références depuis le référentiel (si `references-missions/` existe)
+
+Ne s'exécute que si `references-missions/` (produit par `consultants-references-extractor`) contient des fiches. S'ajoute à l'Étape 5, ne la remplace pas — une référence catalogée et une référence one-off (Étape 4/5) peuvent cohabiter dans la même sélection finale.
+
+1. Appliquer les **mêmes trois critères qu'à l'Étape 5** (secteur, techno/méthodologie, taille de mission) aux fiches de `references-missions/`.
+2. **Vérifier la confidentialité de chaque référence candidate avant de la retenir** : le niveau documenté dans la fiche (`NOMMÉE`/`ANONYMISÉE`/`INTERNE_UNIQUEMENT`/`NON PRÉCISÉ`) ne suffit **jamais** à autoriser un usage externe — **toujours demander une confirmation humaine explicite** avant qu'une référence catalogée n'entre dans la sélection finale, quel que soit son niveau documenté. Une référence dont la confidentialité n'a pas pu être confirmée dans le délai disponible n'est pas éligible, exactement comme une référence web « à confirmer » à l'Étape 4.
+3. **Reformuler strictement factuellement** le contexte, l'approche et la valeur ajoutée pour cet AO précis — jamais une donnée non présente dans la fiche `references-missions/`.
+
+**Garde-fou** : aucun nombre cible fixe — dépend du besoin de l'AO, comme pour l'Étape 4bis.
+
+**Livrable** : sélection justifiée (avec, pour chaque référence retenue, la confirmation de confidentialité obtenue), alimente directement les slides `RÉFÉRENCE` de l'Étape 6 aux côtés des références one-off de l'Étape 5.
+
+**Validation** : **structurante** — la confirmation de confidentialité est un préalable bloquant à l'inclusion dans la sélection, jamais une formalité a posteriori.
 
 ### Étape 6 — Plan de présentation détaillé pour Claude Design
 
@@ -138,13 +170,14 @@ Retenir 3 à 5 références, chacune justifiée par au moins un des trois critè
 
 **Vocabulaire de blocs par défaut** :
 ```
-TYPE ∈ {COUVERTURE, SOMMAIRE, COMPRÉHENSION-ENJEUX, APPROCHE, ÉQUIPE-RÉFÉRENCES, PLANNING, CONFORMITÉ, SYNTHÈSE}
+TYPE ∈ {COUVERTURE, SOMMAIRE, COMPRÉHENSION-ENJEUX, APPROCHE, ÉQUIPE-MEMBRE, RÉFÉRENCE, PLANNING, CONFORMITÉ, SYNTHÈSE}
 ```
 - **COUVERTURE** : titre, client, objet du marché, cabinet, date
 - **SOMMAIRE** : structure de la présentation
 - **COMPRÉHENSION-ENJEUX** : reformulation du besoin (Étape 2), preuve de lecture réelle du dossier — répond au piège du mémoire générique (Étape 0)
 - **APPROCHE** : méthodologie proposée, différenciateurs (issus du profil cabinet, Étape 3)
-- **ÉQUIPE-RÉFÉRENCES** : équipe mobilisée + références sélectionnées (Étape 5)
+- **ÉQUIPE-MEMBRE** : **une slide par consultant retenu** (Étape 4/4bis) — jamais plusieurs consultants regroupés sur une seule slide, quel que soit leur nombre. Gabarit dédié ci-dessous.
+- **RÉFÉRENCE** : **une slide par référence retenue** (Étape 5/5bis) — jamais plusieurs références regroupées sur une seule slide. Gabarit dédié ci-dessous.
 - **PLANNING** : jalons, macro-planning de la mission
 - **CONFORMITÉ** : réponse point par point aux exigences `OBLIGATOIRE`/`ÉLIMINATOIRE` majeures — répond explicitement au piège « grandes masses plutôt que point par point » (Étape 0)
 - **SYNTHÈSE** : rappel de la valeur différenciante, appel à l'action
@@ -162,7 +195,7 @@ TYPE ∈ {COUVERTURE, SOMMAIRE, COMPRÉHENSION-ENJEUX, APPROCHE, ÉQUIPE-RÉFÉR
 - **Accroche / sous-titre** : <une phrase choc, courte>
 - **Contenu** :
   - <3 à 5 puces concises, orientées jury/décideur>
-- **Chiffre / preuve clé** : <donnée + (source : CCTP | profil cabinet | référence confirmée)>   ← omettre si non pertinent
+- **Chiffre / preuve clé** : <donnée + (source : CCTP | profil cabinet | référence confirmée | consultants/references-missions)>   ← omettre si non pertinent
 - **Visuel <design system>** :
   - **Composant** : <UN type précis, pas une liste : 3 cartes | tableau comparatif | matrice 2×2 | timeline | citation | KPI tiles>
   - **Dimensions et position sur le canevas** : <L × H px + emplacement exact>
@@ -180,6 +213,30 @@ TYPE ∈ {COUVERTURE, SOMMAIRE, COMPRÉHENSION-ENJEUX, APPROCHE, ÉQUIPE-RÉFÉR
 ````
 Si un format imposé s'applique, adapter le champ `TYPE` aux sections réellement exigées par le client plutôt qu'au vocabulaire par défaut ci-dessus — documenté explicitement dans le fichier produit (ex. « TYPE conforme au sommaire imposé par le RC art. X »).
 
+**Gabarit dédié `ÉQUIPE-MEMBRE`** (une slide par consultant retenu, en plus des champs génériques ci-dessus) :
+````
+### Slide N — ÉQUIPE-MEMBRE — <Nom du consultant>
+- **Rôle proposé sur cette mission** : <valeur>
+- **Pourquoi ce profil est indispensable** : <reformulation factuelle depuis consultants/<identifiant>.md — jamais une compétence non présente dans sa fiche>
+- **Missions pertinentes vis-à-vis de l'AO** :
+  - <Intitulé mission 1> — valeur ajoutée : <texte>
+  - <Intitulé mission 2> — valeur ajoutée : <texte>   ← autant que de missions retenues à l'Étape 4bis
+- **Compétences utiles pour cette mission** : <liste, issue de consultants/<identifiant>.md>
+- **Résultats chiffrés** (si disponibles sur une mission mise en avant) : <donnée + (source : consultants/<identifiant>.md)>   ← omettre si non pertinent
+````
+
+**Gabarit dédié `RÉFÉRENCE`** (une slide par référence retenue, en plus des champs génériques ci-dessus) :
+````
+### Slide N — RÉFÉRENCE — <Intitulé de la mission, ou "Référence sectorielle" si anonymisée>
+- **Secteur du client** : <valeur>
+- **Nom du client** : <valeur si niveau NOMMÉE et confirmation obtenue (Étape 5bis) ; sinon "non cité — anonymisé à la demande du client">
+- **Contexte et enjeux** : <reformulation factuelle depuis references-missions/<identifiant>.md ou depuis la source consultant/web de l'Étape 4>
+- **Notre approche** : <texte>
+- **Notre valeur ajoutée / résultats** : <texte, avec chiffres si confirmés>
+- **Durée / taille d'équipe / technologies** (si disponibles) : <valeurs>   ← omettre si non pertinent
+````
+Pour une référence issue du référentiel (Étape 5bis), ces deux gabarits ne sont renseignés qu'une fois la confidentialité confirmée par un humain — jamais avant.
+
 **Règle** : ne jamais laisser « Visuel » comme une simple catégorie de composant sans dimensions ni couleurs — le lecteur qui colle la fiche dans Claude Design doit pouvoir construire le composant sans deviner un seul paramètre visuel. Règles du placeholder d'illustration, gabarits d'emplacement types, et fallback « hors compétences du générateur d'image » : identiques à `slide-content-claude-design/SKILL.md` (mêmes règles, non dupliquées ici).
 
 `plan-presentation-prompts.md` — même structure que `M<n>-prompts.md` de `slide-content-claude-design` :
@@ -188,7 +245,7 @@ Si un format imposé s'applique, adapter le champ `TYPE` aux sections réellemen
 - Règle anti-texte-dans-l'image et fallback vectoriel repris à l'identique de `slide-content-claude-design`.
 - Design system par défaut : **Encre & Sauge** (tokens identiques : bleu marine `#2C5F8A`, corail `#D97757`, vert sauge `#4A8B6F`, encre `#1F1F1F`, gris `#F7F7F7`, beige `#E8E2DA`) — sauf si le cabinet a sa propre charte à appliquer manuellement, même question posée explicitement qu'ailleurs (« la charte par défaut convient, ou une charte propre à appliquer ? »).
 
-*Note* : une future itération pourra brancher une skill d'extraction automatique de charte graphique à cette étape (chantier en pause à ce jour) — non implémenté dans cette version.
+*Note (corrigée le 27/08/2026)* : `design-system-extractor` existe désormais et est branchée dans `slide-content-claude-design/SKILL.md` (§ Design system par défaut) — mais pas encore ici. Une future itération pourra la brancher aussi à cette étape ; non implémenté dans cette version, la charte propre du cabinet reste appliquée manuellement pour le pipeline AO à ce jour.
 
 **Mise à jour de la checklist d'exigences après rédaction** : une fois les fiches produites, mettre à jour `exigences_<client>.xlsx` pour chaque exigence traitée : renseigner la colonne "Partie du mémoire" (quel `TYPE`/slide y répond) et "Page de réponse" (numéro de slide, en l'absence de pagination réelle avant composition dans Claude Design), et faire passer le statut à `Traité`. Le script `generate_exigences_xlsx.py` n'a pas de mode de mise à jour incrémentale : régénérer l'intégralité du classeur à partir d'un JSON mis à jour reprenant toutes les données déjà saisies à l'Étape 2, avec ces deux colonnes complétées. Avant de proposer l'enchaînement vers l'Étape 7, vérifier qu'aucune exigence `OBLIGATOIRE`/`ÉLIMINATOIRE` ne reste au statut `Non traité` — sinon le signaler explicitement comme blocage réel (voir Contrat AO-1, règle de complétude), jamais un oubli silencieux.
 
@@ -283,5 +340,6 @@ relire le plan toi-même ?
 ## Règles générales
 - Toujours répondre et livrer en français, sauf demande contraire.
 - Ne jamais présenter une hypothèse de recherche comme un fait : utiliser « probable », « à confirmer ».
-- Ne jamais deviner une exigence, une référence, un nom de cabinet, ou un format de réponse imposé non écrit explicitement dans le dossier ou confirmé par l'utilisateur.
+- Ne jamais deviner une exigence, une référence, un CV, un nom de cabinet, ou un format de réponse imposé non écrit explicitement dans le dossier, dans `consultants/`/`references-missions/`, ou confirmé par l'utilisateur.
+- Une référence issue de `references-missions/` n'est jamais incluse dans un livrable envoyé au client sans confirmation humaine explicite de sa confidentialité, quel que soit le niveau documenté dans sa fiche (Étape 5bis).
 - Le fichier Excel de l'Étape 2 et les deux fichiers de l'Étape 6 sont les livrables structurants : ne jamais se contenter d'une synthèse dans la conversation pour ceux-ci.

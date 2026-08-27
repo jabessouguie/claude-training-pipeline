@@ -34,6 +34,10 @@ Une cinquième skill optionnelle, `formation-pipeline`, enchaîne les 4 ci-dessu
 
 Extrait la charte graphique d'un client à partir de n'importe quel document fourni (captures, PDF, export Figma, site web...), pour que `slide-content-claude-design` l'applique à la place de sa palette par défaut. À la demande, pas une étape obligatoire.
 
+### Skill transverse — `consultants-references-extractor`
+
+Extrait un référentiel de CV consultants et de références/missions à partir de decks internes (ou PDF, Word, LinkedIn, tableur), pour que `reponse-appel-offres` sélectionne et reformule les plus pertinents pour un AO. Une référence n'est jamais citée à un client sans confirmation humaine de sa confidentialité. À la demande, pas une étape obligatoire.
+
 Détail complet de chaque skill → [Utiliser le pipeline](02-Utiliser-le-pipeline).
 
 ## Comment l'assistant te guide
