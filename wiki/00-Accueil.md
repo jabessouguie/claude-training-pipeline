@@ -21,7 +21,7 @@ Bienvenue sur le wiki des pipelines de skills Claude Code de ce dépôt. Ce dép
 |---|---|---|
 | 0 | `cadrage-formation` | La grille de questions à poser au client (fichier Excel) |
 | 1 | `formation-material-builder` | Tout le matériel pédagogique : slides, livret stagiaire, guide formateur, ateliers, quiz |
-| 2 | `slide-content-claude-design` | Le contenu prêt à générer visuellement dans Claude Design + les prompts d'illustration pour Gemini |
+| 2 | `slide-content-claude-design` | Un brouillon texte seul à relire d'abord, puis le contenu prêt à générer visuellement dans Claude Design + les prompts d'illustration pour Gemini |
 | 3 | `comite-qualite` | Un audit multi-relecteurs du dossier complet, jusqu'à convergence |
 
 Une cinquième skill optionnelle, `formation-pipeline`, enchaîne les 4 ci-dessus à la suite sans avoir à les relancer une par une.

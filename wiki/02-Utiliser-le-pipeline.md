@@ -35,11 +35,12 @@ Produit, par phases avec points de validation à chaque étape :
 
 **C'est ici que se fait le deck final** : le brouillon `.pptx` de l'étape précédente n'est plus maintenu une fois qu'on passe par Claude Design.
 
-Produit, par module, deux fichiers :
-- **`M<n>-slides-content.md`** — une fiche par slide, à coller dans Claude Design (titre, contenu, composant visuel dimensionné/positionné/colorisé précisément, placeholder gris pour l'illustration).
+Produit, par module, trois fichiers :
+- **`M<n>-slides-draft.md`** — un brouillon texte seul par slide (titre, contenu, chiffre clé, intention du visuel en une ligne) — **à valider avant** que l'agent n'ajoute les dimensions/couleurs/composants. C'est le point où tu relis le fond, avant que le temps soit investi dans la forme.
+- **`M<n>-slides-content.md`** — le brouillon validé, enrichi en fiche complète à coller dans Claude Design (titre, contenu, composant visuel dimensionné/positionné/colorisé précisément, placeholder gris pour l'illustration).
 - **`M<n>-prompts.md`** — un bloc « Direction artistique » unique en tête (ancré dans la métaphore filée de la formation), puis un prompt d'illustration par slide, à coller dans Gemini.
 
-Un audit UX/UI de `M<n>-slides-content.md` est recommandé avant la génération visuelle dans Claude Design.
+Un audit UX/UI de `M<n>-slides-content.md` est recommandé avant la génération visuelle dans Claude Design — il porte sur la forme (une fois enrichie), pas sur le fond, déjà validé sur le brouillon.
 
 ## 3. `comite-qualite` — auditer jusqu'à convergence
 

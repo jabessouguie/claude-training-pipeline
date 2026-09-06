@@ -9,7 +9,7 @@ Ce dépôt couvre **deux pipelines** de skills Claude Code, indépendants l'un d
 ```mermaid
 flowchart LR
     A["0. cadrage-formation<br/>Entrée : brief client<br/>Sortie : grille de questions .xlsx"] --> B["1. formation-material-builder<br/>Entrée : .xlsx de cadrage rempli<br/>Sortie : slides, livret, guide, ateliers, quiz"]
-    B --> C["2. slide-content-claude-design<br/>Entrée : matériel produit<br/>Sortie : contenu Claude Design + prompts Gemini"]
+    B --> C["2. slide-content-claude-design<br/>Entrée : matériel produit<br/>Sortie : brouillon texte validé, puis contenu Claude Design + prompts Gemini"]
     C --> D["3. comite-qualite<br/>Entrée : tout livrable<br/>Sortie : rapport d'audit + corrections"]
 ```
 
@@ -17,7 +17,7 @@ flowchart LR
 |---|---|---|
 | 0 | `cadrage-formation` | Le client répond à la grille de questions avant la suite |
 | 1 | `formation-material-builder` | Cas fil rouge et roadmap validés avant compilation des documents finaux |
-| 2 | `slide-content-claude-design` | Audit UX/UI recommandé avant la génération visuelle dans Claude Design |
+| 2 | `slide-content-claude-design` | Brouillon texte seul (`M<n>-slides-draft.md`) validé avant la couche visuelle ; audit UX/UI recommandé avant la génération visuelle dans Claude Design |
 | 3 | `comite-qualite` | Pause avant application des corrections si au moins un constat 🔴 bloquant |
 
 Une cinquième skill optionnelle, `formation-pipeline`, enchaîne les 4 ci-dessus sans avoir à les relancer une par une — les points de validation restent les mêmes.
