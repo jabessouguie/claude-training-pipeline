@@ -69,12 +69,13 @@ Propose systématiquement la prochaine étape à chaque point de validation (fil
 **En clair** : cette étape prépare le contenu de tes diapositives pour deux outils séparés — **Claude Design** (qui compose la mise en page finale) et **Gemini** (qui génère les illustrations). Elle produit deux fichiers texte que tu colles ensuite dans ces outils. **C'est ici que se fait le deck final** : le `M<n>-slides.pptx` de l'étape 1 n'était qu'un brouillon, et il n'est plus maintenu une fois qu'on passe par Claude Design (on ne garde pas deux versions du même deck).
 
 Entrée : les `slides.md` produits par la skill 1 (ou tout plan/markdown).
-Sortie : **deux fichiers par module**, colocalisés dans `formations/<client>-<theme>/<AAAA-MM>/livrables/` :
-- `M<n>-slides-content.md` — une fiche par slide (titre bicolore, accroche, contenu, composant du design system **entièrement dimensionné/positionné/colorisé** — pas une simple catégorie de composant, bloc texte à incruster, **placeholder d'illustration gris dimensionné et positionné** renvoyant au prompt correspondant, ou « Bloc » vectoriel pour tableaux/code/schémas) — à coller fiche par fiche dans Claude Design ;
+Sortie : **trois fichiers par module**, colocalisés dans `formations/<client>-<theme>/<AAAA-MM>/livrables/` :
+- `M<n>-slides-draft.md` — un **brouillon texte seul** par slide (titre, accroche, contenu, chiffre clé, bloc texte, intention du visuel en une ligne — jamais de dimensions ni de couleurs à ce stade), **à valider avant d'investir dans la couche visuelle** — point de vérification structurant, jamais optionnel.
+- `M<n>-slides-content.md` — le brouillon validé, enrichi d'une fiche par slide (titre bicolore, accroche, contenu, composant du design system **entièrement dimensionné/positionné/colorisé** — pas une simple catégorie de composant, bloc texte à incruster, **placeholder d'illustration gris dimensionné et positionné** renvoyant au prompt correspondant, ou « Bloc » vectoriel pour tableaux/code/schémas) — à coller fiche par fiche dans Claude Design ;
 - `M<n>-prompts.md` — un bloc **« Direction artistique »** unique en tête (style illustratif, déclinaison de la métaphore filée du module, contraintes récurrentes), puis les prompts d'illustration Gemini structurés par slide qui le référencent (palette par défaut, sans texte dans l'image) — garantit une cohérence visuelle professionnelle entre toutes les slides d'un même module.
 
 Design system par défaut inclus (bleu marine #2C5F8A parcimonieux, encre #1F1F1F, beige #E8E2DA, data corail/vert sauge, Sora/Inter) — remplaçable par la charte du client.
-Recommande un **audit UX/UI de `M<n>-slides-content.md` avant la génération visuelle** dans Claude Design, puis propose `comite-qualite` sur le rendu final.
+Recommande un **audit UX/UI de `M<n>-slides-content.md` avant la génération visuelle** dans Claude Design (porte sur la forme, une fois enrichie), en complément — jamais à la place — de la validation du fond sur `M<n>-slides-draft.md`, puis propose `comite-qualite` sur le rendu final.
 
 ### 3. `comite-qualite` — auditer jusqu'à convergence
 

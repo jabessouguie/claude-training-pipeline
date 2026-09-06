@@ -46,6 +46,7 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 - US-5 — Convention de rangement des livrables par formation (#5)
 - US-10 — Séparation du contenu Claude Design et des prompts Gemini (#19) — nouvelle fonctionnalité : `slide-content-claude-design` produit deux fichiers (`M<n>-slides-content.md` pour Claude Design avec, par slide, un placeholder gris dimensionné et positionné ; `M<n>-prompts.md` pour Gemini structuré selon le design system par défaut), avec un audit UX/UI prescrit avant la génération visuelle
 - US-11 — Direction artistique cohérente par module (#21) — un bloc « Direction artistique » unique par module en tête de `M<n>-prompts.md`, cadrant style et métaphore filée pour toutes les illustrations du module
+- US-21 — Brouillon texte seul avant la couche visuelle (#32) — un troisième fichier `M<n>-slides-draft.md`, à valider avant que composant/dimensions/couleurs ne soient ajoutés, pour relire le fond sans le bruit technique de la fiche finale
 - US-12 — Cas fil rouge et ateliers structurés façon StockPilot (#22) — `formation-material-builder` conçoit un cas fictif unique filé sur toute la formation, avec des ateliers en dossiers dédiés (énoncé HTML + corpus + solutions séparées), nouveau standard par défaut des exercices
 
 **Condition de sortie** : un utilisateur qui suit le pipeline de bout en bout (cadrage → matériel → slides → audit) est à chaque étape informé de ce qu'il peut faire ensuite, sans avoir à consulter cette roadmap ou à demander à un collègue.

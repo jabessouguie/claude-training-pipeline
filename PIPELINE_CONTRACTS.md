@@ -14,7 +14,7 @@ formation-material-builder ── Phase 0 (interne, Contrat 2 : 00-brief.md / 00
    │  (Contrat 3 : modules/M<n>-<slug>/slides.md, livrables/00-fil-rouge.md)
    ▼
 slide-content-claude-design
-   │  (Contrat 4 : M<n>-slides-content.md, M<n>-prompts.md)
+   │  (Contrat 4 : M<n>-slides-draft.md → validation → M<n>-slides-content.md, M<n>-prompts.md)
    │
    ├── mode manuel ──────────────► copier-coller humain vers Gemini + Claude Design
    │                                (composition finale toujours manuelle — Claude Design
@@ -81,16 +81,19 @@ Format exact et règles de rédaction : voir `formation-material-builder/SKILL.m
 ## Contrat 4 — `slide-content-claude-design` → (mode manuel | mode auto illustrations)
 
 **Fichiers**, colocalisés dans `livrables/` :
-- `M<n>-slides-content.md` — une fiche par slide (titre, accroche, contenu, composant visuel dimensionné/positionné/colorisé, bloc texte, placeholder d'illustration dimensionné et positionné). Format exact dans `slide-content-claude-design/SKILL.md`.
+- `M<n>-slides-draft.md` — brouillon texte seul par slide (titre, accroche, contenu, chiffre clé, bloc texte, intention du visuel en une ligne libre — **jamais** de dimensions/couleurs/composant), à faire valider par le consultant avant l'enrichissement visuel. Conservé après enrichissement, pas un fichier jetable. Format exact dans `slide-content-claude-design/SKILL.md`.
+- `M<n>-slides-content.md` — le brouillon validé, enrichi d'une fiche par slide (titre, accroche, contenu, composant visuel dimensionné/positionné/colorisé, bloc texte, placeholder d'illustration dimensionné et positionné). Format exact dans `slide-content-claude-design/SKILL.md`.
 - `M<n>-prompts.md` — bloc « Direction artistique » unique en tête + un prompt d'illustration par slide. Format exact dans `slide-content-claude-design/SKILL.md`.
 
-Les deux modes consomment **exactement les mêmes fichiers**, sans variante de format :
+**Règle de validation** : `M<n>-slides-content.md` n'est produit qu'après validation explicite de `M<n>-slides-draft.md` par le consultant — jamais l'inverse, et jamais une reformulation du texte déjà validé au moment de l'enrichissement (seul le champ `Visuel`/`Placeholder` s'ajoute).
+
+Les deux modes de composition consomment **exactement les mêmes fichiers finaux** (`M<n>-slides-content.md`, `M<n>-prompts.md`), sans variante de format — le brouillon ne participe pas à la composition elle-même, il n'existe que pour la validation en amont :
 - **Mode manuel** : le consultant copie-colle `M<n>-prompts.md` dans Gemini et `M<n>-slides-content.md` dans Claude Design, image par image.
 - **Mode auto illustrations** : `slide-content-claude-design/scripts/generate_illustrations.py` lit `M<n>-prompts.md`, appelle l'API Gemini, écrit les images dans `livrables/assets/M<n>/slide-N.png`. La composition dans Claude Design reste manuelle dans les deux modes (voir Contrat 5 et la note ci-dessous).
 
 **Note sur Claude Design** : à la date de rédaction (28/07/2026), Claude Design n'expose aucune API programmatique (le pont `/design-sync` avec Claude Code est un aller-retour interactif piloté par un humain, pas un point d'intégration scriptable) — la composition visuelle finale reste donc toujours une action humaine, quel que soit le mode d'illustration choisi.
 
-**Version de contrat** : v2 (28/07/2026 — ajout du mode auto illustrations ; v1 du 24/07/2026 couvrait le mode manuel seul, US-10/US-11).
+**Version de contrat** : v3 (27/08/2026 — ajout de `M<n>-slides-draft.md`, validation du fond avant enrichissement visuel, US-21 ; v2 du 28/07/2026 ajoutait le mode auto illustrations ; v1 du 24/07/2026 couvrait le mode manuel seul, US-10/US-11).
 
 ---
 
@@ -238,6 +241,7 @@ Skill invoquée à la demande, en amont ou en cours de `reponse-appel-offres` �
 | 3 | v1 | 24/07/2026 | Consolidation (US-10/US-12) |
 | 4 | v1 | 24/07/2026 | Mode manuel (US-10/US-11) |
 | 4 | v2 | 28/07/2026 | Ajout du mode auto illustrations (script Gemini) |
+| 4 | v3 | 27/08/2026 | Ajout de `M<n>-slides-draft.md` (US-21, item [#32](BACKLOG.md)) — validation du fond avant enrichissement visuel |
 | 5 | v1 | 24/07/2026 | Consolidation (US-6) |
 | AO-1 | v1 | 29/07/2026 | Création — première itération du pipeline réponse à appel d'offres (US-17, #29) |
 | AO-1 | v2 | 18/08/2026 | Renommage de contexte (`reponse-appel-offres` remplace `cadrage-appel-offres`) + ajout de l'onglet "Format de réponse imposé" |

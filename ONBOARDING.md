@@ -17,7 +17,7 @@ flowchart LR
 |---|---|---|
 | 0 | `cadrage-formation` | Le client répond à la grille de questions avant la suite |
 | 1 | `formation-material-builder` | Cas fil rouge et roadmap validés avant compilation des documents finaux |
-| 2 | `slide-content-claude-design` | Audit UX/UI recommandé avant la génération visuelle dans Claude Design |
+| 2 | `slide-content-claude-design` | Brouillon texte seul (`M<n>-slides-draft.md`) validé avant la couche visuelle ; audit UX/UI recommandé avant la génération visuelle dans Claude Design |
 | 3 | `comite-qualite` | Pause avant application des corrections si au moins un constat 🔴 bloquant |
 
 Une cinquième skill optionnelle, `formation-pipeline`, enchaîne les 4 ci-dessus sans avoir à les relancer une par une — les points de validation restent les mêmes.

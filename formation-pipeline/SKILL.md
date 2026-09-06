@@ -67,7 +67,9 @@ Reprend et étend le principe déjà en place dans `formation-material-builder/S
 | Plan validé, pas de `06-material-roadmap.md`/`livrables/00-fil-rouge.md` | Suivre `formation-material-builder/SKILL.md` Phase 1 |
 | Fil rouge/roadmap validés, modules incomplets | Suivre `formation-material-builder/SKILL.md` Phase 2 |
 | Tous les modules validés, pas de livrables compilés | Suivre `formation-material-builder/SKILL.md` Phase 3-4 |
-| Livrables compilés, pas de `M<n>-slides-content.md`/`M<n>-prompts.md` | Suivre `slide-content-claude-design/SKILL.md` |
+| Livrables compilés, pas de `M<n>-slides-draft.md` | Suivre `slide-content-claude-design/SKILL.md` jusqu'à l'étape 4 (brouillon texte seul) |
+| `M<n>-slides-draft.md` produit, pas encore validé par l'utilisateur | **Stop, y compris en mode non-stop** — garde-fou dur, l'orchestrateur ne peut jamais le lever (voir « Gestion des points de validation » ci-dessous) |
+| Brouillon validé, pas de `M<n>-slides-content.md`/`M<n>-prompts.md` | Suivre `slide-content-claude-design/SKILL.md` à partir de l'étape 5 (enrichissement visuel du brouillon validé) |
 | Fiches produites, mode illustrations = "auto", images non générées | Suivre `slide-content-claude-design/SKILL.md` § « Mode génération automatique des illustrations » (script `generate_illustrations.py`) |
 | Images générées (mode auto) ou fiches prêtes (mode manuel) | **Stop — rendre la main** : la composition dans Claude Design reste une action humaine dans les deux modes (aucune API programmatique, voir `PIPELINE_CONTRACTS.md` Contrat 4) |
 | Composition confirmée par l'utilisateur comme terminée | Suivre `comite-qualite/SKILL.md` sur le rendu produit |
@@ -78,7 +80,7 @@ Reprend et étend le principe déjà en place dans `formation-material-builder/S
 ## Gestion des points de validation
 
 - **Mode step-by-step (défaut)** : à chaque transition du tableau ci-dessus, afficher ce que la sous-skill qui vient de tourner propose comme prochaine étape (elle l'écrit déjà elle-même en fin de section/phase dans son propre `SKILL.md`) — ne pas la reformuler, la relayer telle quelle — puis attendre confirmation avant de continuer.
-- **Mode non-stop** : enchaîner automatiquement les transitions, **sauf** les blocages que les sous-skills elles-mêmes qualifient comme non contournables sans intervention humaine : réponses INDISPENSABLE manquantes (`cadrage-formation`/`formation-material-builder`), validation du plan/fil rouge/roadmap (`formation-material-builder`), validation des tokens extraits (`design-system-extractor` Étape 2, si ce détour a été déclenché par le paramètre 4 de l'Étape 0), 🔴 bloquant en synthèse (`comite-qualite` Phase C). L'orchestrateur **ne peut jamais** lever un de ces garde-fous lui-même — ils appartiennent à la sous-skill qui les a posés.
+- **Mode non-stop** : enchaîner automatiquement les transitions, **sauf** les blocages que les sous-skills elles-mêmes qualifient comme non contournables sans intervention humaine : réponses INDISPENSABLE manquantes (`cadrage-formation`/`formation-material-builder`), validation du plan/fil rouge/roadmap (`formation-material-builder`), validation des tokens extraits (`design-system-extractor` Étape 2, si ce détour a été déclenché par le paramètre 4 de l'Étape 0), validation du brouillon texte `M<n>-slides-draft.md` avant enrichissement visuel (`slide-content-claude-design` étape 4), 🔴 bloquant en synthèse (`comite-qualite` Phase C). L'orchestrateur **ne peut jamais** lever un de ces garde-fous lui-même — ils appartiennent à la sous-skill qui les a posés.
 - Si une sous-skill signale une ambiguïté ou une information manquante qu'elle ne peut résoudre seule, basculer immédiatement en step-by-step pour cette transition, même si le mode général est non-stop.
 - Après chaque transition, même en mode non-stop, produire un message court (une ligne) de ce qui vient d'être fait — pas seulement un récapitulatif final.
 

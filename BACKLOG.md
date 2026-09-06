@@ -155,6 +155,18 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Dépend de** : US-10 (#19), dont ce backlog item prolonge directement le format `M<n>-prompts.md`.
 **Statut** : story `US-11` déjà marquée faite (bloc « Direction artistique » documenté dans `slide-content-claude-design/SKILL.md`, référencé par chaque prompt de slide) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel (cohérence visuelle perceptible en conditions réelles).
 
+### 32. `slide-content-claude-design` — brouillon texte seul, lisible, avant la couche visuelle ✅ Fait le 27/08/2026 (spec) — voir US-21
+**Constat** (demande explicite de l'utilisateur du 27/08/2026) : `M<n>-slides-content.md`, la fiche qui part dans Claude Design, mélange dès sa première rédaction le contenu pédagogique (titre, accroche, contenu, chiffre clé) et la couche visuelle technique (composant, dimensions, couleurs, placeholder). Un consultant qui veut relire le fond avant d'investir du temps dans la composition visuelle n'a aujourd'hui aucun moyen de le faire sans se frayer un chemin dans le bruit technique — l'audit UX/UI de l'étape 7 (devenue 8) arrive d'ailleurs après coup, sur la fiche déjà enrichie, et porte sur la forme, pas sur le fond.
+**Valeur** : un point de vérification sur le fond, avant que la couche visuelle (plus coûteuse à corriger une fois posée) ne soit ajoutée — évite de reformuler du contenu déjà habillé visuellement si une correction de fond s'impose après coup.
+**Action** :
+  - Nouvelle étape dans la méthode de `slide-content-claude-design/SKILL.md`, entre la colonne vertébrale et la rédaction enrichie : produire `M<n>-slides-draft.md`, un brouillon texte seul par slide (Titre à l'écran, Accroche, Contenu, Chiffre/preuve clé, Bloc texte, une ligne libre d'intention du visuel — jamais de dimensions/couleurs/composant à ce stade).
+  - Validation **structurante et non conditionnelle** de ce brouillon par le consultant, avant l'enrichissement visuel — contrairement à la colonne vertébrale, dont la validation ne dépend que de la longueur de la formation.
+  - Une fois validé, le brouillon est enrichi (jamais reformulé) pour produire `M<n>-slides-content.md` ; le brouillon est conservé à côté, pas supprimé.
+  - Contrat 4 de `PIPELINE_CONTRACTS.md` étendu à ce troisième fichier ; `formation-pipeline/SKILL.md` : la validation du brouillon rejoint la liste des garde-fous que le mode non-stop ne peut jamais lever seul.
+**Effort** : M — nouvelle étape de méthode + extension de contrat, logique déjà éprouvée par un ajout similaire sur `design-system-extractor`.
+**Dépend de** : rien.
+**Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`, branchée dans `formation-pipeline/SKILL.md`, Contrat 4 passé en v3. Reste à vérifier sur un cas réel (le brouillon est-il réellement plus rapide à relire en pratique, la validation change-t-elle un contenu avant qu'il ne soit habillé visuellement).
+
 ### 22. `formation-material-builder` — cas fil rouge unique et exercices structurés façon StockPilot ✅ Fait le 24/07/2026 (spec)
 **Constat** (interview de spécification US-12, à partir du cas de référence `fil-rouge-stockpilot/`) : les exercices produits aujourd'hui par `formation-material-builder` (un `exercices.md` par module, sans fil narratif commun) fonctionnent mais perdent l'opportunité pédagogique d'un cas fictif filé sur toute la formation — un même produit/contexte qui se développe atelier après atelier, où chaque exercice s'appuie sur l'état du cas laissé par le précédent. Le cas `fil-rouge-stockpilot` (structure `atelier-N/` avec corpus dédié + `solutions/` séparé, non distribué en amont) illustre ce que ce standard doit généraliser.
 **Valeur** : des exercices plus immersifs et cohérents entre eux (le stagiaire connaît déjà le contexte, l'énergie va dans l'exercice pas dans la compréhension du décor), un debrief facilité par la continuité narrative, et une distribution disciplinée des corrigés qui ne vide jamais un exercice de sa valeur avant l'heure.
@@ -308,7 +320,7 @@ Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou d
 
 ## User stories
 
-Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2 (item retiré le 26/08/2026, story conservée pour l'historique — voir « Non retenu »), US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29, US-19→#20, US-20→#31. Items sans story, avec leur raison :
+Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2 (item retiré le 26/08/2026, story conservée pour l'historique — voir « Non retenu »), US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29, US-19→#20, US-20→#31, US-21→#32. Items sans story, avec leur raison :
 - **#7, #11, #13** — dépendants d'un spike ou d'un retour d'usage préalable (Horizon 4) ; les storifier avant ce préalable serait prématuré.
 - **#9** — levé le 28/07/2026 (voir son Statut), directement absorbé par US-16 plutôt que storifié séparément.
 - **#14** — même exception que #15/#16/#23/#24 (résolu directement au niveau item le 26/08/2026, voir son Statut) ; action purement documentaire, sans changement de comportement des skills à formaliser en critères d'acceptation séparés.
@@ -423,6 +435,27 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] La spec autorise une légère variation du bloc d'un module à l'autre, tout en restant ancré dans la même métaphore filée globale de la formation.
 
 **Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`. Reste à vérifier sur un cas réel (cohérence visuelle perceptible entre plusieurs illustrations d'un même module généré en conditions réelles).
+
+---
+
+### US-21 — Brouillon texte seul avant la couche visuelle, pour relire le fond sans le bruit technique ✅ Faite le 27/08/2026 (spec)
+*Rattaché à #32*
+
+**En tant que** consultant qui prépare le contenu des slides pour Claude Design,
+**je veux** relire et valider le fond de chaque slide (titre, contenu, chiffre clé) séparément, avant que la couche visuelle (composant, dimensions, couleurs, placeholder) ne soit ajoutée,
+**afin de** ne jamais devoir reformuler du contenu déjà habillé visuellement si une correction de fond s'impose après coup, et de me concentrer sur le fond sans le bruit technique de la fiche finale.
+
+**Critères d'acceptation :**
+- [x] `slide-content-claude-design/SKILL.md` documente une nouvelle étape de méthode, entre la colonne vertébrale et la rédaction enrichie, qui produit `M<n>-slides-draft.md` — un brouillon texte seul par slide (Titre à l'écran, Accroche, Contenu, Chiffre/preuve clé, Bloc texte, une ligne libre d'intention du visuel).
+- [x] Le brouillon ne contient explicitement **aucune** dimension, couleur, ni type de composant précis.
+- [x] La validation de ce brouillon est **structurante et non conditionnelle** — contrairement à la colonne vertébrale, dont la validation ne dépend que de la longueur de la formation.
+- [x] L'enrichissement (ajout du `Visuel`/`Placeholder`) ne reformule jamais le texte déjà validé du brouillon, sauf demande explicite du consultant.
+- [x] Le brouillon est conservé à côté de `M<n>-slides-content.md` après enrichissement, jamais supprimé.
+- [x] L'audit UX/UI existant (étape 8) reste distinct et complémentaire : il porte sur le rendu visuel de la fiche enrichie, jamais sur le fond déjà validé sur le brouillon.
+- [x] Contrat 4 de `PIPELINE_CONTRACTS.md` étendu au format du brouillon, en v3.
+- [x] `formation-pipeline/SKILL.md` : la validation du brouillon rejoint la liste des garde-fous que le mode non-stop ne peut jamais lever seul, avec sa propre ligne dans la table de détection d'état.
+
+**Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`, branchée dans `formation-pipeline/SKILL.md`, Contrat 4 documenté. Reste à vérifier sur un cas réel, conformément à la DoD.
 
 ---
 
