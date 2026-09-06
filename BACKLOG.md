@@ -454,8 +454,10 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] L'audit UX/UI existant (étape 8) reste distinct et complémentaire : il porte sur le rendu visuel de la fiche enrichie, jamais sur le fond déjà validé sur le brouillon.
 - [x] Contrat 4 de `PIPELINE_CONTRACTS.md` étendu au format du brouillon, en v3.
 - [x] `formation-pipeline/SKILL.md` : la validation du brouillon rejoint la liste des garde-fous que le mode non-stop ne peut jamais lever seul, avec sa propre ligne dans la table de détection d'état.
+- [x] *(Audit comité qualité du 27/08/2026, constat 🔴)* La parallélisation sur gros volume (étape 7) ne peut pas servir de raccourci pour sauter la validation : elle se fait en deux vagues, brouillons assemblés et validés en une fois avant que l'enrichissement ne démarre.
+- [x] *(Audit comité qualité du 27/08/2026, constat 🟠)* L'ancrage des chiffres est vérifié **avant** de présenter le brouillon à la validation — le consultant ne valide jamais un fond dont les chiffres n'ont pas été confrontés à la source ; l'étape 6 ne couvre plus que les chiffres éventuellement introduits par l'enrichissement.
 
-**Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`, branchée dans `formation-pipeline/SKILL.md`, Contrat 4 documenté. Reste à vérifier sur un cas réel, conformément à la DoD.
+**Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`, branchée dans `formation-pipeline/SKILL.md`, Contrat 4 documenté. Relue par comité qualité (mode loop) — 3 constats corrigés dont 1 bloquant, voir `CHANGELOG.md`. Reste à vérifier sur un cas réel, conformément à la DoD.
 
 ---
 

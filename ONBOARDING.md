@@ -9,7 +9,7 @@ Ce dépôt couvre **deux pipelines** de skills Claude Code, indépendants l'un d
 ```mermaid
 flowchart LR
     A["0. cadrage-formation<br/>Entrée : brief client<br/>Sortie : grille de questions .xlsx"] --> B["1. formation-material-builder<br/>Entrée : .xlsx de cadrage rempli<br/>Sortie : slides, livret, guide, ateliers, quiz"]
-    B --> C["2. slide-content-claude-design<br/>Entrée : matériel produit<br/>Sortie : contenu Claude Design + prompts Gemini"]
+    B --> C["2. slide-content-claude-design<br/>Entrée : matériel produit<br/>Sortie : brouillon texte validé, puis contenu Claude Design + prompts Gemini"]
     C --> D["3. comite-qualite<br/>Entrée : tout livrable<br/>Sortie : rapport d'audit + corrections"]
 ```
 
