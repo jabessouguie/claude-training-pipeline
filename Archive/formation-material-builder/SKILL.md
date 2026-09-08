@@ -372,13 +372,11 @@ Si pertinent (formations niveau 200/300 ou si demandé par le client), produire 
 
 Au démarrage, regarder ce qui existe déjà dans le workspace :
 
-**Limite de ce principe, à ne jamais perdre de vue** : la présence d'un fichier ne dit rien de sa validation par le consultant — un fichier existe ou n'existe pas, il ne porte pas de statut « validé » ni « en attente ». La ligne « `00-brief.md`/`00-plan.md` validés » ci-dessous décrit donc un état **connu de la session en cours** (on vient de les produire et le consultant les a validés), jamais un état déductible en reprenant un workspace où ces fichiers existent déjà. **Sur reprise d'un workspace** : ne jamais présumer que le brief et le plan ont été validés (on sauterait le garde-fou de validation de la Phase 0.2, qui n'est jamais contournable) ni qu'ils ne l'ont pas été (on redemanderait une validation déjà obtenue) — **poser explicitement la question** : « `00-brief.md` et `00-plan.md` existent déjà dans le workspace — as-tu déjà validé leur contenu, ou dois-je te les présenter pour validation avant de produire le fil rouge et la roadmap ? »
-
 | État du workspace | Phase actuelle | Action |
 |---|---|---|
 | Pas de workspace, ou xlsx/contexte absent | Phase 0.1 | Localiser le workspace, ingérer le xlsx (ou récupérer le contexte en mode standalone) |
 | xlsx ingéré (ou contexte fourni), pas de `00-brief.md`/`00-plan.md` | Phase 0.2 | Produire et faire valider le brief et le plan |
-| `00-brief.md`/`00-plan.md` validés (validation obtenue **dans la session en cours** — sur reprise d'un workspace, poser la question, voir la limite ci-dessus), pas de `06-material-roadmap.md` | Phase 1 | Produire le cas fil rouge (`livrables/00-fil-rouge.md`) et la roadmap |
+| `00-brief.md`/`00-plan.md` validés, pas de `06-material-roadmap.md` | Phase 1 | Produire le cas fil rouge (`livrables/00-fil-rouge.md`) et la roadmap |
 | Fil rouge et roadmap présents, pas de `modules/` ou modules vides | Phase 2 | Produire le contenu pédagogique et les ateliers |
 | Tous les modules/ateliers en markdown, pas de `livrables/M<n>-slides.pptx` | Phase 3 | Compiler en .pptx/.html/.pdf/.docx |
 | Slides + énoncés HTML + livret + guide présents, pas de quiz | Phase 4 | Produire quiz, prérequis, biblio |
