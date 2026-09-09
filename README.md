@@ -196,6 +196,49 @@ Le format exact de chaque fichier échangé entre les skills (celles orchestrée
 
 ---
 
+# Consommation de tokens
+
+**Ceci est une analyse de tâche, pas une mesure.** Comme pour la recommandation de modèle/effort ci-dessus, aucun run n'a été chronométré ni compté en tokens sur ces skills — les ordres de grandeur ci-dessous viennent de la forme des `SKILL.md` (nombre d'étapes, de livrables, d'itérations possibles), pas d'un benchmark. À ajuster avec un retour d'usage réel.
+
+## Ce qui fait varier la consommation
+
+- **Le niveau d'effort choisi** — `xhigh` consomme sensiblement plus que `high` pour le même travail (voir « Pourquoi pas un autre niveau d'effort » ci-dessus) ; c'est le premier levier, avant même le choix de modèle.
+- **Le nombre de skills enchaînées dans une seule session** — lancer `formation-pipeline` de bout en bout sur une formation multi-jours cumule dans une même conversation ce que 4 sessions séparées auraient réparti.
+- **Le volume de recherche externe** — `cadrage-formation` Étape 3 (recherche par participant) et `reponse-appel-offres` (recherche méthodologique + client) font plusieurs allers-retours de recherche web, chacun ajoutant du contenu à relire par la suite.
+- **Le volume de livrables produits** — `formation-material-builder` produit plusieurs fichiers par module (slides, notes formateur, atelier, solution) × autant de modules que la formation en compte ; chaque module doit rester cohérent avec le fil rouge posé en Phase 1, potentiellement très en amont dans la même session.
+- **Les itérations de boucle** — `comite-qualite` relit le dossier complet à chaque itération de convergence (jusqu'à 3 avant remise en cause structurelle, règle anti-théâtre) ; plus il y a de constats 🟠/🟡 à corriger, plus il y a de relectures complètes.
+
+## Estimation par skill (ordres de grandeur)
+
+**Méthode, à lire avant les chiffres** : ce sont des estimations, pas des mesures — aucun run n'a été chronométré ni compté en tokens sur ce dépôt (même limite que la section « Sur quoi se base cette recommandation » plus haut). Elles combinent deux éléments : (a) le volume de contenu final que chaque skill est explicitement censée produire, à partir des repères chiffrés déjà écrits dans les `SKILL.md` eux-mêmes (ex. `formation-material-builder/SKILL.md` : « ~10-15 slides par heure de théorie, ~5-8 slides pour un atelier ») converti en tokens avec un ratio approximatif de ~1,3 à 1,5 token par mot pour du français ; (b) un multiplicateur pour le coût agentique autour de ce contenu (relecture de fichiers déjà produits pour la cohérence, appels d'outils, recherche web, brouillons puis versions enrichies) — un facteur x3 à x8 selon les workflows agentiques est une plage courante rapportée pour ce type de tâche, **pas une mesure propre à ce dépôt**. Le produit des deux donne des fourchettes larges, volontairement : l'objectif est de savoir quelle étape pèse le plus, pas de budgéter au token près.
+
+| Skill | Ce qui pèse dans l'estimation | Ordre de grandeur (par formation/AO complet) |
+|---|---|---|
+| `cadrage-formation` | Recherche web par participant (nominative ou par profil type au-delà de 20), + recherche client/sujet | **~30 000 à 80 000 tokens** — dépend surtout du nombre de participants recherchés individuellement |
+| `formation-material-builder` | Contenu final par module (slides, notes formateur, atelier, solution) × nombre de modules, + relecture de cohérence avec le fil rouge à chaque module | **~150 000 à 400 000+ tokens** pour une formation multi-jours (~8 modules) ; nettement moins pour une formation courte (1-2 modules) |
+| `slide-content-claude-design` | Brouillon puis fiche enrichie par slide (Contrat 4), pour l'ensemble des slides de tous les modules | **~150 000 à 300 000 tokens** pour une formation complète (proportionnel au nombre total de slides) |
+| `comite-qualite` | Relecture du **dossier complet** à chaque itération (jusqu'à 3), par 3 à 6 relecteurs en parallèle | **plusieurs centaines de milliers à ~1 million+ de tokens** sur un audit de dossier complet avec plusieurs itérations — l'étape la plus coûteuse du pipeline, précisément parce qu'elle relit tout au lieu de produire du contenu nouveau |
+| `formation-pipeline` (bout-en-bout) | Somme des 4 skills ci-dessus si enchaînées sans fermer la session | **cumul potentiel de plusieurs centaines de milliers à plus d'un million de tokens** sur une formation multi-jours en une seule session — voir « Gérer une session longue » ci-dessous pour l'éviter |
+| `reponse-appel-offres` | Recherche méthodologique + client, fit cabinet/références, plan de présentation slide par slide (deck généralement plus court qu'une formation multi-jours) | **~80 000 à 200 000 tokens** par AO, selon la profondeur de recherche demandée |
+
+## Leviers déjà présents dans les specs pour limiter la consommation
+
+Ce ne sont pas des astuces à ajouter à côté du pipeline : ce sont des mécanismes déjà écrits dans les `SKILL.md`, à utiliser sciemment plutôt qu'à ignorer.
+
+- **Le fallback audience >20 participants** de `cadrage-formation` (recherche par profil type plutôt que nominative) — évite un coût de recherche disproportionné sur les masterclass (voir README plus haut, § 0).
+- **Le mode standalone** de `formation-material-builder` — saute `cadrage-formation` entièrement quand le contexte est déjà fourni directement par le consultant.
+- **`high` par défaut, `xhigh` seulement où le volume d'allers-retours le justifie** (`comite-qualite` en dossier complet, `formation-pipeline` multi-jours, `reponse-appel-offres`) — voir la recommandation détaillée ci-dessus ; l'appliquer partout par défaut serait le levier le plus coûteux pour le moins de bénéfice mesurable.
+- **Le plafond de 3 itérations sans changement structurel** dans `comite-qualite` — empêche une boucle de convergence de tourner indéfiniment sur des constats cosmétiques.
+- **Les tables de détection d'état** (`formation-pipeline`, `formation-material-builder`) — permettent de reprendre un workspace en ne produisant que ce qui manque, sans avoir à tout relire ni tout régénérer depuis le début.
+
+## Gérer une session longue (formation multi-jours, AO volumineux)
+
+Le levier le plus direct n'est pas technique : c'est de **scinder le travail en sessions séparées, aux points de validation déjà prévus par les specs**, plutôt que de dérouler tout le pipeline dans une seule conversation ininterrompue. Chaque point de validation (plan/brief validés, fil rouge et roadmap validés, brouillon `M<n>-slides-draft.md` validé — voir `PIPELINE_CONTRACTS.md`) est justement conçu comme un point d'arrêt propre : fermer la session à ce moment-là et en ouvrir une nouvelle plus tard ne perd aucune information, car tout ce qui doit survivre à la reprise est déjà écrit sur disque, pas seulement dans la conversation.
+
+Sur la reprise elle-même : depuis les corrections apportées à `formation-pipeline/SKILL.md` et `formation-material-builder/SKILL.md` (voir `CHANGELOG.md`), la présence d'un fichier sur disque n'est jamais interprétée comme une validation acquise — l'orchestrateur repose la question explicitement à la reprise plutôt que de présumer un sens ou l'autre. Fermer une session à un point de validation est donc un choix sûr autant qu'un choix économe en tokens.
+
+Claude Code compresse automatiquement le contexte ancien d'une session qui approche sa limite (voir en tête de ce dépôt/de l'outil) — ce n'est pas quelque chose à gérer manuellement. Le vrai choix qui reste à ta main est celui du **moment** où fermer une session : aux points de validation ci-dessus plutôt qu'au milieu d'une phase, pour éviter qu'une reprise ait à deviner un état intermédiaire.
+
 # Mise en place technique (une seule fois)
 
 > **Cette partie est technique et ponctuelle.** Elle suppose que Claude Code est installé sur ton poste. **Si ce n'est pas le cas, ou si les termes ci-dessous (terminal, dépôt, extension, palette de commandes…) ne te parlent pas, fais-toi accompagner par un collègue technique pour cette étape unique.** Une fois en place, l'usage quotidien décrit plus haut se fait en français, sans manipulation technique.
