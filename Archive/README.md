@@ -1,10 +1,8 @@
 # Skills — Pipelines de production de formation et de réponse à appel d'offres
 
-Les skills Claude Code utilisées pour préparer et produire, d'une part, le dossier complet d'une formation « Product Management augmenté » (utilisable sur n'importe quelle formation), et d'autre part une réponse à appel d'offres commercial.
+Les skills Claude Code utilisées pour préparer et produire, d'une part, le dossier complet d'une formation « Product Management augmenté » (utilisable sur n'importe quelle formation), et d'autre part une réponse à appel d'offres commercial (en cours de construction).
 
-Ce dépôt couvre désormais **deux pipelines** : la production de formation (5 skills, détaillées ci-dessous) et la réponse à appel d'offres (voir « Pipeline réponse à appel d'offres » plus bas). Les deux partagent la même gouvernance, le même workflow Git, et le même fichier de contrats d'interface (`PIPELINE_CONTRACTS.md`) — voir `GOVERNANCE.md` pour l'arbitrage qui a permis cet élargissement.
-
-**Nouveau sur ce dépôt ?** [ONBOARDING.md](ONBOARDING.md) donne une vue d'ensemble des deux pipelines en une page, à montrer avant d'installer quoi que ce soit.
+Ce dépôt couvre désormais **deux pipelines** : la production de formation (5 skills, détaillées ci-dessous) et la réponse à appel d'offres (en cours de construction, voir « Pipeline réponse à appel d'offres » plus bas). Les deux partagent la même gouvernance, le même workflow Git, et le même fichier de contrats d'interface (`PIPELINE_CONTRACTS.md`) — voir `GOVERNANCE.md` pour l'arbitrage qui a permis cet élargissement.
 
 ## En deux mots
 
@@ -69,13 +67,12 @@ Propose systématiquement la prochaine étape à chaque point de validation (fil
 **En clair** : cette étape prépare le contenu de tes diapositives pour deux outils séparés — **Claude Design** (qui compose la mise en page finale) et **Gemini** (qui génère les illustrations). Elle produit deux fichiers texte que tu colles ensuite dans ces outils. **C'est ici que se fait le deck final** : le `M<n>-slides.pptx` de l'étape 1 n'était qu'un brouillon, et il n'est plus maintenu une fois qu'on passe par Claude Design (on ne garde pas deux versions du même deck).
 
 Entrée : les `slides.md` produits par la skill 1 (ou tout plan/markdown).
-Sortie : **trois fichiers par module**, colocalisés dans `formations/<client>-<theme>/<AAAA-MM>/livrables/` :
-- `M<n>-slides-draft.md` — un **brouillon texte seul** par slide (titre, accroche, contenu, chiffre clé, bloc texte, intention du visuel en une ligne — jamais de dimensions ni de couleurs à ce stade), **à valider avant d'investir dans la couche visuelle** — point de vérification structurant, jamais optionnel.
-- `M<n>-slides-content.md` — le brouillon validé, enrichi d'une fiche par slide (titre bicolore, accroche, contenu, composant du design system **entièrement dimensionné/positionné/colorisé** — pas une simple catégorie de composant, bloc texte à incruster, **placeholder d'illustration gris dimensionné et positionné** renvoyant au prompt correspondant, ou « Bloc » vectoriel pour tableaux/code/schémas) — à coller fiche par fiche dans Claude Design ;
+Sortie : **deux fichiers par module**, colocalisés dans `formations/<client>-<theme>/<AAAA-MM>/livrables/` :
+- `M<n>-slides-content.md` — une fiche par slide (titre bicolore, accroche, contenu, composant du design system **entièrement dimensionné/positionné/colorisé** — pas une simple catégorie de composant, bloc texte à incruster, **placeholder d'illustration gris dimensionné et positionné** renvoyant au prompt correspondant, ou « Bloc » vectoriel pour tableaux/code/schémas) — à coller fiche par fiche dans Claude Design ;
 - `M<n>-prompts.md` — un bloc **« Direction artistique »** unique en tête (style illustratif, déclinaison de la métaphore filée du module, contraintes récurrentes), puis les prompts d'illustration Gemini structurés par slide qui le référencent (palette par défaut, sans texte dans l'image) — garantit une cohérence visuelle professionnelle entre toutes les slides d'un même module.
 
 Design system par défaut inclus (bleu marine #2C5F8A parcimonieux, encre #1F1F1F, beige #E8E2DA, data corail/vert sauge, Sora/Inter) — remplaçable par la charte du client.
-Recommande un **audit UX/UI de `M<n>-slides-content.md` avant la génération visuelle** dans Claude Design (porte sur la forme, une fois enrichie), en complément — jamais à la place — de la validation du fond sur `M<n>-slides-draft.md`, puis propose `comite-qualite` sur le rendu final.
+Recommande un **audit UX/UI de `M<n>-slides-content.md` avant la génération visuelle** dans Claude Design, puis propose `comite-qualite` sur le rendu final.
 
 ### 3. `comite-qualite` — auditer jusqu'à convergence
 
@@ -103,7 +100,7 @@ Second pipeline de ce dépôt : `reponse-appel-offres`, une skill unique qui pil
 
 **Historique** : une première itération (`cadrage-appel-offres`) se limitait à l'analyse du dossier. Le 18/08/2026, le périmètre a été élargi en une seule skill bout-en-bout — voir `CHANGELOG.md` et `BACKLOG.md` #29.
 
-## `reponse-appel-offres` — de la recherche méthodologique au plan de présentation
+### `reponse-appel-offres` — de la recherche méthodologique au plan de présentation
 
 À utiliser dès qu'on reçoit un dossier d'AO, un CCTP, un règlement de consultation, ou qu'on veut préparer une réponse à appel d'offres.
 
@@ -115,45 +112,22 @@ Workflow en 8 étapes :
 3. **Analyse de l'adéquation cabinet/besoin** — via un profil cabinet (`profil-cabinet.md`, jamais un cabinet présupposé : chaque consultant renseigne le sien), croisé avec les exigences.
 4. **Références du cabinet** — demandées au consultant ET complétées par une recherche web de références publiques, jamais l'une sans l'autre.
 5. **Sélection des références pertinentes** — critères explicites (secteur, techno, taille de mission).
-4bis/5bis. **Équipe et références depuis un référentiel** (conditionnelles — seulement si `consultants-references-extractor` a été utilisée) — sélection de consultants et de missions catalogués, en plus des Étapes 4/5 ci-dessus, jamais à leur place. Voir « Skill transverse : `consultants-references-extractor` » plus bas.
-6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide entièrement dimensionnée/positionnée/colorisée + un fichier de prompts séparé, prêts à coller dans Claude Design (composition toujours manuelle, Claude Design n'a pas d'API programmatique). Une slide `ÉQUIPE-MEMBRE` par consultant retenu et une slide `RÉFÉRENCE` par référence retenue, jamais regroupées.
+6. **Plan de présentation détaillé pour Claude Design** — même niveau de détail que `slide-content-claude-design` : une fiche par slide entièrement dimensionnée/positionnée/colorisée + un fichier de prompts séparé, prêts à coller dans Claude Design (composition toujours manuelle, Claude Design n'a pas d'API programmatique).
 7. **Comité qualité** — proposition explicite d'enchaînement vers `comite-qualite`, sans modification nécessaire de cette skill (ses rôles existants couvrent déjà ce type de livrable).
 
 **Sortie** : `exigences_<client>.xlsx` (livrable interne, Contrat AO-1) à la racine de `appels-offres/<client>-<objet>/<AAAA-MM>/`, et `plan-presentation-content.md`/`plan-presentation-prompts.md` (livrable final, Contrat AO-2 de `PIPELINE_CONTRACTS.md`) dans son sous-dossier `livrables/` — l'ensemble distinct du dossier `formations/` du premier pipeline.
 
----
-
-# Skill transverse : `design-system-extractor`
-
-Skill invoquée à la demande, en amont de `slide-content-claude-design` — pas une étape obligatoire d'aucun des deux pipelines ci-dessus.
-
-Extrait le design system d'un client à partir de **n'importe quel document réellement fourni** (captures d'écran, PDF de charte graphique, export Figma, site web, logo seul...) — jamais un format d'entrée imposé au client. Un token non observé dans les sources fournies n'est jamais deviné : il est marqué explicitement `NON DÉTERMINÉ`, garde-fou anti-hallucination central de cette skill.
-
-**Sortie** : `design-systems/<client>/design-system.md` (Contrat DS-1 de `PIPELINE_CONTRACTS.md`), au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md` — cette dernière l'applique directement à la place de sa palette par défaut « Encre & Sauge » quand il existe, en comblant les champs `NON DÉTERMINÉ` restants avec les valeurs par défaut correspondantes.
-
----
-
-# Skill transverse : `consultants-references-extractor`
-
-Skill invoquée à la demande, en amont ou en cours de `reponse-appel-offres` — pas une étape obligatoire du pipeline AO, mais un accélérateur pour ses Étapes 4bis/5bis conditionnelles.
-
-Extrait un référentiel de CV consultants et un référentiel de références/missions à partir de **n'importe quel document réellement fourni** — decks internes (une slide par CV/référence, format réel mais mise en page hétérogène d'un auteur à l'autre), PDF, Word, export LinkedIn, tableur RH. Gère de gros volumes (plusieurs centaines d'entrées) par lots, avec un point de contrôle après chacun. Un consultant peut avoir plusieurs missions distinctes ; une mission peut réunir plusieurs consultants — les deux référentiels sont liés dans les deux sens. Un ré-import régulier fusionne avec l'existant, sans jamais écraser silencieusement une modification manuelle.
-
-**Confidentialité** : chaque référence est classée `NOMMÉE`/`ANONYMISÉE`/`INTERNE_UNIQUEMENT`/`NON PRÉCISÉ` à l'extraction — ce classement documente ce qui a été trouvé, il **n'autorise jamais** un usage externe. Toute inclusion dans un livrable envoyé à un client exige une confirmation humaine explicite au moment de la sélection, quel que soit le niveau.
-
-**Sortie** : `consultants/<identifiant>.md` (Contrat CR-1) et `references-missions/<identifiant>.md` (Contrat CR-2 de `PIPELINE_CONTRACTS.md`) — consommés par `reponse-appel-offres` aux Étapes 4bis (sélection d'équipe, validation du consultant concerné avant toute fiche reformulée finale) et 5bis (sélection de références, confirmation de confidentialité toujours requise).
-
-# Modèle et niveau d'effort recommandés
+## Modèle et niveau d'effort recommandés
 
 **En pratique** : dans Claude Code, choisis **Sonnet 5** et le niveau d'effort **`high`** au démarrage de ta session (menu/commande de sélection du modèle et de l'effort de ton installation — le nom exact de cette commande dépend de la version de l'outil ; dans l'application Claude ou Cowork, le réglage équivalent se trouve dans les paramètres de conversation). C'est la seule chose à retenir pour un usage quotidien du pipeline ; le reste de cette section est une justification détaillée, utile si tu veux comprendre le "pourquoi" ou si tu contribues au dépôt — pas une lecture nécessaire avant de lancer une skill.
 
-**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des skills de ce dépôt — les 5 du pipeline formation (y compris `formation-pipeline` en mode orchestration), `reponse-appel-offres` du pipeline réponse à AO, et les skills transverses `design-system-extractor` et `consultants-references-extractor`. Ces dernières partagent le même profil de difficulté (extraction exhaustive contrainte par un format, deep research à plusieurs volets, jugement de fit et de sélection) — pas de recommandation distincte tant qu'aucune divergence réelle n'a été observée en usage. Compte tenu de sa longueur (8 étapes, plusieurs deep research successives, un livrable détaillé slide par slide), monter à **`xhigh`** sur `reponse-appel-offres` est aussi défendable que sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours (même emplacement de réglage) — voir le détail par cas ci-dessous.
+**Recommandation** : **Sonnet 5**, niveau d'effort **`high`**, pour l'ensemble des skills de ce dépôt — les 5 du pipeline formation (y compris `formation-pipeline` en mode orchestration) et `reponse-appel-offres` du pipeline réponse à AO. Cette dernière partage le même profil de difficulté (extraction exhaustive contrainte par un format, deep research à plusieurs volets, jugement de fit et de sélection) — pas de recommandation distincte tant qu'aucune divergence réelle n'a été observée en usage. Compte tenu de sa longueur (8 étapes, plusieurs deep research successives, un livrable détaillé slide par slide), monter à **`xhigh`** sur `reponse-appel-offres` est aussi défendable que sur `comite-qualite` en dossier complet ou `formation-pipeline` en formation multi-jours (même emplacement de réglage) — voir le détail par cas ci-dessous.
 
 **Escalade conditionnelle vers Opus** : rester sur Sonnet par défaut, mais basculer ponctuellement sur Opus (même sélecteur de modèle que ci-dessus, changer juste le nom du modèle pour la session ou l'étape concernée) pour les décisions les plus coûteuses à défaire une fois prises — la conception du cas fil rouge et de la roadmap en Phase 1 de `formation-material-builder` (la spec elle-même les qualifie de coûteuses à corriger après coup : « Mieux vaut 10 min de cadrage que 2h de retravail »), la recherche de participants dans `cadrage-formation` si l'audience est nombreuse/senior/multi-entités (zone d'ambiguïté la plus exposée au risque d'hypothèse présentée à tort comme un fait), ou un audit `comite-qualite` sur un livrable client/contractuel à fort enjeu. Ce n'est pas un changement de modèle par défaut sur toute une skill, seulement sur son point de décision le plus structurant.
 
 Cette recommandation est vérifiable, pas une préférence : elle découle de choses observables dans ce dépôt (le texte des `SKILL.md` eux-mêmes, leurs propres garde-fous explicites), pas d'une règle générique — voir « Sur quoi se base cette recommandation, et ses limites » en fin de section (cette dernière sous-section s'adresse surtout à un contributeur qui voudrait comprendre ou faire évoluer la recommandation, pas à l'usage courant).
 
-## Ce qui, dans ces skills, exige ce choix précis
+### Ce qui, dans ces skills, exige ce choix précis
 
 Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différent d'un classement rapide ou d'un problème de code isolé :
 
@@ -162,13 +136,13 @@ Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différ
 - **Des garde-fous imbriqués qu'il ne faut jamais lever par erreur** — `formation-pipeline/SKILL.md` distingue explicitement les blocages que l'orchestrateur peut lever de ceux qu'il ne peut jamais lever, y compris en mode non-stop ; `comite-qualite/SKILL.md` a des règles anti-théâtre précises (ne pas inventer de problème, mais ne pas non plus déclarer une convergence hâtive). Une lecture trop rapide de ces règles en cascade est justement le type d'erreur qu'on a corrigée lors de l'audit qualité de ce dépôt (contradiction non-stop/garde-fou, voir [`CHANGELOG.md`](CHANGELOG.md)).
 - **Un jugement pédagogique et éditorial réel, pas de la simple extraction** — calibrer un niveau 100/200/300 selon Bloom, juger si une réponse client est réellement actionnable ou évasive, composer une équipe de relecteurs pertinente pour un livrable donné : ce sont des décisions de fond, pas du classement de texte.
 
-## Pourquoi pas un autre modèle
+### Pourquoi pas un autre modèle
 
 - **Haiku (4.5)** — Haiku est conçu et positionné pour la vitesse et le coût sur des tâches courtes et répétitives à grande échelle (classification, extraction simple, routing) : c'est explicitement le compromis qu'il assume, au prix d'une profondeur de raisonnement moindre sur des tâches longues et enchevêtrées. Rien dans ce dépôt ne relève de ce profil — même l'étape la plus mécanique (`cadrage-formation` Étape 3, recherche de profils) exige un jugement sur l'ambiguïté ("À confirmer" plutôt qu'inventer) que ce classement rapide ne priorise pas. Utiliser Haiku ici économiserait des tokens au prix d'un risque concret : un format de fichier mal respecté (Contrat 2, 3 ou 4 de `PIPELINE_CONTRACTS.md`) casserait silencieusement l'étape suivante du pipeline, ou une des règles anti-théâtre de `comite-qualite` serait appliquée de façon trop mécanique (inventer des problèmes pour "faire le travail", ou au contraire déclarer une convergence hâtive).
 - **Opus (5)** — Opus vise les tâches où une réponse fausse coûte cher et où le raisonnement multi-étapes est la difficulté centrale (debugging profond, architecture complexe, preuve mathématique) — c'est le palier de raisonnement au-dessus de Sonnet dans la gamme, sous Fable (voir ci-dessous), pas le plafond absolu. Les skills de ce dépôt ne sont pas de ce registre : la difficulté n'est pas dans un raisonnement logique en profondeur, elle est dans le respect méticuleux et répété d'un format de spec déjà écrit, sur un grand volume de texte à produire. Opus n'apporterait pas un avantage identifiable sur ce type de tâche par rapport à Sonnet, pour un coût par token nettement supérieur — un delta de qualité qui ne se traduirait pas en meilleure conformité aux contrats de fichier ni en meilleure fidélité pédagogique, les deux vrais points de friction observés dans ce dépôt (voir l'audit qualité du [`CHANGELOG.md`](CHANGELOG.md), dont les corrections portaient sur la cohérence de spec, pas sur un raisonnement insuffisamment profond).
 - **Fable (5)** — c'est le modèle le plus capable disponible, positionné pour les tâches qui justifient une prime de coût significative sur la sortie la plus soignée possible (contexte 1M token, mais facturé en conséquence). Le contenu produit ici (slides, ateliers, quiz) a une exigence de qualité réelle, mais elle est bornée par un format déjà écrit dans les `SKILL.md`/`PIPELINE_CONTRACTS.md` — la marge de progression qu'apporterait Fable au-delà de Sonnet 5 sur *ce type de tâche contrainte* n'est pas justifiée au vu du volume de contenu à produire sur une formation multi-jours (plusieurs modules × plusieurs livrables). Fable se justifierait si ce dépôt produisait, par exemple, un unique document stratégique très court où chaque phrase compte au maximum — ce n'est pas le profil de ce pipeline.
 
-## Pourquoi pas un autre niveau d'effort
+### Pourquoi pas un autre niveau d'effort
 
 - **`low`** — pensé pour des tâches courtes, mécaniques, où la vitesse prime (voir la doc Anthropic sur les niveaux d'effort). Aucune des 5 skills n'est courte : même `cadrage-formation` seule enchaîne 8 étapes avec recherche web et synthèse. `low` produirait des livrables qui respectent la forme sans forcément le fond (ex. un plan de formation qui liste des modules sans la logique de progression qu'on vient d'exiger explicitement dans `formation-material-builder/SKILL.md`).
 - **`medium`** — le niveau "tâches quotidiennes, coûts maîtrisés" est raisonnable pour un usage ponctuel et simple, mais sous-dimensionné pour un pipeline dont chaque étape peut réécrire un format de fichier lu par l'étape suivante : le risque de dérive de contrat (cf. § ci-dessus) est plus élevé qu'à `high`.
@@ -176,7 +150,7 @@ Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différ
 - **`max`** — la documentation Anthropic est explicite sur ce niveau : il n'a pas de plafond de dépense de tokens, mais les gains sont marginaux au-delà de `xhigh` et il est sujet au sur-raisonnement ("overthinking"). Sur des skills dont la difficulté est le respect d'un format déjà écrit (pas une énigme à résoudre), `max` ferait dépenser des tokens sans lever la vraie contrainte du pipeline.
 - **Ultracode (workflow multi-agents)** — Ultracode envoie `xhigh` au modèle tout en orchestrant un workflow multi-agents pour la tâche *(fonctionnalité de Claude Code, distincte des 5 niveaux d'effort standard — pas nécessairement documentée dans la même page que ceux-ci, à vérifier dans la doc Claude Code à jour si le comportement décrit ici semble avoir changé)*. C'est pertinent pour un audit exhaustif nécessitant des perspectives indépendantes qui se vérifient entre elles (exactement ce qui a été fait pour l'audit `comite-qualite` de ce dépôt, avec 7 relecteurs en parallèle) — mais ce n'est pas le mode par défaut pour produire un module de formation ou un cadrage : ce travail est une production cohérente et séquentielle (un fil rouge qui se déroule, un plan qui se construit progressivement), pas un problème qui bénéficie de plusieurs angles indépendants à faire converger. Réserver Ultracode à un usage explicite et ponctuel — un audit `comite-qualite` volontairement exhaustif — plutôt qu'un mode par défaut du pipeline.
 
-## Mécanique vs jugement, à l'intérieur de chaque skill
+### Mécanique vs jugement, à l'intérieur de chaque skill
 
 `high` n'a pas besoin d'être appliqué avec la même intensité sur tout le déroulé d'une skill — chacune mélange des passages purement mécaniques (remplir un gabarit déjà entièrement spécifié, exécuter un script) et des passages de jugement ouvert où une dérive coûte cher. Si l'outil que tu utilises permet de faire varier l'effort en cours de route, voici où il compte le plus dans chaque skill :
 
@@ -186,7 +160,7 @@ Les 5 `SKILL.md` de ce dépôt partagent un même profil de difficulté, différ
 - **`comite-qualite`** — mécanique : la Phase C (application des corrections déjà décidées, dans l'ordre 🔴→🟠→🟡) ; jugement : la composition de l'équipe de relecteurs (Phase 0.1-0.3, y compris le garde-fou anti-hallucination du rôle "Voix du client"), les constats de chaque relecteur et le calibrage défaut-vs-préférence (Phases A/D) — ce dernier revient à chaque itération de la boucle, jusqu'à 3.
 - **`formation-pipeline`** — mécanique : la détection d'état du workspace (table de détection, la plupart des transitions) ; jugement : reconnaître un garde-fou que la sous-skill a posé comme non contournable (voir la contradiction corrigée dans [`CHANGELOG.md`](CHANGELOG.md)) — c'est le point où une lecture trop rapide des règles en cascade a le plus de conséquences.
 
-## Sur quoi se base cette recommandation, et ses limites
+### Sur quoi se base cette recommandation, et ses limites
 
 **Ceci est une analyse de tâche, pas un benchmark.** Aucun test A/B n'a été mené comparant Haiku, Sonnet, Opus ou Fable sur ces 5 skills, ni sur un cas de formation réel. Chaque affirmation ci-dessus vient de la lecture des `SKILL.md` eux-mêmes — leurs étapes explicites, leurs propres garde-fous déjà écrits dans les specs (la règle de hedging de `cadrage-formation`, la règle anti-théâtre de `comite-qualite`, le point de validation du module 1 de `formation-material-builder`, la distinction garde-fou-levable/non-levable de `formation-pipeline`) — croisée avec des paliers de capacité de modèle connus de façon générale (Haiku : rapide/économique, plus faible sur la cohérence longue durée et le jugement ouvert ; Sonnet : généraliste, palier par défaut pour la plupart des tâches agentiques de rédaction/code ; Opus : plafond de raisonnement le plus élevé ; Fable : profil différencié, pas le choix par défaut pour ce type de pipeline sauf demande explicite) et sur les niveaux d'effort tels que documentés par Anthropic à la date de rédaction (29/07/2026).
 
@@ -202,7 +176,7 @@ Le format exact de chaque fichier échangé entre les skills (celles orchestrée
 
 ## Où récupérer les skills (source de vérité)
 
-**Ce dépôt est la référence unique** pour récupérer les skills des deux pipelines — ne pas se fier à un envoi ponctuel par e-mail ou par zip, qui peut être partiel ou périmé. Toute évolution des skills est poussée ici avant d'être considérée comme disponible.
+**Ce dépôt est la référence unique** pour récupérer les 4 skills — ne pas se fier à un envoi ponctuel par e-mail ou par zip, qui peut être partiel ou périmé. Toute évolution des skills est poussée ici avant d'être considérée comme disponible.
 
 ## Installation des skills
 
@@ -227,18 +201,13 @@ Copier chaque dossier dans `~/.claude/skills/` :
 │   └── SKILL.md
 ├── formation-pipeline/      (optionnel — orchestrateur du pipeline complet)
 │   └── SKILL.md
-├── reponse-appel-offres/    (pipeline réponse à AO)
-│   ├── SKILL.md
-│   ├── references/          (gabarit de profil cabinet)
-│   └── scripts/             (générateur de la checklist d'exigences Excel)
-├── design-system-extractor/ (transverse aux deux pipelines, à la demande)
-│   └── SKILL.md
-└── consultants-references-extractor/ (transverse, alimente reponse-appel-offres à la demande)
+└── reponse-appel-offres/    (pipeline réponse à AO)
     ├── SKILL.md
-    └── references/          (gabarits fiche consultant / fiche référence)
+    ├── references/          (gabarit de profil cabinet)
+    └── scripts/             (générateur de la checklist d'exigences Excel)
 ```
 
-**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres`, `/design-system-extractor`, `/consultants-references-extractor` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
+**Détection** : si `~/.claude/skills/` existe déjà, l'ajout d'un dossier de skill est pris en compte **en direct, sans redémarrer la session en cours**. Un redémarrage n'est nécessaire que si `~/.claude/skills/` lui-même n'existait pas encore au lancement de la session (premier usage sur un poste neuf). Invocation : `/cadrage-formation`, `/formation-material-builder`, `/slide-content-claude-design`, `/comite-qualite`, `/formation-pipeline`, `/reponse-appel-offres` (ou en langage naturel — chaque SKILL.md décrit ses déclencheurs). Vérifier la détection en tapant `/` dans le chat : les skills installées doivent apparaître dans la liste.
 
 **Procédure de repli si une skill n'est pas détectée** (à utiliser en dernier recours, pas par défaut) :
 - Ouvrir un nouveau chat plutôt que de réutiliser une session existante.
@@ -255,17 +224,17 @@ Pour utiliser ce pipeline dans l'extension Claude Code de VS Code ou d'Antigravi
 
 **Gestion des quotas** : un blocage ponctuel sur les quotas (cotas) a été observé avec certains comptes professionnels ; ce n'est pas systématique et n'a pas été observé de façon répétée. Si un blocage survient, patienter (les quotas se renouvellent) plutôt que de changer de compte ou de modèle par réflexe.
 
-**Choix de l'éditeur** : l'extension Claude Code fonctionne aussi bien dans VS Code que dans Antigravity — le choix entre les deux est une préférence d'environnement, pas une contrainte du pipeline. Voir `BACKLOG.md` (item #7) : arbitrage rendu le 26/08/2026, les deux outils restent supportés en interne, pas de convergence vers un seul.
+**Choix de l'éditeur** : l'extension Claude Code fonctionne aussi bien dans VS Code que dans Antigravity — le choix entre les deux est une préférence d'environnement, pas une contrainte du pipeline. Voir `BACKLOG.md` (item #7) pour l'arbitrage en cours sur l'harmonisation des outils utilisés en interne.
 
 ### Sur l'application Claude (claude.ai, app desktop/mobile)
 
 L'application Claude installe les skills **une par une, par fichier ZIP**, via **Réglages → Personnaliser → Skills**. C'est un mécanisme différent de Claude Code (pas de simple copie de dossier).
 
 1. **Activer d'abord** l'option « Exécution de code et création de fichiers » dans les réglages (nécessaire aux comptes Pro/Max/Team/Entreprise pour que les skills fonctionnent).
-2. **Préparer le ZIP** pour chaque skill à installer : le ZIP doit contenir le **dossier de la skill à sa racine** (pas son contenu nu à la racine du zip), et le nom de ce dossier doit correspondre exactement au `name:` du frontmatter du `SKILL.md`. Les sous-dossiers (`references/`, `scripts/`) sont inclus tels quels. Depuis ce dépôt : `cd ~/.claude/skills && zip -r cadrage-formation.zip cadrage-formation/` (répéter pour chaque skill à installer, ou zipper directement depuis une copie locale du dépôt).
-3. **Réglages → Personnaliser → Skills → bouton "+" → Create skill → Upload a skill**, puis sélectionner le ZIP correspondant. Répéter pour chaque skill à installer.
+2. **Préparer le ZIP** pour chaque skill à installer : le ZIP doit contenir le **dossier de la skill à sa racine** (pas son contenu nu à la racine du zip), et le nom de ce dossier doit correspondre exactement au `name:` du frontmatter du `SKILL.md`. Les sous-dossiers (`references/`, `scripts/`) sont inclus tels quels. Depuis ce dépôt : `cd ~/.claude/skills && zip -r cadrage-formation.zip cadrage-formation/` (répéter pour chacune des 4 skills, ou zipper directement depuis une copie locale du dépôt).
+3. **Réglages → Personnaliser → Skills → bouton "+" → Create skill → Upload a skill**, puis sélectionner le ZIP correspondant. Répéter pour les 4 skills.
 
-**Par défaut, chaque personne importe son propre ZIP.** Mais sur un compte **Team ou Enterprise**, un **Owner** peut provisionner une skill pour toute l'organisation en une fois, sans que chaque membre ait à l'installer individuellement : *Réglages d'organisation → Skills → Organization skills → « + Add »*, en uploadant le même ZIP. La skill apparaît alors automatiquement chez chaque membre (activée par défaut, désactivable individuellement). Si un compte professionnel Team/Enterprise est disponible, **demander à la personne Owner de provisionner les skills utilisées par l'équipe en une seule fois** plutôt que de les faire installer individuellement. *(Point à vérifier : la documentation développeur Anthropic — platform.claude.com — affirme encore qu'aucune gestion centralisée n'existe sur claude.ai, ce qui contredit la doc support — support.claude.com/en/articles/13119606 — décrivant ce mécanisme de provisioning. Les deux pages ne semblent pas synchronisées ; se fier en priorité à la doc support, plus récente sur ce point, mais confirmer auprès d'un Owner du compte avant de compter dessus pour un déploiement d'équipe.)*
+**Par défaut, chaque personne importe son propre ZIP.** Mais sur un compte **Team ou Enterprise**, un **Owner** peut provisionner une skill pour toute l'organisation en une fois, sans que chaque membre ait à l'installer individuellement : *Réglages d'organisation → Skills → Organization skills → « + Add »*, en uploadant le même ZIP. La skill apparaît alors automatiquement chez chaque membre (activée par défaut, désactivable individuellement). Si un compte professionnel Team/Enterprise est disponible, **demander à la personne Owner de provisionner les 4 skills une seule fois** plutôt que de les faire installer individuellement. *(Point à vérifier : la documentation développeur Anthropic — platform.claude.com — affirme encore qu'aucune gestion centralisée n'existe sur claude.ai, ce qui contredit la doc support — support.claude.com/en/articles/13119606 — décrivant ce mécanisme de provisioning. Les deux pages ne semblent pas synchronisées ; se fier en priorité à la doc support, plus récente sur ce point, mais confirmer auprès d'un Owner du compte avant de compter dessus pour un déploiement d'équipe.)*
 
 ### Sur Claude Cowork
 

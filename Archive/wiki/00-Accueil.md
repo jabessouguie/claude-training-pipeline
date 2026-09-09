@@ -1,42 +1,27 @@
 <!-- Page wiki GitHub : "Accueil". Sur GitHub, renommer sans le préfixe "00-" — le préfixe numérique sert uniquement à garder l'ordre de lecture visible dans un explorateur de fichiers local (Finder, VS Code), il n'a aucun rôle sur GitHub. -->
 
-# Pipelines de production de formation et de réponse à appel d'offres
+# Pipeline de création de formation
 
-Bienvenue sur le wiki des pipelines de skills Claude Code de ce dépôt. Ce dépôt couvre **deux pipelines** : la production d'une formation client complète (de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz), et la réponse à un appel d'offres commercial (de la recherche méthodologique jusqu'au plan de présentation).
+Bienvenue sur le wiki du pipeline de skills Claude Code. Ce pipeline t'aide, étape par étape, à produire une formation client complète : de l'appel de cadrage jusqu'aux slides, au livret stagiaire, aux exercices et au quiz.
 
 **Tu dialogues avec l'assistant en français, il fait le gros du travail.** Tu n'as pas besoin de connaître le détail technique du pipeline pour t'en servir — l'assistant te guide à chaque étape (voir [Comment l'assistant te guide](#comment-lassistant-te-guide) plus bas).
 
 ## Par où commencer ?
 
-0. **Vue d'ensemble en 5 minutes**, avant d'installer quoi que ce soit → [ONBOARDING.md](../ONBOARDING.md) (schéma + une page, pour une démo à un nouvel arrivant)
 1. **Installer les skills** sur l'outil que tu utilises → [Installation](01-Installation/00-Sommaire)
 2. **Utiliser le pipeline** au quotidien → [Utiliser le pipeline](02-Utiliser-le-pipeline)
 3. **Un souci, une question ?** → [FAQ et dépannage](03-FAQ-et-depannage)
 
-## Les skills, en un coup d'œil
+## Les 4 skills, en un coup d'œil
 
-### Pipeline formation — 4 skills, dans cet ordre (chaque étape consomme la sortie de la précédente)
+Le pipeline s'exécute dans cet ordre — chaque étape consomme la sortie de la précédente :
 
 | # | Skill | Ce qu'elle produit |
 |---|---|---|
 | 0 | `cadrage-formation` | La grille de questions à poser au client (fichier Excel) |
 | 1 | `formation-material-builder` | Tout le matériel pédagogique : slides, livret stagiaire, guide formateur, ateliers, quiz |
-| 2 | `slide-content-claude-design` | Un brouillon texte seul à relire d'abord, puis le contenu prêt à générer visuellement dans Claude Design + les prompts d'illustration pour Gemini |
+| 2 | `slide-content-claude-design` | Le contenu prêt à générer visuellement dans Claude Design + les prompts d'illustration pour Gemini |
 | 3 | `comite-qualite` | Un audit multi-relecteurs du dossier complet, jusqu'à convergence |
-
-Une cinquième skill optionnelle, `formation-pipeline`, enchaîne les 4 ci-dessus à la suite sans avoir à les relancer une par une.
-
-### Pipeline réponse à appel d'offres — une skill unique
-
-`reponse-appel-offres` pilote la réponse complète à un appel d'offres (AO) commercial en 8 étapes internes : recherche méthodologique, recherche client, analyse du besoin (checklist d'exigences CCTP tracée), fit cabinet/client, sourcing et sélection de références, plan de présentation détaillé pour Claude Design, renvoi vers `comite-qualite`.
-
-### Skill transverse — `design-system-extractor`
-
-Extrait la charte graphique d'un client à partir de n'importe quel document fourni (captures, PDF, export Figma, site web...), pour que `slide-content-claude-design` l'applique à la place de sa palette par défaut. À la demande, pas une étape obligatoire.
-
-### Skill transverse — `consultants-references-extractor`
-
-Extrait un référentiel de CV consultants et de références/missions à partir de decks internes (ou PDF, Word, LinkedIn, tableur), pour que `reponse-appel-offres` sélectionne et reformule les plus pertinents pour un AO. Une référence n'est jamais citée à un client sans confirmation humaine de sa confidentialité. À la demande, pas une étape obligatoire.
 
 Détail complet de chaque skill → [Utiliser le pipeline](02-Utiliser-le-pipeline).
 

@@ -1,11 +1,6 @@
-# Roadmap — Pipelines de skills (formation et réponse à appel d'offres)
+# Roadmap — Pipeline de skills de formation
 
-Vision produit : **faire des pipelines de skills de ce dépôt l'outillage par défaut de tout consultant sur ses deux productions les plus coûteuses en temps** —
-
-- **Produire une formation client** (`cadrage-formation` → `formation-material-builder` → `slide-content-claude-design` → `comite-qualite`), du premier appel de cadrage jusqu'au dossier livrable complet, en réduisant le temps manuel à l'appropriation finale (anecdotes, ajustements visuels, quiz).
-- **Répondre à un appel d'offres** (`reponse-appel-offres` → `comite-qualite`), de la recherche méthodologique jusqu'au plan de présentation, en sécurisant la conformité au cahier des charges et la différenciation réelle de l'offre.
-
-Les horizons 1 à 5 ci-dessous portent la trajectoire du pipeline formation (le plus ancien et le plus abouti) ; l'horizon 6 celle du pipeline réponse à AO. Les acquis transverses (gouvernance, workflow Git, `PIPELINE_CONTRACTS.md`, `comite-qualite`, skills transverses comme l'extraction de design system) servent les deux sans être dupliqués.
+Vision produit : **faire du pipeline de 4 skills (`cadrage-formation` → `formation-material-builder` → `slide-content-claude-design` → `comite-qualite`) l'outil par défaut de tout consultant pour produire une formation client**, du premier appel de cadrage jusqu'au dossier livrable complet, en réduisant le temps manuel à l'appropriation finale (anecdotes, ajustements visuels, quiz).
 
 Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLOG.md). Elle raisonne par horizon plutôt que par date fixe : une équipe de 3 contributeurs à temps partiel sur ce sujet ne peut pas s'engager sur des sprints classiques, mais peut s'engager sur un **ordre** et sur ce qui définit le passage d'un horizon à l'autre.
 
@@ -13,26 +8,25 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 ---
 
-## Horizon 1 — Fiabiliser le socle (adoption sans friction) ✅ Spec livrée (vérification en usage réel en attente)
+## Horizon 1 — Fiabiliser le socle (adoption sans friction) 🟡 Majoritairement livré (US-2 en attente d'action humaine)
 
 **Objectif** : n'importe qui dans l'équipe peut installer le pipeline, le lancer, et obtenir un premier livrable sans bloquer sur un problème d'outillage ou d'accès.
 
 **Contenu** (backlog associé) :
 - US-1 — Enregistrement fiable des skills entre sessions (#1)
+- US-2 — Dépôt comme source de vérité accessible à tous (#2)
 - US-7 — Guide de paramétrage de l'extension Claude Code (#8)
 - US-8 — Ouverture fluide des fichiers Excel générés (#10)
-
-*US-2 — Dépôt comme source de vérité accessible à tous (#2) — retirée le 26/08/2026 (voir `BACKLOG.md` § « Non retenu ») : l'incident qui l'avait motivée ne s'est pas reproduit. Ne conditionne plus cet horizon.*
 
 **Condition de sortie** : une personne de l'équipe qui n'a jamais utilisé le pipeline peut, seule, à partir du seul dépôt, installer les 4 skills et produire un premier plan de formation sans intervention orale d'un tiers.
 
 **Pourquoi en premier** : tout le reste de la roadmap suppose que le socle technique ne bloque pas — améliorer le contenu des skills (Horizon 2) est inutile si personne d'autre que le porteur du pipeline ne peut les faire tourner de façon fiable.
 
-**Complète le socle** : #14 — Packager le workflow complet comme asset transmissible ✅ Fait le 26/08/2026 — `ONBOARDING.md` (schéma + une page, synthétisé du `README.md`). Un nouvel arrivant peut comprendre le pipeline en 5 minutes sans reproduire une session de démo complète.
+**Complète le socle** : #14 — Packager le workflow complet comme asset transmissible (schéma + mode d'emploi de présentation, à produire à partir du `README.md` existant). Bien que ce ne soit pas un correctif technique, cet item conditionne la même condition de sortie : un nouvel arrivant doit pouvoir comprendre le pipeline en 5 minutes sans reproduire une session de démo complète.
 
 **Complète aussi le socle** : #24 — Standardiser les fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), pour la même raison : un point d'entrée navigable (wiki) qui ne suppose pas de cloner le dépôt.
 
-**Complète aussi le socle** : #20 — `design-system-extractor` (US-19) ✅ Fait le 26/08/2026 : plutôt qu'une référence statique supposée exister hors dépôt, une skill qui extrait le design system client à partir de n'importe quel document réellement fourni, consommée par `slide-content-claude-design`.
+**Complète aussi le socle** : #20 — Ajouter la référence du design system au dépôt (dépend de #2/US-2) : le dépôt n'est réellement autoportant pour la partie design qu'une fois ces deux fichiers de référence poussés à côté des skills.
 
 ---
 
@@ -46,12 +40,11 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 - US-5 — Convention de rangement des livrables par formation (#5)
 - US-10 — Séparation du contenu Claude Design et des prompts Gemini (#19) — nouvelle fonctionnalité : `slide-content-claude-design` produit deux fichiers (`M<n>-slides-content.md` pour Claude Design avec, par slide, un placeholder gris dimensionné et positionné ; `M<n>-prompts.md` pour Gemini structuré selon le design system par défaut), avec un audit UX/UI prescrit avant la génération visuelle
 - US-11 — Direction artistique cohérente par module (#21) — un bloc « Direction artistique » unique par module en tête de `M<n>-prompts.md`, cadrant style et métaphore filée pour toutes les illustrations du module
-- US-21 — Brouillon texte seul avant la couche visuelle (#32) — un troisième fichier `M<n>-slides-draft.md`, à valider avant que composant/dimensions/couleurs ne soient ajoutés, pour relire le fond sans le bruit technique de la fiche finale
 - US-12 — Cas fil rouge et ateliers structurés façon StockPilot (#22) — `formation-material-builder` conçoit un cas fictif unique filé sur toute la formation, avec des ateliers en dossiers dédiés (énoncé HTML + corpus + solutions séparées), nouveau standard par défaut des exercices
 
 **Condition de sortie** : un utilisateur qui suit le pipeline de bout en bout (cadrage → matériel → slides → audit) est à chaque étape informé de ce qu'il peut faire ensuite, sans avoir à consulter cette roadmap ou à demander à un collègue.
 
-**Dépendance** : suppose Horizon 1 terminé. US-5 (convention de rangement) est indépendante de US-2 (retirée le 26/08/2026) ; la réutilisation de formations passées (Horizon 3, US-3) présuppose toujours un stockage fiable des formations, besoin qui persiste sans être porté par un item de backlog dédié depuis le retrait de US-2.
+**Dépendance** : suppose Horizon 1 terminé (US-2 en particulier, car US-5 et la réutilisation de formations passées présupposent un stockage fiable).
 
 **Renforce cet horizon** : #16 — Intégrer le "personnage" d'un interlocuteur client au comité qualité, pour vérifier la fidélité du contenu produit à ce qui a été exprimé en entretien de cadrage. Rattaché à Horizon 2 plutôt qu'à Horizon 4 car il ne dépend d'aucun préalable externe, seulement de la qualité des notes déjà produites par `cadrage-formation`.
 
@@ -67,9 +60,9 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 - US-3 — Réutilisation d'une formation antérieure proche dans `cadrage-formation` (#3)
 - US-9 — Seuil de bascule vers une analyse par profil type au-delà d'une grande audience (#12)
 
-**Condition de sortie** : sur au moins 2 formations réelles consécutives pour un même client (à quelques mois d'écart), la seconde bénéficie effectivement du cadrage de la première via la skill, avec validation explicite de l'utilisateur à chaque réutilisation. **Non atteinte à ce stade** : la spec de US-3 et US-9 est écrite dans `cadrage-formation/SKILL.md`, mais US-3 reste bloquée en pratique tant qu'un répertoire de formations passées n'est pas effectivement accessible à tous — c'est le prérequis concret pour tester ce comportement en conditions réelles. Ce prérequis n'est plus porté par un item de backlog dédié depuis le retrait de US-2/#2 le 26/08/2026 (voir `BACKLOG.md` § « Non retenu » — l'incident qui l'avait motivé ne s'est pas reproduit) ; à réouvrir comme item si le besoin redevient bloquant en pratique.
+**Condition de sortie** : sur au moins 2 formations réelles consécutives pour un même client (à quelques mois d'écart), la seconde bénéficie effectivement du cadrage de la première via la skill, avec validation explicite de l'utilisateur à chaque réutilisation. **Non atteinte à ce stade** : la spec de US-3 et US-9 est écrite dans `cadrage-formation/SKILL.md`, mais US-3 reste bloquée en pratique tant que US-2 (dépôt source de vérité) n'est pas pleinement close — un répertoire de formations passées accessible à tous est le prérequis concret pour tester ce comportement en conditions réelles.
 
-**Dépendance** : nécessite un stockage stable des formations passées comme prérequis dur pour sa condition de sortie — non couvert par un item de backlog actif depuis le retrait de US-2/#2 (26/08/2026, voir « Non retenu »). US-3 (#3) reste donc formellement sans dépendance backlog bloquante, mais son critère de test en conditions réelles ne peut être vérifié tant que ce stockage n'existe pas.
+**Dépendance** : nécessite Horizon 1 (US-2, un stockage stable des formations passées) comme prérequis dur — documenté aussi comme dépendance directe dans le backlog (#3 dépend de #2).
 
 ---
 
@@ -78,10 +71,9 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 **Objectif** : ce sont des pistes dont la valeur est plausible mais qui nécessitent un arbitrage (outillage, décision d'équipe, ou capacité d'un outil tiers) avant de devenir des stories engageables. Ne pas les développer avant d'avoir la réponse au préalable identifié.
 
 **Contenu** :
+- #7 — Harmoniser les environnements Claude Code utilisés en interne *(préalable : retour d'un contributeur sur son usage terrain)*
 - #11 — Export/import direct des quiz vers Kahoot *(préalable : vérifier si Kahoot expose un format d'import)*
 - #13 — Mode par défaut Loop vs Annotations pour `comite-qualite` *(préalable : un cas d'usage réel en collaboratif)*
-
-*(#7 — harmonisation Claude Code vs Claude Desktop — est sorti de cet horizon le 26/08/2026 : arbitrage rendu par le Product Owner, les deux outils restent supportés, pas de convergence vers un seul. Voir `BACKLOG.md`.)*
 
 *(#9 — génération d'illustrations moins manuelle — est sorti de cet horizon le 28/07/2026 : le préalable a été levé directement par une demande explicite de l'utilisateur, sans passer par un spike comparatif formel. Voir Horizon 5.)*
 
@@ -117,13 +109,10 @@ Cette roadmap découle directement du backlog priorisé dans [BACKLOG.md](BACKLO
 
 **Contenu** (backlog associé) :
 - US-18 — `reponse-appel-offres` produit un mémoire de réponse à AO complet jusqu'au plan de présentation Claude Design (#29)
-- US-20 — `consultants-references-extractor` alimente la sélection d'équipe et de références (#31) — Étapes 4bis/5bis conditionnelles, une slide `ÉQUIPE-MEMBRE`/`RÉFÉRENCE` par entrée à l'Étape 6, confidentialité jamais autorisée sans confirmation humaine
 
 **Révision du 18/08/2026** : après la première itération (`cadrage-appel-offres`, US-17, limitée à l'analyse du dossier), l'utilisateur a redéfini le périmètre en un workflow explicite à 8 étapes bien plus large. Décision actée : élargissement direct en une skill unique `reponse-appel-offres`, plutôt que la trajectoire initialement prévue en 4 skills séquentielles (`memoire-technique-builder`, `memoire-content-claude-design`, `appel-offres-pipeline` — abandonnées, jamais écrites). Ce changement de stratégie reste cohérent avec le principe itératif de départ : la première itération a servi à valider le mécanisme le plus critique (la checklist d'exigences, conservée à l'identique dans la nouvelle skill) avant d'investir dans un périmètre plus large.
 
-**Révision du 27/08/2026** : ajout de `consultants-references-extractor` (US-20, #31), skill transverse qui alimente `reponse-appel-offres` en équipe et références catalogées — sans exemple de deck source disponible pour cadrer la spec sur un cas réel, contrairement au reste du pipeline (voir Statut de #31 dans `BACKLOG.md`).
-
-**Condition de sortie** : un premier AO réel traité de bout en bout via `reponse-appel-offres` (recherche → analyse → plan de présentation → composition Claude Design), sans jamais nommer cet AO dans le dépôt (cohérence avec la règle de gouvernance des données déjà actée côté formation — `formations/` et `appels-offres/` ne sont jamais versionnés pour un cas réel). Depuis le 27/08/2026, cette condition inclut aussi la vérification de `consultants-references-extractor` sur un cas réel dès qu'un deck source est disponible.
+**Condition de sortie** : un premier AO réel traité de bout en bout via `reponse-appel-offres` (recherche → analyse → plan de présentation → composition Claude Design), sans jamais nommer cet AO dans le dépôt (cohérence avec la règle de gouvernance des données déjà actée côté formation — `formations/` et `appels-offres/` ne sont jamais versionnés pour un cas réel).
 
 **Pourquoi un nouvel horizon plutôt qu'un sous-horizon** : ce pipeline sert un métier distinct (avant-vente, pas formation) — un horizon séquentiel propre reste plus lisible qu'un "Horizon 1 bis" mélangé à la trajectoire du pipeline formation.
 

@@ -1,0 +1,371 @@
+<title>Atelier 1 — Audit du dataset StockPilot</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --ink: #1F1F1F;
+    --gray-dark: #4A4A4A;
+    --gray: #6B6B6B;
+    --white: #FFFFFF;
+    --bg-light: #F7F7F7;
+    --beige: #E8E2DA;
+    --bleu-marine: #2C5F8A;
+    --corail: #D97757;
+    --vert-sauge: #4A8B6F;
+  }
+
+  * { box-sizing: border-box; }
+
+  @page {
+    size: A4 portrait;
+    margin: 18mm;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.48;
+  }
+
+  .page {
+    max-width: 100%;
+  }
+
+  /* Bandeau d'en-tête */
+  .header-band {
+    background: var(--bleu-marine);
+    color: var(--white);
+    margin: -18mm -18mm 6mm -18mm;
+    padding: 14mm 18mm 10mm 18mm;
+  }
+
+  .header-band .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin: 0 0 4mm 0;
+  }
+
+  .header-band h1 {
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+    font-weight: 700;
+    font-size: 20pt;
+    line-height: 1.25;
+    margin: 0;
+    color: var(--white);
+  }
+
+  .header-band .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    margin-top: 3mm;
+    opacity: 0.95;
+  }
+
+  /* Métadonnées */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3mm;
+    margin: 0 0 7mm 0;
+  }
+
+  .meta-tile {
+    background: var(--beige);
+    border: 1px solid var(--beige);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+  }
+
+  .meta-tile .label {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bleu-marine);
+    margin: 0 0 1mm 0;
+  }
+
+  .meta-tile .value {
+    font-size: 9.5pt;
+    color: var(--ink);
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .meta-tile.full {
+    grid-column: 1 / -1;
+  }
+
+  /* Sections */
+  section {
+    margin: 0 0 6mm 0;
+  }
+
+  h2.section-title {
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 13pt;
+    color: var(--ink);
+    margin: 0 0 3mm 0;
+    padding-bottom: 1.5mm;
+    border-bottom: 2px solid var(--bleu-marine);
+    display: inline-block;
+  }
+
+  section p {
+    margin: 0 0 2.5mm 0;
+    color: var(--ink);
+  }
+
+  /* Consigne numérotée */
+  ol.consigne {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: consigne-counter;
+  }
+
+  ol.consigne li {
+    counter-increment: consigne-counter;
+    position: relative;
+    padding-left: 9mm;
+    margin: 0 0 3.5mm 0;
+    color: var(--ink);
+  }
+
+  ol.consigne li::before {
+    content: counter(consigne-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6.5mm;
+    height: 6.5mm;
+    border-radius: 50%;
+    background: var(--bleu-marine);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 9.5pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  ol.consigne li strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .timing-note {
+    background: var(--bg-light);
+    border-left: 3px solid var(--vert-sauge);
+    padding: 2.5mm 4mm;
+    margin-top: 3mm;
+    font-size: 9.5pt;
+    color: var(--gray-dark);
+  }
+
+  /* Critères de réussite */
+  ul.criteres {
+    margin: 0;
+    padding-left: 5mm;
+    list-style: none;
+  }
+
+  ul.criteres li {
+    position: relative;
+    margin: 0 0 2.5mm 0;
+    padding-left: 5mm;
+    color: var(--ink);
+  }
+
+  ul.criteres li::before {
+    content: "✓";
+    position: absolute;
+    left: -1mm;
+    color: var(--bleu-marine);
+    font-weight: 700;
+  }
+
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* Encadré discret Indices */
+  .indices-box {
+    background: var(--bg-light);
+    border: 1px dashed var(--gray);
+    border-radius: 4px;
+    padding: 5mm;
+    margin: 8mm 0 5mm 0;
+  }
+
+  .indices-box .indices-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 10.5pt;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 3mm 0;
+  }
+
+  .indices-box .indices-note {
+    font-size: 8.5pt;
+    font-style: italic;
+    color: var(--gray);
+    margin: 0 0 3mm 0;
+  }
+
+  .indices-box ol {
+    margin: 0;
+    padding-left: 5mm;
+    color: var(--gray-dark);
+    font-size: 9.5pt;
+  }
+
+  .indices-box ol li {
+    margin-bottom: 2mm;
+  }
+
+  /* Encadré Bonus */
+  .bonus-box {
+    border-left: 4px solid var(--bleu-marine);
+    background: var(--beige);
+    padding: 4mm 5mm;
+    margin: 0 0 5mm 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .bonus-box .bonus-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 10.5pt;
+    color: var(--bleu-marine);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 2mm 0;
+  }
+
+  .bonus-box p {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  code {
+    font-family: 'Menlo', 'Consolas', monospace;
+    background: var(--bg-light);
+    border: 1px solid var(--beige);
+    border-radius: 3px;
+    padding: 0.5px 3px;
+    font-size: 9pt;
+    color: var(--corail);
+  }
+
+  /* Pied de page */
+  .footer {
+    margin-top: 10mm;
+    padding-top: 3mm;
+    border-top: 1px solid var(--beige);
+    font-size: 8pt;
+    color: var(--gray);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media print {
+    body { background: var(--white); }
+  }
+</style>
+
+<div class="page">
+
+  <div class="header-band">
+    <p class="eyebrow">Product Management augmenté — Module M1 : Comprendre et Définir</p>
+    <h1>Atelier 1 — Audit du dataset StockPilot</h1>
+    <p class="subtitle">Du corpus brut à l'opportunité qualifiée</p>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-tile">
+      <p class="label">Durée</p>
+      <p class="value">60 minutes (45 min de travail + 15 min de débrief collectif)</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Niveau</p>
+      <p class="value">Intermédiaire</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Format</p>
+      <p class="value">Binôme (mixte : un profil à l'aise avec l'IA + un profil débutant)</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Prérequis</p>
+      <p class="value">Slides 16 à 30 (fil rouge StockPilot, prompt d'analyse, signaux faibles, personas, hallucinations, réflexes de vérification)</p>
+    </div>
+    <div class="meta-tile full">
+      <p class="label">Matériel</p>
+      <p class="value">Corpus en 4 fichiers dans <code>assets/fil-rouge-stockpilot/atelier-1/</code> — <code>interviews.md</code>, <code>tickets-support.csv</code>, <code>verbatims-nps.md</code>, <code>stats-usage.csv</code> · canevas d'opportunité (livret) · Copilot</p>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="section-title">Contexte</h2>
+    <p>La direction Logistique envisage StockPilot, un produit digital de gestion du petit matériel réutilisable de magasin. Vous êtes le PO missionné. On vous remet la matière brute collectée par l'équipe : 12 extraits d'interviews terrain, 15 tickets support, un extrait de verbatims NPS et des statistiques d'usage du parc. Personne ne l'a encore dépouillée.</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Objectif</h2>
+    <p>Apprendre à faire d'un LLM votre analyste de données : structurer un prompt d'analyse robuste, extraire des insights sourcés et vérifiables, débusquer des signaux faibles, et formuler une opportunité produit qualifiée — le tout en moins d'une heure là où il fallait des jours.</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Consigne</h2>
+    <ol class="consigne">
+      <li><strong>Construisez votre prompt d'analyse</strong> avec le gabarit en 5 blocs (Rôle · Contexte · Tâche · Format · Garde-fous). Exigez des verbatims cités mot pour mot.</li>
+      <li><strong>Ingérez le corpus</strong> : copiez-collez le contenu des 4 fichiers (<code>interviews.md</code>, <code>tickets-support.csv</code>, <code>verbatims-nps.md</code>, <code>stats-usage.csv</code>) dans Copilot à la suite de votre prompt — un fichier par message si besoin, en précisant « voici le fichier X sur 4, attends d'avoir les 4 avant d'analyser ».</li>
+      <li><strong>Extrayez les pain points</strong> : tableau classé fréquence × impact, avec 2 verbatims sources par pain point. <strong>Vérifiez par sondage</strong> que 2 verbatims cités existent réellement dans le corpus.</li>
+      <li><strong>Cherchez les signaux faibles</strong> : posez au moins une question du type « quels problèmes rares mais potentiellement majeurs vois-tu ? » ou « quelles contradictions entre le quali et le quanti ? ». Retenez-en au moins un.</li>
+      <li><strong>Générez 2 personas dynamiques</strong> (métiers différents), chaque caractéristique tracée vers un verbatim ou une stat.</li>
+      <li><strong>Remplissez le canevas d'opportunité</strong> : Problème · Cible · Preuves (3 éléments sourcés) · Impact estimé · Risques &amp; inconnues.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="section-title">Critères de réussite</h2>
+    <ul class="criteres">
+      <li>Votre tableau de pain points contient au moins 5 lignes, toutes sourcées, et vous avez vérifié 2 citations dans le corpus original.</li>
+      <li>Vous avez identifié au moins un signal faible qui n'est PAS dans le top 3 des pain points évidents.</li>
+      <li>Vos personas ne contiennent aucun trait « décoratif » invérifiable.</li>
+      <li>Votre canevas d'opportunité tient en une page et un tiers pourrait le défendre à votre place.</li>
+    </ul>
+  </section>
+
+  <div class="indices-box">
+    <p class="indices-title">Indices — à consulter seulement si vous êtes bloqués</p>
+    <ol>
+      <li>Votre synthèse semble plate ? Regardez le bloc FORMAT de votre prompt : avez-vous demandé un classement, des colonnes précises, des citations ? L'IA donne la structure qu'on lui demande.</li>
+      <li>Pour les signaux faibles : demandez explicitement « qu'est-ce qui n'est mentionné que par 1 ou 2 personnes ? » puis « y a-t-il une incohérence entre ce que disent les gens et ce que montrent les statistiques d'usage ? »</li>
+      <li>Comparez le taux d'utilisation déclaré du parc dans les stats avec ce que racontent les directeurs régionaux sur la disponibilité : cette contradiction cache l'un des deux signaux faibles (surstockage de précaution). L'autre se niche dans les mentions de « prêts entre magasins ».</li>
+    </ol>
+  </div>
+
+  <div class="bonus-box">
+    <p class="bonus-title">Bonus (binômes rapides)</p>
+    <p>Refaites l'analyse en deux passes séparées — le qualitatif seul (<code>interviews.md</code> + <code>verbatims-nps.md</code>), puis le quantitatif seul (<code>tickets-support.csv</code> + <code>stats-usage.csv</code>) — et demandez à l'IA de croiser ses deux synthèses : les contradictions qui émergent de la triangulation explicite sont souvent plus riches que celles de la passe unique. Comparez avec votre premier résultat.</p>
+  </div>
+
+  <div class="footer">
+    <span>Product Management augmenté</span>
+    <span>Atelier 1 / Module M1</span>
+  </div>
+
+</div>

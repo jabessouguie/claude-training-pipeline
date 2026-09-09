@@ -1,0 +1,369 @@
+<title>Atelier 3 — Votre premier prototype cliquable</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --ink: #1F1F1F;
+    --gray-dark: #4A4A4A;
+    --gray: #6B6B6B;
+    --white: #FFFFFF;
+    --bg-light: #F7F7F7;
+    --beige: #E8E2DA;
+    --bleu-marine: #2C5F8A;
+    --corail: #D97757;
+    --vert-sauge: #4A8B6F;
+  }
+
+  * { box-sizing: border-box; }
+
+  @page {
+    size: A4 portrait;
+    margin: 18mm;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.48;
+  }
+
+  .page {
+    max-width: 100%;
+  }
+
+  /* Bandeau d'en-tête */
+  .header-band {
+    background: var(--bleu-marine);
+    color: var(--white);
+    margin: -18mm -18mm 6mm -18mm;
+    padding: 14mm 18mm 10mm 18mm;
+  }
+
+  .header-band .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin: 0 0 4mm 0;
+  }
+
+  .header-band h1 {
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+    font-weight: 700;
+    font-size: 20pt;
+    line-height: 1.25;
+    margin: 0;
+    color: var(--white);
+  }
+
+  .header-band .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    margin-top: 3mm;
+    opacity: 0.95;
+  }
+
+  /* Métadonnées */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3mm;
+    margin: 0 0 7mm 0;
+  }
+
+  .meta-tile {
+    background: var(--beige);
+    border: 1px solid var(--beige);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+  }
+
+  .meta-tile .label {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bleu-marine);
+    margin: 0 0 1mm 0;
+  }
+
+  .meta-tile .value {
+    font-size: 9.5pt;
+    color: var(--ink);
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .meta-tile.full {
+    grid-column: 1 / -1;
+  }
+
+  /* Sections */
+  section {
+    margin: 0 0 6mm 0;
+  }
+
+  h2.section-title {
+    font-family: 'Sora', 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 13pt;
+    color: var(--ink);
+    margin: 0 0 3mm 0;
+    padding-bottom: 1.5mm;
+    border-bottom: 2px solid var(--bleu-marine);
+    display: inline-block;
+  }
+
+  section p {
+    margin: 0 0 2.5mm 0;
+    color: var(--ink);
+  }
+
+  /* Consigne numérotée */
+  ol.consigne {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: consigne-counter;
+  }
+
+  ol.consigne li {
+    counter-increment: consigne-counter;
+    position: relative;
+    padding-left: 9mm;
+    margin: 0 0 3.5mm 0;
+    color: var(--ink);
+  }
+
+  ol.consigne li::before {
+    content: counter(consigne-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6.5mm;
+    height: 6.5mm;
+    border-radius: 50%;
+    background: var(--bleu-marine);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 9.5pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  ol.consigne li strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .timing-note {
+    background: var(--bg-light);
+    border-left: 3px solid var(--vert-sauge);
+    padding: 2.5mm 4mm;
+    margin-top: 3mm;
+    font-size: 9.5pt;
+    color: var(--gray-dark);
+  }
+
+  /* Critères de réussite */
+  ul.criteres {
+    margin: 0;
+    padding-left: 5mm;
+    list-style: none;
+  }
+
+  ul.criteres li {
+    position: relative;
+    margin: 0 0 2.5mm 0;
+    padding-left: 5mm;
+    color: var(--ink);
+  }
+
+  ul.criteres li::before {
+    content: "✓";
+    position: absolute;
+    left: -1mm;
+    color: var(--bleu-marine);
+    font-weight: 700;
+  }
+
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* Encadré discret Indices */
+  .indices-box {
+    background: var(--bg-light);
+    border: 1px dashed var(--gray);
+    border-radius: 4px;
+    padding: 5mm;
+    margin: 8mm 0 5mm 0;
+  }
+
+  .indices-box .indices-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 10.5pt;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 3mm 0;
+  }
+
+  .indices-box .indices-note {
+    font-size: 8.5pt;
+    font-style: italic;
+    color: var(--gray);
+    margin: 0 0 3mm 0;
+  }
+
+  .indices-box ol {
+    margin: 0;
+    padding-left: 5mm;
+    color: var(--gray-dark);
+    font-size: 9.5pt;
+  }
+
+  .indices-box ol li {
+    margin-bottom: 2mm;
+  }
+
+  /* Encadré Bonus */
+  .bonus-box {
+    border-left: 4px solid var(--bleu-marine);
+    background: var(--beige);
+    padding: 4mm 5mm;
+    margin: 0 0 5mm 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .bonus-box .bonus-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 10.5pt;
+    color: var(--bleu-marine);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 2mm 0;
+  }
+
+  .bonus-box p {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  code {
+    font-family: 'Menlo', 'Consolas', monospace;
+    background: var(--bg-light);
+    border: 1px solid var(--beige);
+    border-radius: 3px;
+    padding: 0.5px 3px;
+    font-size: 9pt;
+    color: var(--corail);
+  }
+
+  /* Pied de page */
+  .footer {
+    margin-top: 10mm;
+    padding-top: 3mm;
+    border-top: 1px solid var(--beige);
+    font-size: 8pt;
+    color: var(--gray);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media print {
+    body { background: var(--white); }
+  }
+</style>
+
+<div class="page">
+
+  <div class="header-band">
+    <p class="eyebrow">Product Management augmenté — Module M2 : Construire et Lancer</p>
+    <h1>Atelier 3 — Votre premier prototype cliquable</h1>
+    <p class="subtitle">Du texte à l'écran : transformer une spécification en prototype interactif</p>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-tile">
+      <p class="label">Durée</p>
+      <p class="value">60 minutes (45 min de travail + 15 min de démo croisée et débrief)</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Niveau</p>
+      <p class="value">Intermédiaire (aucune compétence en code requise)</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Format</p>
+      <p class="value">Binôme (mêmes binômes que le matin)</p>
+    </div>
+    <div class="meta-tile">
+      <p class="label">Prérequis</p>
+      <p class="value">Mini-PRD et user stories de l'exercice 2 · slides 2 à 6 et 15 du M2 (Generative UI, démo, prototype ≠ produit)</p>
+    </div>
+    <div class="meta-tile full">
+      <p class="label">Matériel</p>
+      <p class="value">Copilot · Bloc-notes (ou VS Code) · navigateur Edge/Chrome · en secours : <code>assets/fil-rouge-stockpilot/atelier-3/prototype-fallback.html</code></p>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="section-title">Contexte</h2>
+    <p>Votre mini-PRD StockPilot est prêt. Avant d'engager l'équipe de développement, vous voulez faire réagir le métier sur du concret : un prototype cliquable des trois écrans clés. Vous n'avez ni designer, ni développeur, ni licence Figma — seulement Copilot, un éditeur de texte et un navigateur. C'est suffisant.</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Objectif</h2>
+    <p>Vivre le réflexe « montrer plutôt que décrire » : transformer une spécification en prototype interactif par simple description en langage naturel, puis itérer dessus comme on itérera en réunion métier. Comprendre en le faisant pourquoi le coût du prototype s'est effondré — et ce que ça change à la conversation produit.</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Consigne</h2>
+    <ol class="consigne">
+      <li><strong>Générez</strong> : demandez un prototype d'application web <strong>en un seul fichier HTML</strong> (CSS et JavaScript inclus dans le fichier), avec 3 écrans navigables : recherche de matériel (avec filtres type/distance), fiche équipement (statut, localisation, historique), écran de réservation (dates, confirmation). Fournissez votre mini-PRD comme contexte. Exigez des données d'exemple réalistes (transpalettes électriques, scanners d'inventaire, chariots de réassort…).</li>
+      <li><strong>Sauvegardez et testez</strong> : copiez l'intégralité du code dans le Bloc-notes, enregistrez sous <code>stockpilot.html</code> (attention : pas <code>.txt</code>), ouvrez le fichier dans votre navigateur. Parcourez les 3 écrans.</li>
+      <li><strong>Itérez — au moins 2 fois</strong> : demandez des modifications en langage naturel. Obligatoire : (a) une amélioration visuelle ou de libellé (« les statuts en pastilles de couleur », « vocabulaire magasin, pas vocabulaire informatique ») ; (b) un cas d'erreur (« si le matériel est déjà réservé, afficher les prochaines disponibilités »). À chaque itération : re-sauvegarder, recharger, re-tester.</li>
+      <li><strong>Testez le rendu mobile</strong> : F12 dans le navigateur → mode responsive → format téléphone. Notez ce qui casse. (Si F12 est bloqué sur votre poste : réduisez simplement la largeur de la fenêtre du navigateur à celle d'un téléphone — le prototype étant responsive, l'effet est le même.)</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="section-title">Critères de réussite</h2>
+    <ul class="criteres">
+      <li>Votre fichier <code>stockpilot.html</code> s'ouvre dans le navigateur et les 3 écrans s'enchaînent par de vrais clics.</li>
+      <li>Vous avez réalisé au moins 2 itérations dont un cas d'erreur visible dans le prototype.</li>
+      <li>Le prototype reflète VOS choix du matin (vocabulaire, périmètre V1, non-objectifs respectés — pas de géolocalisation temps réel si vous l'aviez exclue).</li>
+      <li>En démo croisée, un autre binôme comprend le parcours sans que vous l'expliquiez.</li>
+    </ul>
+  </section>
+
+  <div class="indices-box">
+    <p class="indices-title">Indices — à consulter seulement si vous êtes bloqués</p>
+    <ol>
+      <li>Le résultat est du texte au lieu d'une app ? Vérifiez l'extension du fichier : il doit se terminer par <code>.html</code>, pas <code>.html.txt</code> (dans le Bloc-notes : « Type : Tous les fichiers » à l'enregistrement).</li>
+      <li>Le code généré s'arrête en plein milieu ? La réponse a été tronquée : demandez « continue exactement où tu t'es arrêté, sans rien répéter », puis recollez bout à bout. Ou régénérez écran par écran : « donne-moi d'abord uniquement l'écran de recherche ».</li>
+      <li>L'itération a cassé le prototype ? Demandez : « redonne-moi le fichier COMPLET incluant la modification » — l'IA a probablement fourni seulement le fragment modifié. En dernier recours, repartez de <code>prototype-fallback.html</code> et itérez dessus.</li>
+    </ol>
+  </div>
+
+  <div class="bonus-box">
+    <p class="bonus-title">Bonus (binômes rapides)</p>
+    <p>Ajoutez le parcours « signalement de panne avec photo » issu de votre US de l'exercice 2 (le champ photo peut être simulé). Puis testez la démo d'avant-vente : l'un de vous joue le responsable logistique sceptique, l'autre pilote le prototype en argumentant.</p>
+  </div>
+
+  <div class="footer">
+    <span>Product Management augmenté</span>
+    <span>Atelier 3 / Module M2</span>
+  </div>
+
+</div>

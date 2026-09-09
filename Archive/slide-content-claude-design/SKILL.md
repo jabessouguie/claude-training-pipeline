@@ -1,11 +1,11 @@
 ---
 name: slide-content-claude-design
-description: Transforme un plan de formation / un rapport de recherche / des notes en CONTENU DE SLIDES prêt à générer dans Claude Design — TROIS fichiers par module : M<n>-slides-draft.md (brouillon texte seul par slide, à faire valider par le consultant AVANT toute décision visuelle), puis M<n>-slides-content.md (le brouillon enrichi : titre, accroche, contenu, visuel dimensionné/positionné/colorisé précisément, bloc texte, placeholder d'illustration dimensionné et positionné) et M<n>-prompts.md (bloc « Direction artistique » ancré dans la métaphore filée globale de la formation + prompts d'illustration Gemini structurés par slide, palette par défaut, sans texte dans l'image). Applique le design system fourni (par défaut celui décrit ci-dessous, nom de code « Encre & Sauge »). Déclenche cette skill quand l'utilisateur demande de "générer le contenu des slides", "préparer les slides pour Claude Design", "transformer ce plan/markdown en slides", "faire le déroulé slide par slide", ou tout équivalent de mise en forme de contenu présentation optimisé pour une génération visuelle. Peut, en option, produire aussi le script formateur et les quiz associés.
+description: Transforme un plan de formation / un rapport de recherche / des notes en CONTENU DE SLIDES prêt à générer dans Claude Design — DEUX fichiers par module, M<n>-slides-content.md (une fiche par slide : titre, accroche, contenu, visuel dimensionné/positionné/colorisé précisément, bloc texte, placeholder d'illustration dimensionné et positionné) et M<n>-prompts.md (bloc « Direction artistique » ancré dans la métaphore filée globale de la formation + prompts d'illustration Gemini structurés par slide, palette par défaut, sans texte dans l'image). Applique le design system fourni (par défaut celui décrit ci-dessous, nom de code « Encre & Sauge »). Déclenche cette skill quand l'utilisateur demande de "générer le contenu des slides", "préparer les slides pour Claude Design", "transformer ce plan/markdown en slides", "faire le déroulé slide par slide", ou tout équivalent de mise en forme de contenu présentation optimisé pour une génération visuelle. Peut, en option, produire aussi le script formateur et les quiz associés.
 ---
 
 # Slide Content for Claude Design
 
-Produit, pour chaque module, **trois fichiers colocalisés** : `M<n>-slides-draft.md`, un brouillon texte seul de chaque slide à faire valider avant d'investir dans la couche visuelle ; `M<n>-slides-content.md`, le contenu slide par slide enrichi de cette couche visuelle, optimisé pour être copié-collé dans **Claude Design** (avec un placeholder d'illustration dimensionné et positionné par slide) ; et `M<n>-prompts.md`, les prompts d'illustration à donner à **Gemini** — le tout en respectant un **design system**.
+Produit, pour chaque module, **deux fichiers colocalisés** : `M<n>-slides-content.md`, le contenu slide par slide optimisé pour être copié-collé dans **Claude Design** (avec un placeholder d'illustration dimensionné et positionné par slide), et `M<n>-prompts.md`, les prompts d'illustration à donner à **Gemini** — le tout en respectant un **design system**.
 
 ## Quand l'utiliser
 - L'utilisateur a un plan de formation, un rapport, des notes ou un markdown et veut le **contenu des slides**.
@@ -17,15 +17,15 @@ Produit, pour chaque module, **trois fichiers colocalisés** : `M<n>-slides-draf
 | Input | Statut | Rôle |
 |---|---|---|
 | Source de contenu (plan, recherche, brief, .md) | requis | matière des slides ; **ancrer les chiffres dessus, ne rien inventer** |
-| Design system (tokens couleurs/typo/composants) | recommandé | cohérence visuelle ; défaut = **Encre & Sauge** (voir plus bas), ou `design-systems/<client>/design-system.md` si extrait via `design-system-extractor` |
+| Design system (tokens couleurs/typo/composants) | recommandé | cohérence visuelle ; défaut = **Encre & Sauge** (voir plus bas) |
 | Métaphore filée / fil rouge | recommandé | renforce l'arc narratif — voir « Où trouver la métaphore filée » ci-dessous |
 | Plage de numérotation des slides | optionnel | utile pour aligner avec un script ou un découpage multi-blocs |
 
-Contrat 3 (entrée, format `slides.md`/`00-fil-rouge.md`) et Contrat 4 (sortie, format des trois fichiers produits ci-dessous) — voir [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md).
+Contrat 3 (entrée, format `slides.md`/`00-fil-rouge.md`) et Contrat 4 (sortie, format des deux fichiers produits ci-dessous) — voir [`PIPELINE_CONTRACTS.md`](../PIPELINE_CONTRACTS.md).
 
 ### Où trouver la métaphore filée
 
-Avant de rédiger le bloc « Direction artistique » d'un module (étape 5 ci-dessous), établir la métaphore filée **globale** de la formation, dans cet ordre de priorité :
+Avant de rédiger le bloc « Direction artistique » d'un module (étape 4 ci-dessous), établir la métaphore filée **globale** de la formation, dans cet ordre de priorité :
 
 1. **`livrables/00-fil-rouge.md`** — si `formation-material-builder` a produit un cas fil rouge pour cette formation (standard par défaut, voir US-12), le nom du produit/contexte fictif et son univers **sont** la métaphore filée globale. Ex. un cas fil rouge « StockPilot » (gestion de petit matériel réutilisable en magasin) donne une métaphore filée de logistique/réassort — pas besoin d'en inventer une autre.
 2. **Métaphore explicite fournie par le consultant** — si le brief ou la conversation mentionne une métaphore filée (ex. « l'expédition », « le chantier »), la reprendre telle quelle.
@@ -34,46 +34,23 @@ Avant de rédiger le bloc « Direction artistique » d'un module (étape 5 ci-de
 Cette métaphore filée globale est ce que chaque bloc « Direction artistique » (un par module, voir plus bas) décline localement — elle doit être identifiable en une phrase avant de commencer à écrire des prompts.
 
 ## Méthode (étapes)
-0. **Si la densité et le design system n'ont pas été précisés spontanément**, les demander avant de commencer à produire : *« Deux paramètres avant de commencer : (1) densité — une idée par slide ("complet") ou plusieurs idées regroupées par slide ("condensé") ? (2) design system — la charte par défaut « Encre & Sauge » convient, ou le client a-t-il une charte propre à appliquer ? »* Ne pas deviner ces deux paramètres ni les fixer par défaut sans les avoir posés — ce sont des choix structurants qui coûtent cher à corriger après coup (toutes les slides déjà rédigées). Si le client a une charte propre : vérifier d'abord si `design-systems/<client>/design-system.md` existe déjà (dossier de premier niveau, à côté de `formations/` — un design system vaut pour le client entier, pas pour une session ; produit par `design-system-extractor`) ; sinon, proposer d'invoquer `design-system-extractor` sur les documents de marque du client avant de poursuivre, plutôt que d'improviser une charte à partir d'une simple description orale.
+0. **Si la densité et le design system n'ont pas été précisés spontanément**, les demander avant de commencer à produire : *« Deux paramètres avant de commencer : (1) densité — une idée par slide ("complet") ou plusieurs idées regroupées par slide ("condensé") ? (2) design system — la charte par défaut par défaut convient, ou le client a-t-elle une charte propre à appliquer ? »* Ne pas deviner ces deux paramètres ni les fixer par défaut sans les avoir posés — ce sont des choix structurants qui coûtent cher à corriger après coup (toutes les slides déjà rédigées).
 1. **Lire la/les source(s)** et en extraire l'arc : modules → idées-clés. Une **idée = une slide** (densité « complet »), ou regrouper (densité « condensé ») selon la réponse à l'étape 0.
 2. **Établir la métaphore filée globale** de la formation (voir « Où trouver la métaphore filée » ci-dessus) — une seule fois, avant le premier module, jamais réinventée en cours de route.
 3. **Construire la colonne vertébrale** : liste numérotée de slides (type + titre + objectif d'une ligne) AVANT de rédiger. La faire valider si la formation est longue.
-4. **Rédiger le brouillon texte seul** de chaque slide de la colonne vertébrale dans `M<n>-slides-draft.md` (format ci-dessous) : Titre à l'écran, Accroche, Contenu, Chiffre/preuve clé, Bloc texte, et une ligne libre décrivant l'intention du visuel — **jamais** de dimensions, de couleurs, ni de composant précis à ce stade. **Vérifier l'ancrage de chaque chiffre AVANT de présenter le brouillon** (chaque chiffre cité existe dans la source ; ROI fournisseurs = ordres de grandeur) — ne jamais demander au consultant de valider un fond dont les chiffres n'ont pas encore été confrontés à la source, il n'a aucun moyen de faire cette vérification à ta place. Puis **faire valider ce brouillon par le consultant avant de poursuivre** — validation structurante, jamais optionnelle ni conditionnée à la longueur de la formation (contrairement à la colonne vertébrale à l'étape 3) : c'est le point où on vérifie que le fond tient la route, avant d'investir dans la couche visuelle qui coûte plus cher à corriger après coup.
-5. **Une fois le brouillon validé**, avant la première slide d'un module, rédiger le bloc **« Direction artistique »** en tête de `M<n>-prompts.md` (style illustratif, déclinaison de la métaphore filée globale pour ce module, contraintes récurrentes). **Enrichir chaque slide validée du brouillon** avec le champ `Visuel` entièrement dimensionné/positionné/colorisé (ci-dessous) pour produire `M<n>-slides-content.md`, **et** sa section `§ Slide N` dans `M<n>-prompts.md`, qui référence ce bloc (les deux fichiers avancent ensemble, slide par slide). Le brouillon n'est jamais réécrit à cette étape, seulement enrichi — le texte validé reste le texte final, sauf si le consultant demande explicitement une reformulation.
-6. **Re-vérifier l'ancrage des chiffres ajoutés à l'enrichissement** : le fond a déjà été ancré et validé à l'étape 4, cette passe ne couvre que ce que l'étape 5 a pu introduire de nouveau (ex. valeurs affichées dans un composant KPI tiles, chiffres repris dans le `Contenu du composant`). Même règle : chaque chiffre existe dans la source, ROI fournisseurs = ordres de grandeur.
-7. **Pour de gros volumes** : paralléliser par bloc/module (un agent par bloc avec la même colonne vertébrale + le même brief design + métaphore filée globale), **en deux vagues séparées par la validation de l'étape 4** — jamais en une seule passe qui produirait brouillon et fiches enrichies d'un bloc :
-   - **Vague 1 — brouillons.** Chaque agent produit la partie de `M<n>-slides-draft.md` qui lui revient. Assembler les brouillons en gardant la numérotation globale, **puis faire valider l'ensemble en une fois** (c'est justement ce que veut le consultant : relire le fond d'un seul tenant, pas bloc par bloc).
-   - **Vague 2 — enrichissement.** Une fois le brouillon validé, chaque agent enrichit son bloc (étape 5) et produit ses sections de prompts ; assembler `M<n>-slides-content.md` et `M<n>-prompts.md` en gardant la même numérotation globale.
+4. **Avant la première slide d'un module**, rédiger le bloc **« Direction artistique »** en tête de `M<n>-prompts.md` (style illustratif, déclinaison de la métaphore filée globale pour ce module, contraintes récurrentes). **Rédiger chaque slide** au format imposé (ci-dessous, avec le champ `Visuel` entièrement dimensionné/positionné/colorisé) **et sa section `§ Slide N` dans `M<n>-prompts.md`**, qui référence ce bloc (les deux fichiers avancent ensemble, slide par slide).
+5. **Vérifier l'ancrage** : chaque chiffre cité existe dans la source ; ROI fournisseurs = ordres de grandeur.
+6. **Pour de gros volumes** : paralléliser par bloc/module (un agent par bloc avec la même colonne vertébrale + le même brief design + métaphore filée globale) — chaque agent produit ses fiches **et** ses sections de prompts — puis assembler les **deux** fichiers en gardant la numérotation globale.
+7. **Avant toute génération visuelle dans Claude Design** : proposer un audit UX/UI de `M<n>-slides-content.md` (hiérarchie visuelle, densité de contenu par slide, dimensions/positions/couleurs des visuels et placeholders, cohérence inter-slides). L'audit précède la génération — pas l'inverse.
 
-   La parallélisation ne doit jamais servir de raccourci pour sauter la validation de l'étape 4 : c'est sur un gros volume qu'une correction de fond après habillage visuel coûte le plus cher, donc c'est là que ce garde-fou a le plus de valeur.
-8. **Avant toute génération visuelle dans Claude Design** : proposer un audit UX/UI de `M<n>-slides-content.md` (hiérarchie visuelle, densité de contenu par slide, dimensions/positions/couleurs des visuels et placeholders, cohérence inter-slides). Cet audit porte sur le **rendu visuel** de la fiche enrichie — il ne remplace pas la validation du brouillon à l'étape 4, qui porte sur le **fond** ; les deux sont complémentaires, jamais l'un à la place de l'autre. L'audit précède la génération — pas l'inverse.
+## Format de sortie — deux fichiers par module
 
-## Format de sortie — trois fichiers par module
+**Livrables et emplacement** : pour chaque module, **deux fichiers colocalisés** dans le workspace de la formation s'il existe (racine `formations/<client>-<theme>/<AAAA-MM>/` selon la convention de `cadrage-formation`, sous-dossier `livrables/` selon la structure de workspace de `formation-material-builder` — ainsi les fichiers restent dans le périmètre qu'auditera `comite-qualite` lors d'un audit de dossier complet, revue inter-livrables) :
 
-**Livrables et emplacement** : pour chaque module, **trois fichiers colocalisés** dans le workspace de la formation s'il existe (racine `formations/<client>-<theme>/<AAAA-MM>/` selon la convention de `cadrage-formation`, sous-dossier `livrables/` selon la structure de workspace de `formation-material-builder` — ainsi les fichiers restent dans le périmètre qu'auditera `comite-qualite` lors d'un audit de dossier complet, revue inter-livrables) :
+1. **`M<n>-slides-content.md`** — Contenu pour Claude Design (fiches structurées par slide, avec placeholders dimensionnés pour l'illustration)
+2. **`M<n>-prompts.md`** — Prompts d'illustration pour Gemini (un prompt par slide, respectant le design system par défaut « Encre & Sauge »)
 
-1. **`M<n>-slides-draft.md`** — Brouillon texte seul par slide (étape 4 de la Méthode), à valider avant enrichissement visuel. Conservé après enrichissement, pas supprimé.
-2. **`M<n>-slides-content.md`** — Contenu pour Claude Design (fiches structurées par slide, avec placeholders dimensionnés pour l'illustration) — version enrichie du brouillon.
-3. **`M<n>-prompts.md`** — Prompts d'illustration pour Gemini (un prompt par slide, respectant le design system par défaut « Encre & Sauge »)
-
-Sans workspace identifiable, livrer les trois fichiers là où se trouvent les sources fournies.
-
-### Fichier `M<n>-slides-draft.md` — brouillon texte seul
-
-Une entrée par slide de la colonne vertébrale, **avant** toute décision de composant/dimensions/couleurs :
-
-````
-### Slide N — TYPE — Titre court
-- **Titre à l'écran** : <titre ; bicolore possible : MOT **mot-clé accent**>
-- **Accroche / sous-titre** : <une phrase choc, courte>
-- **Contenu** :
-  - <3 à 5 puces concises, orientées audience>
-- **Chiffre / preuve clé** : <donnée + (source)>   ← omettre si non pertinent
-- **Bloc texte (si besoin)** : <texte à incruster proprement dans la slide, HORS image>
-- **Intention du visuel** : <une ligne libre décrivant ce que l'illustration/le composant doit montrer — jamais de dimensions, de couleurs, ni de type de composant précis à ce stade ; ex. « comparatif visuel des 3 offres » ou « photo d'ambiance d'un entrepôt logistique »>
-````
-
-Ce texte devient, une fois validé, le texte final des champs correspondants dans `M<n>-slides-content.md` — l'enrichissement de l'étape 5 **ajoute** le champ `Visuel` détaillé et le `Placeholder image`, il ne reformule pas le contenu déjà validé.
+Sans workspace identifiable, livrer les deux fichiers là où se trouvent les sources fournies.
 
 ````
 ### Slide N — TYPE — Titre court
@@ -187,9 +164,7 @@ Si la slide demande un visuel que le générateur d'image **ne saura pas rendre 
 Le bitmap généré est réservé aux **illustrations conceptuelles** sans texte ; tout ce qui porte de l'information précise se fait en couche texte/vecteur.
 
 ## Design system par défaut — Encre & Sauge
-Si aucun design system n'est fourni, utiliser « Encre & Sauge ». Les tokens essentiels sont inlinés ci-dessous.
-
-**Si un design system client existe** (`design-systems/<client>/design-system.md`, produit par `design-system-extractor`), l'appliquer à sa place — champ par champ. Un champ marqué `NON DÉTERMINÉ` dans ce fichier se comble avec la valeur par défaut « Encre & Sauge » correspondante, jamais deviné à partir d'une impression générale du reste de la charte ; le signaler explicitement dans la proposition de contenu produite, pour que le consultant sache quels éléments restent à confirmer avec le client.
+Si aucun design system n'est fourni, utiliser « Encre & Sauge ». Les tokens essentiels sont inlinés ci-dessous ; une référence complète séparée (fichier de tokens + spécimen de composants) peut être ajoutée au dépôt si besoin (cf. `BACKLOG.md`, item #20).
 
 **Pour les fiches `M<n>-slides-content.md` (Claude Design)** :
 - **Accent unique** : bleu marine `#2C5F8A` (avec parcimonie). Neutres : encre `#1F1F1F`, gris `#4A4A4A`/`#6B6B6B`, fonds blanc/`#F7F7F7`, beige chaud `#E8E2DA`. Accents data : corail `#D97757`, vert sauge `#4A8B6F`.
@@ -221,7 +196,7 @@ Sur demande explicite de l'utilisateur ("génère les illustrations automatiquem
 
 ### Méthode
 
-1. `M<n>-prompts.md` doit déjà exister (ce mode s'exécute après l'étape 5 de la Méthode ci-dessus, jamais à la place).
+1. `M<n>-prompts.md` doit déjà exister (ce mode s'exécute après l'étape 4 de la Méthode ci-dessus, jamais à la place).
 2. Exécuter, par module :
    ```bash
    python scripts/generate_illustrations.py livrables/M<n>-prompts.md livrables/assets/M<n>/
@@ -262,7 +237,7 @@ Ce mode réduit les allers-retours sans changer d'outil. Le collage **slide par 
 
 ## Proposer la prochaine étape
 
-Une fois les deux fichiers finaux (`M<n>-slides-content.md` et `M<n>-prompts.md`) livrés pour un module (ou l'ensemble) — après validation du brouillon `M<n>-slides-draft.md` à l'étape 4, conservé à côté pour une relecture rapide du fond —, proposer explicitement la suite :
+Une fois les deux fichiers (`M<n>-slides-content.md` et `M<n>-prompts.md`) livrés pour un module (ou l'ensemble), proposer explicitement la suite :
 
 > Les fiches slide-par-slide du module <n> sont prêtes.
 > 

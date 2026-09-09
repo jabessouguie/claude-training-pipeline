@@ -12,18 +12,23 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 
 ## P0 — Bloquants adoption
 
-### 1. Fiabiliser l'enregistrement des skills en session Claude Code ✅ Fait le 24/07/2026 (spec)
+### 1. Fiabiliser l'enregistrement des skills en session Claude Code
 **Constat** : un utilisateur ne parvient pas à faire persister les skills entre sessions — nécessite de recréer un nouveau chat pour que les skills soient détectées après chaque redémarrage.
 **Valeur** : sans ça, chaque nouvel utilisateur bute sur l'onboarding avant même de commencer.
 **Action** : documenter (ou automatiser) la procédure d'enregistrement des skills — `~/.claude/skills/` en mode "auto" — et vérifier qu'un restart de session suffit sans recréer un chat.
 **Effort** : S — c'est en grande partie déjà écrit dans le `README.md` (section Installation) ; il manque un test de non-régression + un mot sur le mode "auto".
-**Statut** : story `US-1` déjà marquée faite (spec écrite dans `README.md` § "Enregistrement fiable entre sessions") — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Le test manuel de non-régression (restart de session sans recréer de chat) reste à rejouer en session réelle, non vérifiable depuis ce dépôt.
+
+### 2. Réparer/vérifier l'accès aux ressources sur le dépôt partagé
+**Constat** : un livrable de formation censé être disponible sur le dépôt partagé s'est avéré absent malgré un lien envoyé à plusieurs reprises par un autre canal — un contributeur confirme un accès au dépôt mais sans fichier visible initialement.
+**Valeur** : bloque tout collaborateur qui n'a pas reçu le livrable par un canal parallèle — le dépôt doit être la source de vérité.
+**Action** : pousser systématiquement les livrables de formation sur le dépôt partagé dès leur production ; vérifier ensuite l'accès depuis un compte tiers (pas seulement celui qui a poussé le fichier).
+**Effort** : S.
 
 ---
 
 ## P1 — Valeur court terme (évolutions de skills demandées explicitement)
 
-### 19. `slide-content-claude-design` — séparer le contenu Claude Design du prompt illustration Gemini ✅ Fait le 24/07/2026 (spec)
+### 19. `slide-content-claude-design` — séparer le contenu Claude Design du prompt illustration Gemini
 **Constat** (interview de spécification US-10, à la suite d'une démo interne) : actuellement les slides.md générées contiennent le contenu textuel et les prompts d'illustration mélangés, ce qui rend difficile de :
   - Fournir le contenu structuré à Claude Design (sans distraction des prompts Gemini)
   - Générer les prompts d'illustration via Gemini avec contexte d'un prompt structuré et validé
@@ -36,9 +41,8 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - Les prompts Gemini intègrent les tokens par défaut exacts (bleu marine #2C5F8A, corail #D97757, vert sauge #4A8B6F) et les garde-fous visuels (aucun texte, pas de doublon texte/image, zéro faute).
 **Effort** : M — refonte du format de sortie de la skill, mais la logique pédagogique reste inchangée.
 **Dépend de** : rien (amélioration de workflow transverse à Horizon 1/2).
-**Statut** : story `US-10` déjà marquée faite (spec écrite dans `slide-content-claude-design/SKILL.md`, revue par le comité qualité) — cet item n'avait pas reçu le marqueur ✅ correspondant, corrigé ici pour que le suivi reflète l'état réel de la spec. Comme pour `US-10`, l'exécution sur un cas réel (création effective des deux fichiers et audit UX/UI en amont de Claude Design) reste à vérifier.
 
-### 3. `cadrage-formation` — détecter et proposer les formations antérieures similaires ✅ Fait le 24/07/2026 (spec)
+### 3. `cadrage-formation` — détecter et proposer les formations antérieures similaires
 **Constat** : retour d'usage récurrent — un contributeur suggère d'intégrer une vérification automatique des formations existantes au sein du skill de cadrage. Objectif : que l'agent demande "as-tu une formation déjà faite qui est proche ?", puis, si on lui donne accès à un répertoire de formations passées, qu'il propose lui-même la plus pertinente — **à valider par l'utilisateur, jamais appliquée automatiquement** (risque de réutiliser un gabarit inadapté sans validation).
 **Valeur** : accélère le cadrage de nouvelles sessions d'une formation récurrente (ex. une deuxième session du même client quelques mois plus tard) en réutilisant un gabarit existant au lieu de repartir from scratch, tout en évitant la dérive déjà constatée quand un profil non pertinent avait été réutilisé par erreur (ex. profils BA/UX proposés alors que l'audience réelle était BO).
 **Enrichissement** : illustre l'enjeu plus large d'un cadrage mal validé, indépendamment de la réutilisation d'une formation passée — sur une formation réelle, un mismatch initial sur l'objectif pédagogique (compréhension confuse entre "apprendre à gérer des projets d'IA" et "apprendre à utiliser l'IA pour être plus efficace dans son rôle") a fait dériver tout le plan de formation, avec des reliquats de contenu mal orienté qui ont dû être corrigés après coup. Ceci renforce la nécessité, déjà actée dans `cadrage-formation`, de ne jamais présenter une hypothèse comme un fait et de faire valider explicitement le plan de formation par le client avant de lancer la production détaillée (comportement déjà en place selon les démos internes, à vérifier qu'il est bien systématique).
@@ -47,32 +51,28 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - Si oui → l'agent scanne un répertoire de formations passées fourni par l'utilisateur et propose 1–3 candidats avec justification (profil participants, thématique, niveau).
   - L'utilisateur valide avant que l'agent ne s'en serve de base.
 **Effort** : M — nécessite d'ajouter une étape de discovery + un prompt de scan de répertoire dans `cadrage-formation/SKILL.md`.
-**Dépend de** : rien au niveau backlog (l'item #2 qui portait cette dépendance a été retiré le 26/08/2026, voir « Non retenu »), mais le besoin concret persiste : les formations passées doivent être accessibles quelque part de stable, pas juste dans des envois ponctuels.
-**Statut** : story `US-3` déjà marquée faite (spec écrite dans `cadrage-formation/SKILL.md`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel une fois un répertoire de formations passées effectivement accessible.
+**Dépend de** : #2 (les formations passées doivent être accessibles quelque part de stable, pas juste dans des envois ponctuels).
 
-### 4. Proposer systématiquement les prochaines étapes après génération de contenu ✅ Fait le 24/07/2026 (spec)
+### 4. Proposer systématiquement les prochaines étapes après génération de contenu
 **Constat** : retour d'usage récurrent — plusieurs utilisateurs demandent que l'agent propose systématiquement les prochaines étapes de création après la génération du contenu. Observé concrètement : certains environnements le font spontanément (proposer un choix explicite entre plusieurs livrables possibles à produire ensuite) alors que d'autres ne le proposent pas nativement (comportement qui dépend du modèle et de l'environnement utilisés).
 **Valeur** : réduit la charge cognitive de l'utilisateur (perte de repère sur la prochaine action quand plusieurs sessions tournent en parallèle) et rend le pipeline plus guidé pour un nouvel utilisateur — cœur du besoin d'onboarding exprimé par les utilisateurs.
 **Action** : ajouter en fin de chaque skill du pipeline (`cadrage-formation`, `formation-material-builder`, `slide-content-claude-design`, `comite-qualite`) un bloc explicite proposant l'étape suivante (avec les options possibles), indépendamment du modèle utilisé.
 **Effort** : M — un ajout de type "next steps" en fin de chaque `SKILL.md`, mais à répercuter sur 4 skills.
 **Dépend de** : rien, mais complète naturellement #3.
-**Statut** : story `US-4` déjà marquée faite (spec écrite dans les 4 `SKILL.md` et synchronisée dans `README.md`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier par exécution réelle sous différents modèles/environnements, conformément à la DoD.
 
-### 5. Uniformiser le rangement des livrables par formation ✅ Fait le 24/07/2026
+### 5. Uniformiser le rangement des livrables par formation
 **Constat** : rangement actuel non structuré — chaque formation est rangée manuellement dossier par dossier, sans convention partagée, notamment pour distinguer plusieurs sessions de la même formation dans le temps (ex. une même formation redonnée à quelques mois d'écart pour le même client).
 **Valeur** : évite la perte de contexte en collaboratif (accès et versions dupliquées) et facilite la réutilisation par #3.
 **Action** : définir une convention de nommage/arborescence (ex. `formations/<client>-<thème>/<AAAA-MM>/`) et l'intégrer comme étape de `cadrage-formation` (création du dossier dès le cadrage) plutôt qu'en fin de pipeline.
 **Effort** : S/M — convention à documenter + petit ajustement du prompt de création de dossier dans la skill.
-**Dépend de** : aucune, mais facilite #3.
-**Statut** : story `US-5` déjà marquée faite (convention documentée, `cadrage-formation` crée le dossier dès l'Étape 0) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier par un premier usage réel.
+**Dépend de** : aucune, mais facilite #3 et #2.
 
-### 14. Packager le workflow complet comme asset transmissible (skills + enchaînement + mode d'emploi) ✅ Fait le 26/08/2026
+### 14. Packager le workflow complet comme asset transmissible (skills + enchaînement + mode d'emploi)
 **Constat** : retour d'usage — besoin exprimé d'un support récapitulatif du déroulé du pipeline (skill par skill, avec les points de validation) présentable en début de démo pour un nouvel arrivant, allant au-delà de la simple formation produite : le pipeline lui-même (les skills, leur combinaison, le processus) devient un actif à part entière. Le `README.md` actuel du dépôt couvre déjà une bonne partie de ce besoin (description des 4 skills et de leur enchaînement) mais n'est pas pensé comme un support de présentation/onboarding en tant que tel.
 **Valeur** : transforme le pipeline d'un savoir-faire individuel (aujourd'hui largement documenté dans la tête du porteur du pipeline et démontré oralement) en un actif d'équipe réellement transmissible sans reproduire une session de démo à chaque nouvel arrivant.
 **Action** : produire, à partir du `README.md` existant, un support visuel court (1 schéma + 1 page) du pipeline complet (skill par skill, entrées/sorties, points de validation humaine), destiné à être montré en 5 minutes à un nouvel arrivant avant qu'il n'installe quoi que ce soit.
 **Effort** : S/M — capitalise sur le contenu déjà écrit dans le `README.md`, essentiellement un travail de mise en forme et de synthèse.
-**Dépend de** : US-1 (Horizon 1) pour que ce support pointe vers un pipeline effectivement installable sans friction (US-2 retirée le 26/08/2026, ne conditionne plus cet item).
-**Statut** : traité directement au niveau item, sans story séparée (même exception que #15/#16/#23/#24 — action documentaire, pas un changement de comportement de skill). `ONBOARDING.md` (racine du dépôt) : une page avec un schéma Mermaid par pipeline (formation et réponse à AO), entrées/sorties et points de validation humaine par skill, recommandation de modèle — synthétisée à partir du `README.md`, référencée depuis celui-ci et depuis `wiki/00-Accueil.md`. Couvre les deux pipelines du dépôt, pas seulement le pipeline formation (le périmètre du dépôt s'est élargi depuis la rédaction initiale de cet item).
+**Dépend de** : US-1/US-2 (Horizon 1) pour que ce support pointe vers un pipeline effectivement installable sans friction.
 
 ### 24. Standardiser les fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki) ✅ Fait le 28/07/2026
 **Constat** (demande utilisateur du 28/07/2026) : le dépôt n'avait ni fichier de licence explicite (statut juridique du contenu non clarifié), ni historique de version au format standard (les évolutions étaient notées en prose libre dans une section « Notes de version » du `README.md`, mêlant contenu daté et notes intemporelles), ni point d'entrée pour un consultant qui ne clone pas le dépôt Git (le README suppose l'accès au dépôt).
@@ -83,15 +83,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - 4 pages de contenu pour un wiki (Accueil, Installation, Utiliser-le-pipeline, FAQ-et-depannage), rédigées à partir du contenu existant du README (pas de divergence de fond).
 **Effort** : S — documentation uniquement, aucun changement de comportement des skills.
 **Dépend de** : rien.
-**Correction du 26/08/2026** (audit comité qualité) : cet item était marqué fait le 28/07/2026, mais la **clause de non-réalité des données client** annoncée dans son Action n'avait jamais été écrite — `LICENSE.md` ne contenait qu'une licence MIT traduite. Clause ajoutée le 26/08/2026, alignée sur `formation-material-builder/references/fil_rouge_design.md` (le réalisme porte sur la forme, jamais sur le fond). L'item est désormais réellement conforme à ce qu'il annonçait ; la date de complétion d'origine est conservée pour le reste de son périmètre (CHANGELOG, wiki), effectivement livré le 28/07/2026.
 
-### 15. Formaliser un SDLC et une gouvernance de cycle de vie pour les skills (création, version, dépréciation, responsabilité) ✅ Fait le 28/07/2026
+### 15. Formaliser un SDLC et une gouvernance de cycle de vie pour les skills (création, version, dépréciation, responsabilité)
 **Constat** : retour d'usage relayant un besoin identifié ailleurs dans l'organisation, sur la nécessité d'un cycle de vie explicite par asset ("delivery life cycle" à monter sur les différents assets produits). Ce sujet est distinct de l'item #1 (qui porte sur la fiabilité *technique* de l'enregistrement d'une skill en session) : ici il s'agit de gouvernance organisationnelle — qui décide qu'une skill est mature, qui la fait évoluer, comment une version dépréciée est signalée aux utilisateurs.
 **Valeur** : évite que le pipeline ne repose que sur la disponibilité d'une seule personne pour trancher toute évolution, et donne une réponse claire quand plusieurs contributeurs modifient une même skill en parallèle.
 **Action** : ce sujet dépasse le scope d'un seul item de backlog produit — voir `GOVERNANCE.md`, qui documente désormais un cycle retour d'usage → item de backlog → story → implémentation ; à enrichir d'une notion explicite de version de skill si le nombre de contributeurs augmente.
 **Effort** : M — davantage une clarification organisationnelle qu'un développement.
 **Dépend de** : rien, mais conditionne la scalabilité de #14 et de l'ensemble de la gouvernance si l'équipe de contributeurs s'élargit au-delà des 3 actuels.
-**Statut** : traité directement au niveau item, sans story séparée (même exception que #16/#23/#24) — `GOVERNANCE.md` § "Cycle de vie d'une skill (SDLC léger)" documente création, évolution, dépréciation et un repère de maturité explicite, avec la table "qui décide quoi" en tête de fichier pour la responsabilité. Volontairement sans versionnage sémantique tant que l'équipe reste à 3 contributeurs (à réévaluer si ce nombre augmente) — cet item n'avait pas reçu son marqueur ✅ malgré une action déjà réalisée, corrigé ici.
 
 ### 16. Intégrer le "personnage" (personnalité) d'un interlocuteur client au comité qualité ✅ Fait le 24/07/2026 (spec)
 **Constat** : retour d'usage — proposition d'extraire, à partir des entretiens de cadrage, le "personnage" de l'interlocuteur client et de l'intégrer comme référence au comité qualité, pour vérifier que le contenu produit correspond bien à ce que cette personne a exprimé.
@@ -101,32 +99,29 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Dépend de** : qualité et disponibilité des notes d'entretien produites par `cadrage-formation`.
 **Statut** : rôle "Voix du client" ajouté dans `comite-qualite/SKILL.md` (table des rôles conditionnels + garde-fou explicite anti-hallucination : ne s'active que si des notes d'entretien réelles existent). Reste à vérifier sur un cas réel avec notes de cadrage disponibles.
 
-### 6. Clarifier la source d'audit du `comite-qualite` avant lancement ✅ Fait le 24/07/2026
+### 6. Clarifier la source d'audit du `comite-qualite` avant lancement
 **Constat** : question récurrente restée sans réponse ferme — "le quality check, il est basé sur quoi ? Les slides.md ou la présentation elle-même ?". Le porteur du pipeline confirme qu'aujourd'hui l'audit porte sur les `*.md` (slides, exercices, notes formateur) et non sur le rendu final en Claude Design.
 **Valeur** : évite un audit "aveugle" au rendu visuel final (mise en page, respect charte) alors que le contenu textuel est déjà validé — actuellement une zone grise pour un nouvel utilisateur.
 **Action** : ajouter en tête de `comite-qualite/SKILL.md` une question explicite : "Quel périmètre dois-je auditer : le contenu markdown, la présentation générée, ou les deux ?"
 **Effort** : S.
 **Dépend de** : rien.
-**Statut** : story `US-6` déjà marquée faite (question de périmètre ajoutée en section 0.0 de `comite-qualite/SKILL.md`, rappelée dans le rapport final) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier par un premier audit réel.
 
 ---
 
 ## P2 — Confort / harmonisation outillage
 
-### 7. Harmoniser Claude Code vs Claude Desktop en interne ✅ Arbitré le 26/08/2026
+### 7. Harmoniser Claude Code vs Claude Desktop en interne
 **Constat** : clivage observé dans l'équipe entre utilisateurs "Claude Code only" et "Claude Desktop only" — action déjà assignée en interne pour évaluer des solutions d'harmonisation.
 **Valeur** : réduit la friction d'onboarding et le nombre de chemins différents à documenter/maintenir pour un même pipeline de skills.
 **Action** : évaluer les options (formation croisée, guide de choix par profil "dev vs non-dev", ou convergence vers un seul outil) — à formaliser suite à un retour d'usage terrain.
 **Effort** : L — dépend de la décision d'outillage, hors du seul périmètre des skills.
-**Statut** : arbitrage rendu par le Product Owner le 26/08/2026 — **les deux outils restent supportés**, pas de convergence vers un seul. Ce dépôt documente déjà les deux (voir `README.md` § "Mise en place technique" et `wiki/01-Installation/`, qui couvrent Claude Code, l'application Claude et Cowork séparément) ; aucune nouvelle friction identifiée qui justifierait un guide de choix par profil dédié à ce stade. À rouvrir si un nouveau retour d'usage terrain montre que la coexistence pose un problème concret non déjà couvert par la documentation existante.
 
-### 8. Documenter le paramétrage de l'extension Claude Code dans un IDE ✅ Fait le 24/07/2026 (documentation)
+### 8. Documenter le paramétrage de l'extension Claude Code dans un IDE
 **Constat** : un utilisateur a perdu un temps significatif en démo pour connecter son compte pro à l'extension Claude Code dans son IDE (icône à utiliser, lien d'authentification, gestion des quotas) — souci récurrent de blocage sur les quotas côté comptes pro.
 **Valeur** : cet irritant, non lié aux skills elles-mêmes, ralentit tout nouvel arrivant qui suit la démo comme onboarding — objectif explicite de l'enregistrement de cette session.
 **Action** : ajouter un mini-guide (setup extension, compte pro vs perso, gestion des quotas) en complément du `README.md` du pipeline, ou en pré-requis du premier skill.
 **Effort** : S.
 **Dépend de** : #7 dans une certaine mesure (si l'outillage cible change, ce guide change aussi).
-**Statut** : story `US-7` déjà marquée faite (mini-guide dans `README.md` § "Pré-requis : paramétrer l'extension Claude Code") — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à faire valider par une personne n'ayant jamais paramétré l'extension.
 
 ### 9. Explorer une génération d'illustrations moins manuelle ✅ Levé le 28/07/2026
 **Constat** : point de friction répété — la génération d'images reste la partie la plus chronophage et manuelle du pipeline. Le porteur du pipeline exporte vers Gemini avec un prompt fixe ("illustration éditoriale moderne et épurée"), jugé plus joli que les images générées nativement par Claude. Un autre outil de génération d'images est évoqué comme alternative pour générer un lot d'images cohérentes en une fois.
@@ -136,15 +131,14 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Effort** : M — réalisé sans spike comparatif préalable formel (Gemini déjà capitalisé comme fournisseur de référence dans le mode manuel existant, choix tranché directement par l'utilisateur).
 **Dépend de** : rien. A débloqué #28.
 
-### 10. Fiabiliser l'ouverture de fichiers Excel en environnement de développement ✅ Fait le 24/07/2026 (documentation)
+### 10. Fiabiliser l'ouverture de fichiers Excel en environnement de développement
 **Constat** : friction mineure observée en usage réel — un utilisateur doit s'y reprendre pour ouvrir le `.xlsx` généré par `cadrage-formation` (extension dédiée aux fichiers Excel suggérée pour l'environnement de développement utilisé).
 **Valeur** : petit irritant UX répété à chaque exécution de `cadrage-formation`, qui produit justement un livrable `.xlsx`.
 **Action** : documenter dans le `README.md` ou le `SKILL.md` de `cadrage-formation` l'extension recommandée pour visualiser un `.xlsx` sans sortir de l'environnement de travail.
 **Effort** : S.
 **Dépend de** : rien.
-**Statut** : story `US-8` déjà marquée faite (`README.md` § "Ouvrir les fichiers `.xlsx` générés") — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à faire tester par un utilisateur sans cette extension déjà installée.
 
-### 21. `slide-content-claude-design` — direction artistique cohérente et professionnelle des illustrations ✅ Fait le 24/07/2026 (spec)
+### 21. `slide-content-claude-design` — direction artistique cohérente et professionnelle des illustrations
 **Constat** (interview de spécification US-11) : les illustrations générées via Gemini manquent aujourd'hui de deux choses à la fois — (1) une cohérence de style d'une slide à l'autre (chaque prompt est pensé isolément, sans référence à un standard visuel partagé), et (2) un ancrage systématique dans la métaphore filée de la formation quand elle existe. Résultat : des illustrations qui ont l'air de sorties indépendantes d'un générateur plutôt que d'un jeu cohérent conçu par un même directeur artistique.
 **Valeur** : des slides visuellement plus professionnelles et mémorables, où l'illustration renforce l'arc narratif de la formation au lieu d'être un décor interchangeable — bénéfice direct sur la perception qualité par le client, sans coût de production supplémentaire (un seul bloc de contexte en plus par module).
 **Action** :
@@ -153,21 +147,8 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - Le bloc peut varier légèrement d'un module à l'autre (ex. un sous-thème visuel propre au module) mais reste ancré dans la même métaphore filée globale de la formation.
 **Effort** : M — ajout d'une section de gabarit + adaptation du template de prompt existant pour qu'il s'y réfère.
 **Dépend de** : US-10 (#19), dont ce backlog item prolonge directement le format `M<n>-prompts.md`.
-**Statut** : story `US-11` déjà marquée faite (bloc « Direction artistique » documenté dans `slide-content-claude-design/SKILL.md`, référencé par chaque prompt de slide) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel (cohérence visuelle perceptible en conditions réelles).
 
-### 32. `slide-content-claude-design` — brouillon texte seul, lisible, avant la couche visuelle ✅ Fait le 27/08/2026 (spec) — voir US-21
-**Constat** (demande explicite de l'utilisateur du 27/08/2026) : `M<n>-slides-content.md`, la fiche qui part dans Claude Design, mélange dès sa première rédaction le contenu pédagogique (titre, accroche, contenu, chiffre clé) et la couche visuelle technique (composant, dimensions, couleurs, placeholder). Un consultant qui veut relire le fond avant d'investir du temps dans la composition visuelle n'a aujourd'hui aucun moyen de le faire sans se frayer un chemin dans le bruit technique — l'audit UX/UI de l'étape 7 (devenue 8) arrive d'ailleurs après coup, sur la fiche déjà enrichie, et porte sur la forme, pas sur le fond.
-**Valeur** : un point de vérification sur le fond, avant que la couche visuelle (plus coûteuse à corriger une fois posée) ne soit ajoutée — évite de reformuler du contenu déjà habillé visuellement si une correction de fond s'impose après coup.
-**Action** :
-  - Nouvelle étape dans la méthode de `slide-content-claude-design/SKILL.md`, entre la colonne vertébrale et la rédaction enrichie : produire `M<n>-slides-draft.md`, un brouillon texte seul par slide (Titre à l'écran, Accroche, Contenu, Chiffre/preuve clé, Bloc texte, une ligne libre d'intention du visuel — jamais de dimensions/couleurs/composant à ce stade).
-  - Validation **structurante et non conditionnelle** de ce brouillon par le consultant, avant l'enrichissement visuel — contrairement à la colonne vertébrale, dont la validation ne dépend que de la longueur de la formation.
-  - Une fois validé, le brouillon est enrichi (jamais reformulé) pour produire `M<n>-slides-content.md` ; le brouillon est conservé à côté, pas supprimé.
-  - Contrat 4 de `PIPELINE_CONTRACTS.md` étendu à ce troisième fichier ; `formation-pipeline/SKILL.md` : la validation du brouillon rejoint la liste des garde-fous que le mode non-stop ne peut jamais lever seul.
-**Effort** : M — nouvelle étape de méthode + extension de contrat, logique déjà éprouvée par un ajout similaire sur `design-system-extractor`.
-**Dépend de** : rien.
-**Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`, branchée dans `formation-pipeline/SKILL.md`, Contrat 4 passé en v3. Reste à vérifier sur un cas réel (le brouillon est-il réellement plus rapide à relire en pratique, la validation change-t-elle un contenu avant qu'il ne soit habillé visuellement).
-
-### 22. `formation-material-builder` — cas fil rouge unique et exercices structurés façon StockPilot ✅ Fait le 24/07/2026 (spec)
+### 22. `formation-material-builder` — cas fil rouge unique et exercices structurés façon StockPilot
 **Constat** (interview de spécification US-12, à partir du cas de référence `fil-rouge-stockpilot/`) : les exercices produits aujourd'hui par `formation-material-builder` (un `exercices.md` par module, sans fil narratif commun) fonctionnent mais perdent l'opportunité pédagogique d'un cas fictif filé sur toute la formation — un même produit/contexte qui se développe atelier après atelier, où chaque exercice s'appuie sur l'état du cas laissé par le précédent. Le cas `fil-rouge-stockpilot` (structure `atelier-N/` avec corpus dédié + `solutions/` séparé, non distribué en amont) illustre ce que ce standard doit généraliser.
 **Valeur** : des exercices plus immersifs et cohérents entre eux (le stagiaire connaît déjà le contexte, l'énergie va dans l'exercice pas dans la compréhension du décor), un debrief facilité par la continuité narrative, et une distribution disciplinée des corrigés qui ne vide jamais un exercice de sa valeur avant l'heure.
 **Action** :
@@ -178,15 +159,13 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
   - **Extension du 28/07/2026** : chaque élément du corpus d'atelier vit dans son propre fichier (pas un fichier fourre-tout par atelier), et le **format de ce fichier est celui que le stagiaire trouverait réellement dans son métier** (un e-mail en `.md` structuré comme un e-mail, un export tabulaire en `.xlsx` si le vrai outil du client exporte du tableur plutôt qu'en CSV générique, une capture d'écran en `.png`, etc.) plutôt qu'un format uniformisé pour la facilité de traitement. Méthode de production : markdown source d'abord (contenu revu facilement), puis conversion vers le binaire réel si la cible n'est pas du texte brut — même logique que la conversion HTML des énoncés.
 **Effort** : L — refonte de la structure de sortie des exercices (Phase 1 + Phase 2 de `formation-material-builder`), nouveau template HTML/charte, mise à jour de `exercise_design.md` et `module_structure.md` ; extension du 28/07/2026 : ajout d'une sous-phase de conversion des éléments de corpus (3.1ter), sans nouvelle dépendance.
 **Dépend de** : rien (améliore un livrable existant sans dépendance externe).
-**Statut** : story `US-12` déjà marquée faite (cas fil rouge en Phase 1, dossiers `atelier-N/`/`solutions/` séparés, conversion HTML, extension corpus au format réaliste — le tout dans `formation-material-builder/SKILL.md` et ses `references/`) — cet item n'avait pas reçu son marqueur ✅, corrigé ici. Reste à vérifier sur un cas réel (production complète d'une formation avec ce standard).
 
-### 20. Extraire le design system client à partir de n'importe quel document fourni ✅ Fait le 26/08/2026 (spec) — voir US-19
-**Constat** (audit comité qualité, 28/07/2026) : `slide-content-claude-design/SKILL.md` renvoyait à une référence complète du design system supposée exister hors dépôt (dossier local). **Révision du 26/08/2026** : vérification faite auprès de l'utilisateur — cette référence n'existe pas, il n'y a pas de fichiers de tokens tout prêts à ajouter au dépôt. Le vrai besoin est plus large : pouvoir **extraire** un design system client à partir de n'importe quel document que le client fournit réellement (captures d'écran, PDF de charte, export Figma, site web, logo seul...), jamais un format d'entrée imposé au client.
-**Valeur** : permet d'appliquer la charte graphique réelle d'un client aux slides produites par `slide-content-claude-design`, au lieu de se limiter à la palette par défaut « Encre & Sauge » ou d'improviser une charte à partir d'une description orale.
-**Action** : nouvelle skill `design-system-extractor/SKILL.md` — détecte les sources fournies (jamais devinées), extrait les tokens réellement observés (couleurs, typographie, composants, ton) avec un garde-fou anti-hallucination fort (un token non observé est marqué `NON DÉTERMINÉ`, jamais deviné), fait valider par l'utilisateur, produit `design-systems/<client>/design-system.md` (Contrat DS-1 de `PIPELINE_CONTRACTS.md`) au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md`, pour lui être directement substituable. `slide-content-claude-design/SKILL.md` mis à jour pour consulter ce fichier s'il existe, et combler ses champs `NON DÉTERMINÉ` avec « Encre & Sauge » en le signalant explicitement.
-**Effort** : L — nouvelle skill à part entière, pas une simple référence statique comme envisagé initialement.
-**Dépend de** : rien au niveau backlog (l'item #2 qui portait la dépendance d'origine a été retiré le 26/08/2026, voir « Non retenu » — sans objet de toute façon, la révision du 26/08/2026 change la nature même de l'item).
-**Statut** : spec écrite dans `design-system-extractor/SKILL.md`, branchée dans `slide-content-claude-design/SKILL.md` (Étape 0 et § Design system par défaut) et documentée dans `PIPELINE_CONTRACTS.md` (Contrat DS-1). `design-systems/` ajouté au `.gitignore` (données client, jamais versionnées, même règle que `formations/`/`appels-offres/`). Reste à vérifier sur un cas réel (extraction à partir de documents de marque effectifs, puis production de slides avec le design system extrait).
+### 20. Ajouter la référence complète du design system au dépôt
+**Constat** (audit comité qualité) : `slide-content-claude-design/SKILL.md` renvoie à la référence complète du design system, mais ces fichiers résident hors dépôt (dossier local). Un contributeur qui clone le dépôt — déclaré source de vérité unique — ne trouve pas la référence citée. L'impact est atténué par le fait que les tokens essentiels sont inlinés dans la spec.
+**Valeur** : rend le dépôt réellement autoportant pour la partie design ; évite une divergence silencieuse entre les tokens inlinés dans la spec et la référence complète.
+**Action** : ajouter au dépôt les deux fichiers de référence (sans les assets lourds type logo/template pptx), puis faire pointer `slide-content-claude-design/SKILL.md` vers ce chemin.
+**Effort** : S.
+**Dépend de** : #2 (le dépôt doit être effectivement poussé et accessible).
 
 ### 23. Documenter l'installation des skills sur les 3 surfaces (Claude Code, application Claude, Cowork) ✅ Fait le 28/07/2026
 **Constat** (demande utilisateur du 28/07/2026) : le README ne documentait que l'installation sur Claude Code (copie de dossier dans `~/.claude/skills/`). Or les skills Anthropic ne se synchronisent PAS entre surfaces — c'est un fait produit documenté (`platform.claude.com/docs/en/agents-and-tools/agent-skills/overview` § « Cross-surface availability » : *"Custom Skills do not sync across surfaces"*) — donc un consultant qui utilise aussi l'application Claude ou Cowork ne trouvait aucune indication sur comment y installer les mêmes skills. Recherche complémentaire : sur claude.ai/Cowork, l'installation individuelle se fait par upload d'un fichier ZIP (Réglages → Personnaliser → Skills), avec une structure de zip précise (dossier de la skill à la racine, nommé comme le `name:` du frontmatter). **Correction post-audit comité qualité (28/07/2026)** : l'affirmation initiale « aucun partage d'équipe même en Team/Entreprise » était fausse — une source distincte (`support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization`, plus récente) confirme qu'un **Owner** Team/Enterprise peut provisionner une skill à toute l'organisation en une fois via *Réglages d'organisation → Skills → Organization skills*. Les deux pages Anthropic ne sont pas synchronisées entre elles sur ce point ; le README documente les deux avec la nuance nécessaire. Le comportement de Cowork lui-même (charge-t-il les skills du compte claude.ai ?) reste une supposition non confirmée par une source officielle — documenté comme tel, pas comme un fait acquis.
@@ -230,43 +209,18 @@ Priorisation façon PO : `P0` = bloquant/dette qui casse la démo ou l'adoption,
 **Action** : `reponse-appel-offres/SKILL.md` (8 étapes), avec la checklist d'exigences CCTP de l'ancienne skill conservée comme livrable interne (Étape 2, Contrat AO-1), un nouveau fichier `reponse-appel-offres/references/profil_cabinet_gabarit.md` (gabarit vide, jamais un cabinet présupposé — chaque consultant renseigne le sien dans le workspace de son AO), et un nouveau Contrat AO-2 pour le plan de présentation final. `comite-qualite/SKILL.md` n'a nécessité aucune modification : ses rôles conditionnels existants couvrent déjà ce type de livrable.
 **Effort** : L — from scratch pour le nouveau périmètre élargi, en partant du travail déjà fait sur l'extraction d'exigences.
 **Dépend de** : #17 (résolu, périmètre du dépôt élargi).
-**Statut** : `reponse-appel-offres` livrée (voir US-18) avec les Contrats AO-1 (v2) et AO-2. `cadrage-appel-offres` retirée du dépôt (jamais committée dans l'historique git — voir CHANGELOG.md). Étendue le 27/08/2026 par #31 (Étapes 4bis/5bis, `consultants-references-extractor`). Reste à vérifier sur un cas réel (US-18).
-**Correction du 27/08/2026** : cet item était cité comme dépendance/rattachement à 5 endroits du fichier (#17, la ligne de couverture des stories, etc.) mais n'avait **jamais eu sa propre entrée** dans `BACKLOG.md` — ni dans l'historique git du dépôt, y compris avant cette session. Restauré ici fidèlement à partir du contenu connu de cet item.
-
-### 31. Extraire un référentiel de CV et de références depuis n'importe quel format, pour sélection et reformulation en réponse à AO ✅ Fait le 27/08/2026 (spec) — voir US-20
-**Constat** (demande explicite de l'utilisateur du 27/08/2026) : `reponse-appel-offres` (#29) demande déjà au consultant sa liste de références (Étape 4) et compose l'équipe implicitement dans le bloc `ÉQUIPE-RÉFÉRENCES` de l'Étape 6, mais aucune étape ne produit les CV, et rien ne capitalise les CV/références d'une réponse à l'autre — chaque AO repart de zéro sur cette partie. Le cabinet dispose déjà de decks internes (une slide par CV, une slide par référence), format réel mais avec une mise en page hétérogène d'un auteur à l'autre, en volume important (plusieurs centaines d'entrées), à ré-importer régulièrement. Un consultant peut apporter plusieurs missions/références distinctes, et une référence peut réunir plusieurs consultants — la sélection se fait à deux niveaux (quels consultants, puis quelles missions de ces consultants). Certaines références sont confidentielles, à des degrés différents (nommée / anonymisée / usage interne uniquement), signalé explicitement dans les decks sources mais sous un format qui varie.
-**Valeur** : élimine la reconstitution manuelle de l'équipe et des références à chaque AO ; sécurise la confidentialité (jamais d'usage externe sans confirmation humaine explicite, quel que soit le niveau détecté à l'extraction) ; produit des CV et références reformulés spécifiquement pour l'AO en cours plutôt que des fiches génériques recopiées telles quelles.
-**Action** :
-  - Nouvelle skill `consultants-references-extractor/SKILL.md` — extraction interprétative (pas un parseur rigide, vu l'hétérogénéité des sources) par lots avec point de contrôle après chacun, mêmes garde-fous anti-hallucination que `design-system-extractor` (`NON DÉTERMINÉ` plutôt que deviné). Produit deux référentiels distincts et liés dans les deux sens : `consultants/<identifiant>.md` (Contrat CR-1) et `references-missions/<identifiant>.md` (Contrat CR-2), tous deux hors dépôt Git (données personnelles/clients réelles). Ré-import : fusion avec l'existant, jamais d'écrasement silencieux d'une modification manuelle.
-  - `reponse-appel-offres/SKILL.md` : deux étapes conditionnelles ajoutées **en parallèle** des Étapes 4/5 existantes (qui restent le circuit par défaut hors référentiel) — Étape 4bis (sélection d'équipe depuis `consultants/`, validation par le consultant concerné avant toute fiche reformulée finale) et Étape 5bis (sélection de références depuis `references-missions/`, confirmation humaine de confidentialité toujours requise avant inclusion, quel que soit le niveau documenté).
-  - Étape 6 de `reponse-appel-offres` : bloc `ÉQUIPE-RÉFÉRENCES` (mélangeait équipe et références) éclaté en deux `TYPE` dédiés — `ÉQUIPE-MEMBRE` et `RÉFÉRENCE`, une slide par entrée, avec gabarits reprenant les champs minimum demandés (CV : missions pertinentes + valeur ajoutée, rôle et pourquoi indispensable, compétences utiles ; référence : secteur, nom si autorisé, contexte/enjeux, approche, valeur ajoutée — plus durée de mission, taille d'équipe, résultats chiffrés, technologies quand disponibles).
-  - `PIPELINE_CONTRACTS.md` : nouveau préfixe `CR-` (Contrats CR-1, CR-2), Contrat AO-2 passe en v2.
-**Effort** : L — nouvelle skill à part entière + extension de deux étapes et du format de sortie d'une skill existante.
-**Dépend de** : #29 (`reponse-appel-offres` existant, socle sur lequel les Étapes 4bis/5bis s'ajoutent).
-**Statut** : spec écrite dans `consultants-references-extractor/SKILL.md` (+ gabarits `consultant_gabarit.md`/`reference_gabarit.md`), branchée dans `reponse-appel-offres/SKILL.md`, documentée dans `PIPELINE_CONTRACTS.md`. `consultants/` et `references-missions/` ajoutés au `.gitignore`. Reste à vérifier sur un cas réel (extraction depuis des decks effectifs du cabinet, puis sélection/reformulation sur un AO réel) — aucun exemple de deck n'a pu être fourni pour cadrer cette spec, contrairement à `fil-rouge-stockpilot/` pour le pipeline formation.
-
-### 30. Corriger l'échec du job `secret-detection` sur les pull requests ✅ Fait le 26/08/2026
-**Constat** : constaté sur la PR #2 — le job `secret-detection` (`.github/workflows/ci.yml`) échoue systématiquement sur l'événement `pull_request` (`Resource not accessible by integration`, statut 403 sur `GET /pulls/{n}/commits`) alors qu'il passe sur `push`. `gitleaks-action@v2` a besoin de lister les commits de la PR via l'API GitHub pour ce mode de scan, ce qui exige la permission `pull-requests: read` sur le `GITHUB_TOKEN` — non accordée par les permissions par défaut du dépôt.
-**Valeur** : sans ce correctif, aucune PR ne peut jamais avoir une CI verte sur `secret-detection`, ce qui bloque de fait la règle CONTRIBUTING.md "la CI doit être verte avant toute demande de revue" pour toutes les futures contributions, pas seulement celle qui l'a révélé.
-**Action** : `permissions: contents: read, pull-requests: read` ajouté explicitement au job `secret-detection` dans `.github/workflows/ci.yml`.
-**Effort** : XS — un bloc de permissions, aucun changement de logique de scan.
-**Statut** : corrigé et vérifié sur la PR de correction elle-même (CI verte sur `pull_request`).
+**Statut** : `reponse-appel-offres` livrée (voir US-18) avec les Contrats AO-1 (v2) et AO-2. `cadrage-appel-offres` retirée du dépôt (jamais committée dans l'historique git — voir CHANGELOG.md). Reste à vérifier sur un cas réel (US-18).
 
 ---
 
 ## P3 — Exploratoire / à cadrer davantage
 
-### 11. Étudier un export/import direct des quiz vers Kahoot 🟡 Recherche menée le 26/08/2026, implémentation non lancée
+### 11. Étudier un export/import direct des quiz vers Kahoot
 **Constat** : `formation-material-builder` génère déjà les quiz en markdown structuré (type de question, durée, réponses, bonne réponse), mais le paramétrage dans Kahoot reste 100% manuel — aucun fichier importable disponible à ce jour.
 **Valeur** : élimine une étape manuelle récurrente en fin de pipeline, sur un format déjà structuré.
 **Action** : vérifier si Kahoot expose un format d'import (CSV/XLSX en marque blanche ou API) et, si oui, ajouter une étape de conversion en sortie de `formation-material-builder`.
-**Effort** : S/M — revu à la baisse suite à la recherche du 26/08/2026 (voir Statut) : conversion markdown → `.xlsx` mécanique, même famille que les scripts déjà en place (`generate_cadrage_xlsx.py`, `generate_exigences_xlsx.py`), pas de développement exploratoire.
-**Dépend de** : rien — le préalable ("disponibilité d'un format d'import côté Kahoot") est levé, voir Statut.
-**Statut** (recherche web du 26/08/2026, sources : [support.kahoot.com](https://support.kahoot.com/hc/en-us/articles/115002812547-How-to-import-questions-from-a-spreadsheet-to-your-kahoot), [kahoot.com/blog](https://kahoot.com/blog/2018/08/23/import-kahoot-from-spreadsheet/), [results.kahoot.com/swagger](https://results.kahoot.com/swagger/)) :
-- Kahoot expose un **import `.xlsx`** via un gabarit officiel téléchargeable dans l'éditeur (Create → Add question → Import → Import spreadsheet) — **pas** de marque blanche, **pas** d'API de création de quiz publique (seule une API de rapports/analytics existe, authentifiée, hors sujet ici).
-- Format du gabarit : colonnes question / au moins 2 réponses / temps limite en secondes / numéro(s) de bonne(s) réponse(s) séparés par virgule (ex. `2` ou `1,3`).
-- Contraintes strictes : question ≤ 95 caractères, réponse ≤ 60 caractères, fichier ≤ 1 Mo, uniquement des questions QCM standard (pas de sondage, nuage de mots, question ouverte — ces formats devront rester hors de ce mode d'export).
-- **Implémentation non lancée** : cette recherche répond à l'Action de l'item mais ne constitue pas la story elle-même — écrire une story (critères d'acceptation vérifiables, dont le respect des limites de caractères ci-dessus) avant de modifier `formation-material-builder/SKILL.md`, conformément à la DoR de `CONTRIBUTING.md`.
+**Effort** : M/L — dépend entièrement des capacités d'import exposées par Kahoot (à investiguer avant de chiffrer plus finement).
+**Dépend de** : disponibilité d'un format d'import côté Kahoot (hors de notre contrôle).
 
 ### 12. Cadrer la limite de taille d'audience pour la recherche participants ✅ Fait le 24/07/2026 (spec) — voir US-9
 **Constat** : la recherche automatique de profils (web + LinkedIn) devient très coûteuse en temps et en tokens au-delà d'un certain nombre de participants (testé jusqu'à 12 ; jugé non viable pour une audience de 60). Pour les grands groupes, l'équipe raisonne plutôt en "profil type" qu'en recherche nominative.
@@ -293,7 +247,7 @@ Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou d
 ### 17. Aligner le dépôt de skills avec le processus d'avant-vente ✅ Clos le 29/07/2026
 **Constat** : retour d'usage — question de savoir si le pipeline peut s'intégrer au processus d'avant-vente, pas seulement à la production de formations déjà vendues. Proposition de centraliser l'ensemble des skills au sein d'un répertoire unique et d'établir une logique de responsabilité claire pour leur gestion, avec un arbitrage nécessaire sur qui porte la capitalisation projet vs la capitalisation skills. Nuance utile relevée en discussion : la capitalisation "projet" et la capitalisation "skills" sont complémentaires mais distinctes — le travail par projet permet d'extraire des skills réutilisables, qui peuvent ensuite être redéclinées dans d'autres process (dont l'avant-vente).
 **Valeur** : élargit la valeur du pipeline au-delà de la seule production de formation déjà engagée, potentiellement vers la réponse à appel d'offres.
-**Action (résolution)** : arbitrage rendu le 29/07/2026 par le Product Owner — le dépôt `skills-portfolio-export` accueille désormais un second pipeline dédié à la réponse à appel d'offres, dans le même dépôt (pas un dépôt séparé), pour partager `CONTRIBUTING.md`, le workflow Git, et le format `PIPELINE_CONTRACTS.md`. Voir `GOVERNANCE.md` § "Périmètre de ce dépôt" pour le constat mis à jour, et #29 (section P1, ce fichier) pour le nouvel item produit qui en découle.
+**Action (résolution)** : arbitrage rendu le 29/07/2026 par le Product Owner — le dépôt `skills-portfolio-export` accueille désormais un second pipeline dédié à la réponse à appel d'offres, dans le même dépôt (pas un dépôt séparé), pour partager `CONTRIBUTING.md`, le workflow Git, et le format `PIPELINE_CONTRACTS.md`. Voir `GOVERNANCE.md` § "Périmètre de ce dépôt" pour le constat mis à jour, et #29 ci-dessous pour le nouvel item produit qui en découle.
 **Effort** : L pour l'arbitrage lui-même — réalisé sans dépendance externe, directement par le Product Owner porteur du dépôt.
 **Statut** : cet item n'est plus P4/hors périmètre produit — il devient un item produit à part entière, poursuivi par #29. Reclassé ici pour mémoire de la décision, mais son suivi opérationnel se fait désormais dans #29/US-17 et suivants.
 
@@ -313,21 +267,21 @@ Ces items ne modifient aucune skill : ce sont des décisions d'organisation ou d
 
 ## Non retenu / hors périmètre pour l'instant
 
-- **#2 — Réparer/vérifier l'accès aux ressources sur le dépôt partagé** (retiré le 26/08/2026, story `US-2` conservée pour l'historique) : l'incident qui avait motivé l'item (un livrable de formation absent du dépôt partagé malgré un lien envoyé à plusieurs reprises) ne s'est pas reproduit depuis — ce n'était pas un problème systémique du dépôt, pas de quoi maintenir un item de backlog actif dessus. Le volet documentaire déjà livré (`README.md` § "Source de vérité", désignant le dépôt comme référence) reste en place. **Conséquence sur les items qui en dépendaient** : #3 et #20 ne sont plus bloqués par un item de backlog #2 qui n'existe plus, mais le besoin concret sous-jacent (un répertoire de formations passées effectivement accessible à tous) n'est pas résolu pour autant — à réévaluer si le même type d'incident se reproduit.
 - **Génération de schémas d'architecture type Excalidraw** : mentionné comme besoin ("un schéma d'architecture, un truc qui ressemble à de l'Excalidraw") mais explicitement écarté pour l'instant côté outillage interne — à ne pas transformer en item tant qu'aucune piste d'outil n'est identifiée en interne.
 
 ---
 
 ## User stories
 
-Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2 (item retiré le 26/08/2026, story conservée pour l'historique — voir « Non retenu »), US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29, US-19→#20, US-20→#31, US-21→#32. Items sans story, avec leur raison :
+Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1, US-2→#2, US-3→#3, US-4→#4, US-5→#5, US-6→#6, US-7→#8, US-8→#10, US-9→#12, US-10→#19, US-11→#21, US-12→#22, US-13→#25, US-14→#26, US-15→#27, US-16→#28, US-17→#29 (remplacée par US-18), US-18→#29. Items sans story, avec leur raison :
 - **#7, #11, #13** — dépendants d'un spike ou d'un retour d'usage préalable (Horizon 4) ; les storifier avant ce préalable serait prématuré.
 - **#9** — levé le 28/07/2026 (voir son Statut), directement absorbé par US-16 plutôt que storifié séparément.
-- **#14** — même exception que #15/#16/#23/#24 (résolu directement au niveau item le 26/08/2026, voir son Statut) ; action purement documentaire, sans changement de comportement des skills à formaliser en critères d'acceptation séparés.
+- **#14** — story à rédiger lorsque US-1/US-2 seront closes (son livrable, un support d'onboarding, dépend d'un pipeline effectivement installable).
 - **#15** — traité directement dans `GOVERNANCE.md` (clarification organisationnelle, pas un développement).
 - **#16** — spécifié et clôturé directement au niveau item (voir son Statut) ; exception au circuit item→story assumée pour un changement de spec très localisé.
 - **#17** — clos le 29/07/2026 (voir son Statut) ; poursuivi par #29/US-18 (US-17, première itération `cadrage-appel-offres`, remplacée le 18/08/2026 — voir CHANGELOG.md), pas de story propre à #17 lui-même (arbitrage organisationnel, pas un développement).
 - **#18** — P4, hors périmètre produit (arbitrage managérial).
+- **#20** — dépend de #2 (dépôt effectivement poussé et accessible) ; à storifier une fois ce préalable levé — action documentaire S, triviale à cadrer.
 - **#23** — spécifié et clôturé directement au niveau item (voir son Statut, même exception que #16) ; action purement documentaire (README), sans changement de comportement des skills à formaliser en critères d'acceptation séparés.
 - **#24** — même exception que #16/#20/#23 ; fichiers de gouvernance du dépôt (LICENSE, CHANGELOG, wiki), sans changement de comportement des skills.
 - **#29** — story US-18 rédigée pour `reponse-appel-offres` (remplace la première itération `cadrage-appel-offres`/US-17, remplacée depuis — voir plus haut et `CHANGELOG.md`).
@@ -337,7 +291,7 @@ Rédigées pour les items suffisamment cadrés. Couverture actuelle : US-1→#1,
 Une story n'entre en développement que si :
 - Le besoin est rattaché à un item du backlog priorisé (constat + valeur déjà documentés ci-dessus).
 - Les critères d'acceptation sont rédigés, vérifiables, et ne contiennent aucune ambiguïté sur le "fini".
-- Les dépendances amont sont soit levées, soit explicitement actées comme non bloquantes pour démarrer (ex. US-14 ne démarre pas avant que US-1 soit "Done").
+- Les dépendances amont sont soit levées, soit explicitement actées comme non bloquantes pour démarrer (ex. US-3 ne démarre pas avant que US-2 soit "Done").
 - Le fichier `SKILL.md` concerné est identifié (une story ne modifie jamais "toutes les skills" sans les lister nommément).
 - Il n'y a pas de question ouverte structurante non tranchée (ex. seuil exact, format de convention) — une valeur par défaut proposée vaut acceptation tant qu'elle est écrite noir sur blanc dans la story.
 
@@ -369,8 +323,8 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 
 ---
 
-### US-2 — Dépôt comme source de vérité accessible à tous — Item retiré le 26/08/2026 (voir BACKLOG.md § « Non retenu »)
-*Rattaché à #2 (retiré)*
+### US-2 — Dépôt comme source de vérité accessible à tous 🟡 Partiellement faite le 24/07/2026
+*Rattaché à #2*
 
 **En tant que** membre de l'équipe qui n'a pas reçu le livrable par un canal parallèle,
 **je veux** trouver les ressources de formation à jour sur le dépôt partagé,
@@ -381,7 +335,7 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [ ] Un utilisateur autre que celui qui a poussé le fichier confirme pouvoir cloner/accéder au dépôt et y retrouver les fichiers attendus. *(dépend du critère précédent)*
 - [x] Le `README.md` référence le dépôt comme source unique, à la place des envois par un canal parallèle.
 
-**Statut** : le volet documentaire est fait (`README.md`, § "Source de vérité") et reste en place. Les deux premiers critères restent non cochés — la story n'est pas close par accomplissement, elle est **retirée** le 26/08/2026 en même temps que l'item #2 (l'incident déclencheur ne s'est pas reproduit, voir BACKLOG.md § « Non retenu ») ; conservée ici pour l'historique, non rejouée rétroactivement.
+**Statut** : le volet documentaire est fait (`README.md`, § "Source de vérité", avec un encart signalant explicitement l'état d'attente). Les deux premiers critères restent ouverts et dépendent d'une action humaine hors du périmètre de ce dépôt — ne pas clôturer la story tant qu'ils ne sont pas cochés.
 
 ---
 
@@ -398,7 +352,7 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] L'agent ne réutilise jamais un gabarit sans validation explicite de l'utilisateur au préalable.
 - [x] Si l'utilisateur répond non, l'agent poursuit le cadrage from scratch sans blocage.
 
-**Statut** : spec écrite dans `cadrage-formation/SKILL.md`. Dépend en pratique d'un répertoire de formations passées effectivement accessible à tous (US-2, qui portait cette dépendance, a été retirée le 26/08/2026 — voir BACKLOG.md § « Non retenu » ; le besoin concret reste néanmoins à couvrir) — reste à vérifier sur un cas réel une fois ce répertoire disponible.
+**Statut** : spec écrite dans `cadrage-formation/SKILL.md`. Dépend en pratique de US-2 (Horizon 1) pour qu'un répertoire de formations passées soit effectivement accessible à tous — reste à vérifier sur un cas réel une fois ce répertoire disponible.
 
 ---
 
@@ -435,30 +389,6 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] La spec autorise une légère variation du bloc d'un module à l'autre, tout en restant ancré dans la même métaphore filée globale de la formation.
 
 **Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`. Reste à vérifier sur un cas réel (cohérence visuelle perceptible entre plusieurs illustrations d'un même module généré en conditions réelles).
-
----
-
-### US-21 — Brouillon texte seul avant la couche visuelle, pour relire le fond sans le bruit technique ✅ Faite le 27/08/2026 (spec)
-*Rattaché à #32*
-
-**En tant que** consultant qui prépare le contenu des slides pour Claude Design,
-**je veux** relire et valider le fond de chaque slide (titre, contenu, chiffre clé) séparément, avant que la couche visuelle (composant, dimensions, couleurs, placeholder) ne soit ajoutée,
-**afin de** ne jamais devoir reformuler du contenu déjà habillé visuellement si une correction de fond s'impose après coup, et de me concentrer sur le fond sans le bruit technique de la fiche finale.
-
-**Critères d'acceptation :**
-- [x] `slide-content-claude-design/SKILL.md` documente une nouvelle étape de méthode, entre la colonne vertébrale et la rédaction enrichie, qui produit `M<n>-slides-draft.md` — un brouillon texte seul par slide (Titre à l'écran, Accroche, Contenu, Chiffre/preuve clé, Bloc texte, une ligne libre d'intention du visuel).
-- [x] Le brouillon ne contient explicitement **aucune** dimension, couleur, ni type de composant précis.
-- [x] La validation de ce brouillon est **structurante et non conditionnelle** — contrairement à la colonne vertébrale, dont la validation ne dépend que de la longueur de la formation.
-- [x] L'enrichissement (ajout du `Visuel`/`Placeholder`) ne reformule jamais le texte déjà validé du brouillon, sauf demande explicite du consultant.
-- [x] Le brouillon est conservé à côté de `M<n>-slides-content.md` après enrichissement, jamais supprimé.
-- [x] L'audit UX/UI existant (étape 8) reste distinct et complémentaire : il porte sur le rendu visuel de la fiche enrichie, jamais sur le fond déjà validé sur le brouillon.
-- [x] Contrat 4 de `PIPELINE_CONTRACTS.md` étendu au format du brouillon, en v3.
-- [x] `formation-pipeline/SKILL.md` : la validation du brouillon rejoint la liste des garde-fous que le mode non-stop ne peut jamais lever seul, avec sa propre ligne dans la table de détection d'état.
-- [x] *(Audit comité qualité du 27/08/2026, constat 🔴)* La parallélisation sur gros volume (étape 7) ne peut pas servir de raccourci pour sauter la validation : elle se fait en deux vagues, brouillons assemblés et validés en une fois avant que l'enrichissement ne démarre.
-- [x] *(Audit comité qualité du 27/08/2026, constat 🟠)* L'ancrage des chiffres est vérifié **avant** de présenter le brouillon à la validation — le consultant ne valide jamais un fond dont les chiffres n'ont pas été confrontés à la source ; l'étape 6 ne couvre plus que les chiffres éventuellement introduits par l'enrichissement.
-- [x] *(Correction demandée par l'utilisateur après l'audit, hors du périmètre initial de US-21 mais explicitement autorisée)* La table de détection d'état de `formation-pipeline/SKILL.md` ne prétend plus détecter un état « pas encore validé » à partir de la seule présence d'un fichier — un fichier n'est jamais « en attente » au sens du système de fichiers. Sur reprise d'un workspace, l'orchestrateur pose désormais explicitement la question plutôt que de présumer un sens ou l'autre. Corrige au passage un défaut identique, pré-existant depuis l'origine de cette skill, sur la ligne `00-brief.md`/`00-plan.md`, et le même défaut dans `formation-material-builder/SKILL.md` § « Détection automatique de la phase » — dont la ligne « `00-brief.md`/`00-plan.md` validés » présumait silencieusement la validation acquise sur reprise d'un workspace. *(Ce dernier point rectifie l'affirmation inverse, erronée, portée par le commit `f0b6da9` et relevée à l'audit suivant.)*
-
-**Statut** : spec écrite dans `slide-content-claude-design/SKILL.md`, branchée dans `formation-pipeline/SKILL.md`, Contrat 4 documenté. Relue par comité qualité (mode loop) — 3 constats corrigés dont 1 bloquant, voir `CHANGELOG.md`. Reste à vérifier sur un cas réel, conformément à la DoD.
 
 ---
 
@@ -601,54 +531,6 @@ Les critères d'acceptation propres à chaque story ci-dessous s'ajoutent à cet
 - [x] Les Contrats AO-1 (v2) et AO-2 sont documentés dans `PIPELINE_CONTRACTS.md`.
 
 **Statut** : spec écrite dans `reponse-appel-offres/SKILL.md`, script `generate_exigences_xlsx.py` déplacé et vérifié (compilation + test fonctionnel incluant le nouvel onglet "Format de réponse imposé"). Reste à vérifier sur un cas réel (un AO traité de bout en bout jusqu'au plan de présentation), conformément à la DoD.
-
----
-
-### US-19 — `design-system-extractor` produit un design system client réutilisable à partir de n'importe quel document fourni ✅ Faite le 26/08/2026 (spec)
-*Rattaché à #20*
-
-**En tant que** consultant qui prépare des slides pour un client ayant sa propre charte graphique,
-**je veux** pouvoir extraire son design system à partir de n'importe quel document qu'il me fournit réellement (captures, PDF, export Figma, site web, logo...), sans lui imposer un format,
-**afin de** produire des slides alignées sur son identité visuelle réelle plutôt que sur la palette par défaut ou une charte improvisée à partir d'une description orale.
-
-**Critères d'acceptation :**
-- [x] `design-system-extractor/SKILL.md` détecte explicitement les sources fournies (jamais devinées) et signale toute source annoncée mais non transmise.
-- [x] L'extraction ne décrit que des tokens réellement observés dans les sources — un token non observable est marqué `NON DÉTERMINÉ`, jamais deviné ni complété par une valeur plausible (garde-fou anti-hallucination central de cette skill).
-- [x] Une étape de validation par l'utilisateur précède la finalisation du dossier de sortie — en particulier pour les couleurs estimées visuellement (recommandation de vérification par pipette) et les champs `NON DÉTERMINÉ`.
-- [x] Le livrable `design-systems/<client>/design-system.md` respecte le Contrat DS-1 documenté dans `PIPELINE_CONTRACTS.md`, au même format que la section "Design system par défaut" de `slide-content-claude-design/SKILL.md`, pour lui être directement substituable.
-- [x] L'emplacement du livrable est décrit sans ambiguïté : dossier de premier niveau `design-systems/<client>/`, **à côté** de `formations/`/`appels-offres/` et non à l'intérieur, parce qu'un design system vaut pour le client entier (réutilisable d'une session à l'autre et entre formation et AO) — même formulation dans les trois fichiers qui le mentionnent.
-- [x] `formation-pipeline/SKILL.md` couvre le cas orchestré : le design system devient le paramètre 4 de son Étape 0 (jamais deviné), et le point de validation de `design-system-extractor` Étape 2 rejoint la liste des garde-fous que le mode non-stop ne peut pas lever.
-- [x] `slide-content-claude-design/SKILL.md` consulte ce fichier s'il existe (Étape 0), et comble ses champs `NON DÉTERMINÉ` avec « Encre & Sauge » en le signalant explicitement au consultant.
-- [x] `design-systems/` est ajouté au `.gitignore` — données client, jamais versionnées, même règle que `formations/`/`appels-offres/`.
-- [x] La skill propose explicitement l'enchaînement vers `slide-content-claude-design` en fin de parcours, sans l'invoquer de force.
-
-**Statut** : spec écrite dans `design-system-extractor/SKILL.md`, branchée dans `slide-content-claude-design/SKILL.md`, Contrat DS-1 documenté. Reste à vérifier sur un cas réel (extraction à partir de documents de marque effectifs d'un client, puis production de slides avec le design system extrait), conformément à la DoD.
-
----
-
-### US-20 — `consultants-references-extractor` alimente la sélection d'équipe et de références d'une réponse à AO ✅ Faite le 27/08/2026 (spec)
-*Rattaché à #31*
-
-**En tant que** consultant qui prépare une réponse à appel d'offres,
-**je veux** extraire un référentiel réutilisable de CV et de références depuis les decks internes du cabinet (format hétérogène, plusieurs centaines d'entrées), puis sélectionner et reformuler les plus pertinents pour l'AO en cours,
-**afin de** ne plus reconstituer l'équipe et les références à chaque AO, tout en respectant strictement la confidentialité de certaines missions.
-
-**Critères d'acceptation :**
-- [x] `consultants-references-extractor/SKILL.md` détecte explicitement les sources fournies (jamais devinées) et traite les gros volumes par lots avec un point de contrôle après chacun.
-- [x] Un consultant apparaissant sur plusieurs slides/missions distinctes est regroupé sous une seule fiche via un identifiant stable, jamais fusionné automatiquement avec un homonyme sans vérification.
-- [x] Un champ non observable dans les sources reste `NON DÉTERMINÉ`, jamais deviné (même garde-fou que `design-system-extractor`).
-- [x] La confidentialité d'une référence est classée (`NOMMÉE`/`ANONYMISÉE`/`INTERNE_UNIQUEMENT`/`NON PRÉCISÉ`) à l'extraction, mais ce classement **n'autorise jamais** un usage externe — toute inclusion dans un livrable exige une confirmation humaine explicite au moment de la sélection, quel que soit le niveau.
-- [x] Un ré-import fusionne avec l'existant : une divergence sur un champ modifié manuellement depuis la dernière extraction est signalée pour arbitrage humain, jamais écrasée silencieusement.
-- [x] Les livrables `consultants/<identifiant>.md` et `references-missions/<identifiant>.md` respectent les Contrats CR-1/CR-2 documentés dans `PIPELINE_CONTRACTS.md`, liés dans les deux sens.
-- [x] `reponse-appel-offres/SKILL.md` ajoute les Étapes 4bis/5bis **en parallèle** des Étapes 4/5 existantes (jamais un remplacement) — actives uniquement si le référentiel existe.
-- [x] La sélection d'équipe (Étape 4bis) exige la validation du consultant concerné sur sa fiche reformulée avant toute finalisation ; en cas de plusieurs candidats pour un même rôle, la skill présente les options sans trancher seule.
-- [x] La sélection de références (Étape 5bis) applique les mêmes critères que l'Étape 5 (secteur, techno/méthodologie, taille de mission) et bloque toute inclusion tant que la confidentialité n'est pas confirmée par un humain.
-- [x] L'Étape 6 produit une slide `ÉQUIPE-MEMBRE` par consultant retenu et une slide `RÉFÉRENCE` par référence retenue (jamais plusieurs entrées regroupées sur une même slide), avec les champs minimum requis par l'item #31.
-- [x] *(Audit comité qualité du 27/08/2026, constat 🔴)* Le contenu des slides `ÉQUIPE-MEMBRE` a une source non conditionnelle : l'Étape 4.b demande l'équipe pressentie au consultant dans tous les cas, l'Étape 4bis ne fait que l'enrichir depuis le référentiel quand il existe — le cas « sans référentiel » ne laisse jamais l'agent composer l'équipe lui-même.
-- [x] *(Audit comité qualité du 27/08/2026, constat 🟠)* Le nom réel du client est toujours conservé dans `references-missions/`, quel que soit le niveau de confidentialité — la décision d'usage externe est portée par un champ « Citable à l'externe » distinct, tranché à la sélection, jamais par l'effacement d'une donnée à l'extraction.
-- [x] `consultants/` et `references-missions/` sont ajoutés au `.gitignore` — données personnelles et clients réelles, jamais versionnées.
-
-**Statut** : spec écrite dans `consultants-references-extractor/SKILL.md` (+ gabarits), branchée dans `reponse-appel-offres/SKILL.md`, Contrats CR-1/CR-2 documentés. Reste à vérifier sur un cas réel — aucun deck source n'a pu être fourni pour cadrer cette spec sur un exemple concret, contrairement à `fil-rouge-stockpilot/` côté formation ; à rejouer dès qu'un cas réel est disponible.
 
 ---
 
