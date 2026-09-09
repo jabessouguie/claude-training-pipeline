@@ -2,6 +2,14 @@
 
 Historique des évolutions du pipeline de skills, du plus récent au plus ancien. Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/) ; les dates correspondent aux jalons de livraison de spec dans ce dépôt, pas nécessairement à une vérification en usage réel (voir `BACKLOG.md` pour le statut de vérification de chaque item).
 
+## 09/09/2026
+
+**Ajouté**
+- **Section « Consommation de tokens » dans `README.md`** ([#33](BACKLOG.md)) : le dépôt argumentait déjà sur le coût en tokens pour justifier le choix de modèle et d'effort, sans jamais dire ce que le pipeline consomme réellement. La nouvelle section couvre ce qui fait varier la consommation, une **estimation par skill en ordres de grandeur**, les leviers d'économie déjà écrits dans les specs (fallback audience >20, mode standalone, `high` par défaut, plafond de 3 itérations de `comite-qualite`, tables de détection d'état), et la gestion des sessions longues (scinder aux points de validation, qui sont aussi des points de reprise propres). Fait apparaître que l'étape la plus coûteuse n'est pas la production de contenu mais l'audit `comite-qualite` en dossier complet, qui relit tout à chaque itération. **La méthode d'estimation est explicitée et assumée comme non mesurée** — volume dérivé des repères déjà présents dans les `SKILL.md`, ratio token/mot pour le français, facteur de coût agentique donné comme plage courante et non comme mesure propre à ce dépôt ; fourchettes volontairement larges, à corriger au premier run réel chiffré.
+
+**Retiré**
+- **`Archive/`, incluse par erreur sur `main`** (PR #17, correctif de la PR #16) : dossier de référence non suivi au départ, embarqué par un `git add` trop large dans un commit antérieur — 63 fichiers/~6 900 lignes dupliquant l'ancien contenu du dépôt à côté du contenu à jour. Retirée et ajoutée au `.gitignore`.
+
 ## 27/08/2026
 
 **Ajouté**
